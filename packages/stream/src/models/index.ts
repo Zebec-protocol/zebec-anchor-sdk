@@ -1,1 +1,1 @@
-export * from "./stream-response"
+export * from "./stream"

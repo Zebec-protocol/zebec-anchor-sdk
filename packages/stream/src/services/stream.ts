@@ -2,18 +2,13 @@ import { AnchorProvider, Idl, Program } from "@project-serum/anchor";
 import { TOKEN_PROGRAM_ID } from "@project-serum/anchor/dist/cjs/utils/token";
 import { Keypair, PublicKey } from "@solana/web3.js";
 import { ZebecInstructionBuilder } from "../builders";
+import { OPERATE, OPERATE_DATA, PREFIX, PREFIX_TOKEN, SPL_ASSOCIATED_TOKEN_ACCOUNT_PROGRAM_ID } from "../config/constants";
 import { ZEBEC_PROGRAM_ID } from "../config/program-id";
 import { ZEBEC_PROGRAM_IDL } from "../idl";
 import { IBaseStream, IZebecStream } from "../interfaces";
-import { StreamResponse, ZebecResponse } from "../models";
+import { DepositWithdrawFromZebecVault, InitStream, PauseResumeWithdrawCancel, StreamResponse, ZebecResponse } from "../models";
 import { TransactionSender } from "./transaction-sender";
 
-
-const OPERATE_DATA = "NewVaultOptionData"
-const OPERATE = "NewVaultOption"
-const PREFIX = "withdraw_sol"
-const PREFIX_TOKEN = "withdraw_token"
-export const SPL_ASSOCIATED_TOKEN_ACCOUNT_PROGRAM_ID = "ATokenGPvbdGVxr1b2hvZbsiqW5xWH25efTNsLJA8knL"
 
 class ZebecStream implements IBaseStream {
     readonly program: Program;
@@ -59,7 +54,21 @@ class ZebecStream implements IBaseStream {
         )
     }
 
-    async depositSolToZebecVault(data: any): Promise<ZebecResponse> {
+    async _findTokenWithdrawEscrowAccount(walletAddress: PublicKey, tokenMintAddress: PublicKey): Promise<[PublicKey, number]> {
+        return await PublicKey.findProgramAddress(
+            [Buffer.from(PREFIX_TOKEN), walletAddress.toBuffer(), tokenMintAddress.toBuffer()],
+            this.programId
+        )
+    }
+
+    async _findAssociatedTokenAddress(walletAddress: PublicKey, tokenMintAddress: PublicKey): Promise<[PublicKey, number]> {
+        return await PublicKey.findProgramAddress(
+            [walletAddress.toBuffer(), TOKEN_PROGRAM_ID.toBuffer(), tokenMintAddress.toBuffer()],
+            new PublicKey(SPL_ASSOCIATED_TOKEN_ACCOUNT_PROGRAM_ID)
+        )
+    }
+
+    async depositSolToZebecVault(data: DepositWithdrawFromZebecVault): Promise<ZebecResponse> {
         const { sender, amount } = data;
         const senderAddress = new PublicKey(sender);
         const [zebecVaultAddress,] = await this._findZebecVaultAccount(senderAddress);
@@ -79,21 +88,7 @@ class ZebecStream implements IBaseStream {
         }
     }
 
-    async _findTokenWithdrawEscrowAccount(walletAddress: PublicKey, tokenMintAddress: PublicKey): Promise<[PublicKey, number]> {
-        return await PublicKey.findProgramAddress(
-            [Buffer.from(PREFIX_TOKEN), walletAddress.toBuffer(), tokenMintAddress.toBuffer()],
-            this.programId
-        )
-    }
-
-    async _findAssociatedTokenAddress(walletAddress: PublicKey, tokenMintAddress: PublicKey): Promise<[PublicKey, number]> {
-        return await PublicKey.findProgramAddress(
-            [walletAddress.toBuffer(), TOKEN_PROGRAM_ID.toBuffer(), tokenMintAddress.toBuffer()],
-            new PublicKey(SPL_ASSOCIATED_TOKEN_ACCOUNT_PROGRAM_ID)
-        )
-    }
-
-    async withdrawSolFromZebecVault(data: any): Promise<ZebecResponse> {
+    async withdrawSolFromZebecVault(data: DepositWithdrawFromZebecVault): Promise<ZebecResponse> {
         const { sender, amount } = data;
 
         const senderAddress = new PublicKey(sender);
@@ -118,7 +113,7 @@ class ZebecStream implements IBaseStream {
         }
     }
 
-    async depositTokenToZebecVault(data: any): Promise<ZebecResponse> {
+    async depositTokenToZebecVault(data: DepositWithdrawFromZebecVault): Promise<ZebecResponse> {
         
         const { sender, token_mint_address, amount } = data;
 
@@ -148,7 +143,7 @@ class ZebecStream implements IBaseStream {
         }
     }
 
-    async withdrawTokenFromZebecVault(data: any): Promise<ZebecResponse> {
+    async withdrawTokenFromZebecVault(data: DepositWithdrawFromZebecVault): Promise<ZebecResponse> {
         const { sender, token_mint_address, amount } = data;
 
         const senderAddress = new PublicKey(sender);
@@ -188,7 +183,7 @@ export class ZebecNativeStream extends ZebecStream implements IZebecStream {
         console.log("Zebec Native Stream object is intialized!!!");
     }
 
-    async init(data: any): Promise<ZebecResponse> {
+    async init(data: InitStream): Promise<ZebecResponse> {
 
         const { sender, receiver, start_time, end_time, amount } = data;
 
@@ -227,7 +222,7 @@ export class ZebecNativeStream extends ZebecStream implements IZebecStream {
         }
     }
 
-    async pause(data: any): Promise<ZebecResponse> {
+    async pause(data: PauseResumeWithdrawCancel): Promise<ZebecResponse> {
         
         const { sender, receiver, escrow } = data;
 
@@ -250,7 +245,7 @@ export class ZebecNativeStream extends ZebecStream implements IZebecStream {
         }
     }
 
-    async resume(data: any): Promise<ZebecResponse> {
+    async resume(data: PauseResumeWithdrawCancel): Promise<ZebecResponse> {
         const { sender, receiver, escrow } = data;
 
         const senderAddress = new PublicKey(sender);
@@ -274,7 +269,7 @@ export class ZebecNativeStream extends ZebecStream implements IZebecStream {
         }
     }
 
-    async cancel(data: any): Promise<ZebecResponse> {
+    async cancel(data: PauseResumeWithdrawCancel): Promise<ZebecResponse> {
         
         const { sender, receiver, escrow } = data;
 
@@ -309,7 +304,7 @@ export class ZebecNativeStream extends ZebecStream implements IZebecStream {
         }
     }
 
-    async withdraw(data: any): Promise<ZebecResponse> {
+    async withdraw(data: PauseResumeWithdrawCancel): Promise<ZebecResponse> {
 
         const { sender, receiver, escrow } = data;
 
@@ -353,7 +348,7 @@ export class ZebecTokenStream extends ZebecStream implements IZebecStream {
     }
 
     // init
-    async init(data: any): Promise<ZebecResponse> {
+    async init(data: InitStream): Promise<ZebecResponse> {
         const { sender, receiver, token_mint_address, start_time, end_time, amount, withdraw_limit } = data;
         
         const senderAddress = new PublicKey(sender);
@@ -391,7 +386,7 @@ export class ZebecTokenStream extends ZebecStream implements IZebecStream {
         }
     }
     // pause
-    async pause(data: any): Promise<ZebecResponse> {
+    async pause(data: PauseResumeWithdrawCancel): Promise<ZebecResponse> {
 
         const { sender, receiver, escrow } = data;
 
@@ -416,7 +411,7 @@ export class ZebecTokenStream extends ZebecStream implements IZebecStream {
         }
     }
     // resume
-    async resume(data: any): Promise<ZebecResponse> {
+    async resume(data: PauseResumeWithdrawCancel): Promise<ZebecResponse> {
 
         const { sender, receiver, escrow } = data;
 
@@ -441,7 +436,7 @@ export class ZebecTokenStream extends ZebecStream implements IZebecStream {
         }
     }
     // cancel
-    async cancel(data: any): Promise<ZebecResponse> {
+    async cancel(data: PauseResumeWithdrawCancel): Promise<ZebecResponse> {
         
         const { sender, receiver, escrow, token_mint_address } = data;
 
@@ -485,7 +480,7 @@ export class ZebecTokenStream extends ZebecStream implements IZebecStream {
         }
     }
     // withdraw
-    async withdraw(data: any): Promise<ZebecResponse> {
+    async withdraw(data: PauseResumeWithdrawCancel): Promise<ZebecResponse> {
 
         const { sender, receiver, token_mint_address, escrow } = data;
 

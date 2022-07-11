@@ -18,7 +18,7 @@ import { Keypair, PublicKey, SystemProgram, SYSVAR_RENT_PUBKEY, TransactionInstr
  * txBuilder.<specific-method-for-instruction>
  * ```
  *
- * [here](https://github.com/Zebec-protocol/sdk-anchor).
+ * [here](https://github.com/Zebec-protocol/zebec-anchor-sdk/blob/master/packages/stream/src/builders/stream-instruction.ts).
  */
 export class ZebecInstructionBuilder {
 

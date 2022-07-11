@@ -9,7 +9,17 @@ import { IBaseStream, IZebecStream } from "../interfaces";
 import { DepositWithdrawFromZebecVault, InitStream, PauseResumeWithdrawCancel, StreamResponse, ZebecResponse } from "../models";
 import { TransactionSender } from "./transaction-sender";
 
-
+/**
+ * ## Base Zebec Stream  
+ *
+ * Zebec Base Stream object provides a set of helper
+ * methods to find various program addresses &
+ * instructions to deposit & withdraw from zebec vault.
+ * This can be used as follows:
+ *
+ *
+ * [here](https://github.com/Zebec-protocol/zebec-anchor-sdk/blob/master/packages/stream/src/services/stream.ts).
+ */
 class ZebecStream implements IBaseStream {
     readonly program: Program;
     readonly programId: PublicKey = ZEBEC_PROGRAM_ID;
@@ -21,7 +31,7 @@ class ZebecStream implements IBaseStream {
         this.program = new Program(ZEBEC_PROGRAM_IDL as Idl, this.programId, anchorProvider);
         this.instructionBuilder = new ZebecInstructionBuilder(this.program);
         this.transactionSender = new TransactionSender(anchorProvider);
-        this.feeReceiverAddress = new PublicKey(feeReceiver)
+        this.feeReceiverAddress = new PublicKey(feeReceiver);
     }
 
     async _findZebecVaultAccount(walletAddress: PublicKey): Promise<[PublicKey, number]> {
@@ -38,11 +48,11 @@ class ZebecStream implements IBaseStream {
         )
     }
 
-    async _findFeeVaultDataAccount(feeReceiverAddress: PublicKey): Promise<[PublicKey, number]> {
-        const [feeVaultAddress,] = await this._findFeeVaultAddress(feeReceiverAddress);
+    async _findFeeVaultDataAccount(feeVaultAddress: PublicKey): Promise<[PublicKey, number]> {
+
 
         return await PublicKey.findProgramAddress(
-            [feeReceiverAddress.toBuffer(), Buffer.from(OPERATE_DATA), feeVaultAddress.toBuffer()],
+            [feeVaultAddress.toBuffer(), Buffer.from(OPERATE_DATA), feeVaultAddress.toBuffer()],
             this.programId
         )
     }
@@ -69,7 +79,10 @@ class ZebecStream implements IBaseStream {
     }
 
     async depositSolToZebecVault(data: DepositWithdrawFromZebecVault): Promise<ZebecResponse> {
+        console.log("Deposit Sol to Zebec Vault data: ", data);
+        
         const { sender, amount } = data;
+
         const senderAddress = new PublicKey(sender);
         const [zebecVaultAddress,] = await this._findZebecVaultAccount(senderAddress);
 
@@ -79,16 +92,20 @@ class ZebecStream implements IBaseStream {
             amount
         )
         // confirm transaction
+
+        const signature = "string";
+
         return {
             status: "success",
-            message: "hello world",
+            message: `deposited ${amount} SOL to zebec vault.`,
             data: {
-                transactionHash: "string"
+                transactionHash: signature
             }
         }
     }
 
     async withdrawSolFromZebecVault(data: DepositWithdrawFromZebecVault): Promise<ZebecResponse> {
+        console.log("Withdraw Sol from Zebec Vault data: ", data);
         const { sender, amount } = data;
 
         const senderAddress = new PublicKey(sender);
@@ -103,17 +120,19 @@ class ZebecStream implements IBaseStream {
         )
 
         // send and confirm
+        const signature = "string";
         
         return {
             status: "success",
-            message: "hello world",
+            message: `${amount} SOL withdrawn from zebec wallet`,
             data: {
-                transactionHash: "string"
+                transactionHash: signature
             }
         }
     }
 
     async depositTokenToZebecVault(data: DepositWithdrawFromZebecVault): Promise<ZebecResponse> {
+        console.log("Deposit Token to Zebec Vault data: ", data);
         
         const { sender, token_mint_address, amount } = data;
 
@@ -134,16 +153,19 @@ class ZebecStream implements IBaseStream {
         )
 
         // confirm the transaction
+        const signature = "string";
+
         return {
             status: "success",
             message: "hello world",
             data: {
-                transactionHash: "string"
+                transactionHash: signature
             }
         }
     }
 
     async withdrawTokenFromZebecVault(data: DepositWithdrawFromZebecVault): Promise<ZebecResponse> {
+        console.log("Withdraw Token From Zebec Vault data: ", data);
         const { sender, token_mint_address, amount } = data;
 
         const senderAddress = new PublicKey(sender);
@@ -279,7 +301,7 @@ export class ZebecNativeStream extends ZebecStream implements IZebecStream {
 
         const [zebecVaultAddress,] = await this._findZebecVaultAccount(senderAddress);
         const [feeVaultAddress,] = await this._findFeeVaultAddress(this.feeReceiverAddress);
-        const [feeVaultDataAddress,] = await this._findFeeVaultDataAccount(this.feeReceiverAddress)
+        const [feeVaultDataAddress,] = await this._findFeeVaultDataAccount(feeVaultAddress)
         const [withdrawescrowAccountAddress,] = await this._findSolWithdrawEscrowAccount(senderAddress);
 
         const ix = await this.instructionBuilder.createStreamCancelSolInstruction(
@@ -314,7 +336,7 @@ export class ZebecNativeStream extends ZebecStream implements IZebecStream {
 
         const [zebecVaultAddress,] = await this._findZebecVaultAccount(senderAddress);
         const [feeVaultAddress,] = await this._findFeeVaultAddress(this.feeReceiverAddress);
-        const [feeVaultDataAddress,] = await this._findFeeVaultDataAccount(this.feeReceiverAddress);
+        const [feeVaultDataAddress,] = await this._findFeeVaultDataAccount(feeVaultAddress);
         
         const ix = await this.instructionBuilder.createStreamWithdrawSolInstruction(
             senderAddress,
@@ -355,7 +377,7 @@ export class ZebecTokenStream extends ZebecStream implements IZebecStream {
         const receiverAddress = new PublicKey(receiver);
         const tokenMintAddress = new PublicKey(token_mint_address);
         const [feeVaultAddress,] = await this._findFeeVaultAddress(this.feeReceiverAddress);
-        const [feeVaultDataAddress,] = await this._findFeeVaultDataAccount(this.feeReceiverAddress);
+        const [feeVaultDataAddress,] = await this._findFeeVaultDataAccount(feeVaultAddress);
         const [withdrawEscrowAccountAddress,] = await this._findTokenWithdrawEscrowAccount(senderAddress, tokenMintAddress);
 
         const escrowAccountKeypair = Keypair.generate();
@@ -447,7 +469,7 @@ export class ZebecTokenStream extends ZebecStream implements IZebecStream {
 
         const [zebecVaultAddress,] = await this._findZebecVaultAccount(senderAddress);
         const [feeVaultAddress,] = await this._findFeeVaultAddress(this.feeReceiverAddress);
-        const [feeVaultDataAddress,] = await this._findFeeVaultDataAccount(this.feeReceiverAddress);
+        const [feeVaultDataAddress,] = await this._findFeeVaultDataAccount(feeVaultAddress);
         const [withdrawEscrowDataAccountAddress,] = await this._findTokenWithdrawEscrowAccount(senderAddress, tokenMintAddress);
 
         const [escrowAssociatedTokenAddress,] = await this._findAssociatedTokenAddress(escrowAccountAddress, tokenMintAddress);
@@ -492,7 +514,7 @@ export class ZebecTokenStream extends ZebecStream implements IZebecStream {
         const [zebecVaultAddress,] = await this._findZebecVaultAccount(senderAddress);
         const [withdrawEscrowAccountAddress, ] = await this._findTokenWithdrawEscrowAccount(senderAddress, tokenMintAddress)
         const [feeVaultAddress,] = await this._findFeeVaultAddress(this.feeReceiverAddress);
-        const [feeVaultDataAddress,] = await this._findFeeVaultDataAccount(this.feeReceiverAddress);
+        const [feeVaultDataAddress,] = await this._findFeeVaultDataAccount(feeVaultAddress);
         
         const [zebecVaultAssociatedAccountAddress,] = await this._findAssociatedTokenAddress(zebecVaultAddress, tokenMintAddress);
         const [receiverAssociatedTokenAddress,] = await this._findAssociatedTokenAddress(receiverAddress, tokenMintAddress);

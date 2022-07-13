@@ -2,7 +2,6 @@ import { BN, Program } from "@project-serum/anchor";
 import { ASSOCIATED_PROGRAM_ID, TOKEN_PROGRAM_ID } from "@project-serum/anchor/dist/cjs/utils/token";
 import { Keypair, PublicKey, SystemProgram, SYSVAR_RENT_PUBKEY, TransactionInstruction } from "@solana/web3.js";
 
-
 /**
  * ## Zebec Instruction Builder 
  *
@@ -227,6 +226,7 @@ export class ZebecInstructionBuilder {
         withdrawEscrowDataAccountAddress: PublicKey,
         feeReceiverAddress: PublicKey,
         feeVaultAddress: PublicKey,
+        feeVaultDataAddress: PublicKey,
         startTime: number,
         endTime: number,
         amount: number,
@@ -236,10 +236,11 @@ export class ZebecInstructionBuilder {
         
         const ctx: any = {
             accounts: {
-                dataAccount: escrowAccountKeypair,
+                dataAccount: escrowAccountKeypair.publicKey,
                 withdrawData: withdrawEscrowDataAccountAddress,
                 feeOwner: feeReceiverAddress,
-                createVaultData: feeVaultAddress,
+                createVaultData: feeVaultDataAddress,
+                feeVault: feeVaultAddress,
                 systemProgram: SystemProgram.programId,
                 sender: senderAddress,
                 receiver: receiverAddress
@@ -257,12 +258,12 @@ export class ZebecInstructionBuilder {
         const endTimeBN = new BN(endTime);
         const amountBN = new BN(amount);
 
-        const streamSolIx = await this._program.methods.nativeStream(
-            startTimeBN,
-            endTimeBN,
-            amountBN,
-            ctx
-        ).instruction();
+        const streamSolIx = this._program.instruction.nativeStream(startTimeBN, endTimeBN, amountBN, ctx);
+        // methods.nativeStream(
+        //     startTimeBN,
+        //     endTimeBN,
+        //     amountBN
+        // ).instruction();
 
         return streamSolIx
     }

@@ -8,6 +8,9 @@ import { ZEBEC_PROGRAM_IDL } from "../idl";
 import { IBaseStream, IZebecStream } from "../interfaces";
 import { DepositWithdrawFromZebecVault, InitStream, PauseResumeWithdrawCancel, StreamResponse, ZebecResponse } from "../models";
 import { TransactionSender } from "./transaction-sender";
+import { Buffer } from 'buffer'
+
+window.Buffer = window.Buffer || require("buffer").Buffer; 
 
 /**
  * ## Base Zebec Stream  
@@ -206,17 +209,15 @@ export class ZebecNativeStream extends ZebecStream implements IZebecStream {
     }
 
     async init(data: InitStream): Promise<ZebecResponse> {
-
+        // console.log("SDK, Data for INIT SOL Stream", data);
         const { sender, receiver, start_time, end_time, amount } = data;
 
         const senderAddress = new PublicKey(sender);
         const receiverAddress = new PublicKey(receiver);
         const [feeVaultAddress, ] = await this._findFeeVaultAddress(this.feeReceiverAddress);
         const [withdrawEscrowAccountAddress, ] = await this._findSolWithdrawEscrowAccount(senderAddress);
-
-        const escrowAccountKeypair = Keypair.generate()
-
-        let instructions = [];
+        const [feeVaultDataAddress,] = await this._findFeeVaultDataAccount(feeVaultAddress);
+        const escrowAccountKeypair = new Keypair();
 
         const ix = await this.instructionBuilder.createStreamInitSolInstruction(
             senderAddress,
@@ -225,21 +226,23 @@ export class ZebecNativeStream extends ZebecStream implements IZebecStream {
             withdrawEscrowAccountAddress,
             this.feeReceiverAddress,
             feeVaultAddress,
+            feeVaultDataAddress,
             start_time,
             end_time,
             amount
         )
 
-        instructions.push(ix)
+        const tx = await this.transactionSender.makeTxn({...ix}, escrowAccountKeypair);
+        const signature = await this.transactionSender.sendOne(tx);
 
-        const tx = await this.transactionSender.sendWithWallet({instructions})
+        console.log(signature, "Signature");
 
         // confirm the transaction and sign from wallet
         return {
             status: "success",
             message: "hello world",
             data: {
-                transactionHash: tx
+                transactionHash: signature
             }
         }
     }

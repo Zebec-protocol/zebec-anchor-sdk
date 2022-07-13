@@ -24,8 +24,7 @@
 		"clean": "rm -R ./packages/**/dist",
 		"clean:win": "rmdir /s packages/**/dist",
 		"publish": "npm publish --access public",
-		"install:stream": "cd ../../../ && npm i -S @zebec-io/stream",
-		"install": "run-p install:*"
+		"install:stream": "cd ../../../ && npm i -S @zebec-io/stream"
 	},
 	"publishConfig": {
 		"access": "public"

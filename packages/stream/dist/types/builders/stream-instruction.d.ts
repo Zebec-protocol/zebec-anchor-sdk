@@ -1,0 +1,23 @@
+import { Program } from "@project-serum/anchor";
+import { Keypair, PublicKey, TransactionInstruction } from "@solana/web3.js";
+export declare class ZebecInstructionBuilder {
+    readonly _program: Program;
+    constructor(program: Program);
+    createSetVaultInstruction(feeReceiverAddress: PublicKey, feeVaultAddress: PublicKey, feeVaultDataAddress: PublicKey, feePercentage: number): Promise<TransactionInstruction>;
+    createRetrieveSolFeesInstruction(feeReceiverAddress: PublicKey, feeVaultDataAddress: PublicKey, feeVaultAddress: PublicKey): Promise<TransactionInstruction>;
+    createRetrieveTokenFeesInstruction(feeReceiverAddress: PublicKey, feeVaultDataAddress: PublicKey, feeVaultAddress: PublicKey, tokenMintAddress: PublicKey, feeVaultTokenAccount: PublicKey, feeOwnerTokenAccount: PublicKey): Promise<TransactionInstruction>;
+    createDepositSolToZebecWalletInstruction(senderAddress: PublicKey, zebecVaultAddress: PublicKey, amount: number): Promise<TransactionInstruction>;
+    createDepositTokenToZebecWalletInstruction(zebecVaultAddress: PublicKey, senderAddress: PublicKey, tokenMintAddress: PublicKey, senderAssociatedTokenAddress: PublicKey, zebecVaultAssociatedAccountAddress: PublicKey, amount: number): Promise<TransactionInstruction>;
+    createWithdrawSolFromZebecVaultInstruction(senderAddress: PublicKey, zebecVaultAddress: PublicKey, withdrawEscrowDataAccountAddress: PublicKey, amount: number): Promise<TransactionInstruction>;
+    createWithdrawTokenFromZebecVaultInstruction(senderAddress: PublicKey, zebecVaultAddress: PublicKey, withdrawEscrowDataAccountAddress: PublicKey, tokenMintAddress: PublicKey, senderAssociatedTokenAddress: PublicKey, escrowAssociatedTokenAddress: PublicKey, amount: number): Promise<TransactionInstruction>;
+    createStreamInitSolInstruction(senderAddress: PublicKey, receiverAddress: PublicKey, escrowAccountKeypair: Keypair, withdrawEscrowDataAccountAddress: PublicKey, feeReceiverAddress: PublicKey, feeVaultAddress: PublicKey, feeVaultDataAddress: PublicKey, startTime: number, endTime: number, amount: number): Promise<TransactionInstruction>;
+    createStreamWithdrawSolInstruction(senderAddress: PublicKey, receiverAddress: PublicKey, zebecVaultAddress: PublicKey, escrowAccountAddress: PublicKey, feeReceiverAddress: PublicKey, feeVaultAddress: PublicKey, feeVaultDataAddress: PublicKey): Promise<TransactionInstruction>;
+    createStreamCancelSolInstruction(zebecVaultAddress: PublicKey, senderAddress: PublicKey, receiverAddress: PublicKey, escrowDataAccountAddress: PublicKey, withdrawEscrowDataAccountAddress: PublicKey, feeReceiverAddress: PublicKey, feeVaultDataAddress: PublicKey, feeVaultAddress: PublicKey): Promise<TransactionInstruction>;
+    createStreamPauseSolInstruction(senderAddress: PublicKey, receiverAddress: PublicKey, escrowAccountAddress: PublicKey): Promise<TransactionInstruction>;
+    createStreamResumeSolInstruction(senderAddress: PublicKey, receiverAddress: PublicKey, escrowAccountAddress: PublicKey): Promise<TransactionInstruction>;
+    createStreamInitTokenInstruction(escrowAccountKeypair: Keypair, withdrawEscrowDataAccountAddress: PublicKey, feeReceiverAddress: PublicKey, feeVaultAddress: PublicKey, feeVaultDataAddress: PublicKey, senderAddress: PublicKey, receiverAddress: PublicKey, tokenMintAddress: PublicKey, startTime: number, endTime: number, amount: number, withdrawLimit: number): Promise<TransactionInstruction>;
+    createStreamWithdrawTokenInstruction(receiverAddress: PublicKey, senderAddress: PublicKey, feeReceiverAddress: PublicKey, feeVaultDataAddress: PublicKey, feevaultAddress: PublicKey, zebecVaultAddress: PublicKey, escrowAccountAddress: PublicKey, withdrawEscrowDataAccountAddress: PublicKey, tokenMintAddress: PublicKey, zebecVaultAssociatedAccountAddress: PublicKey, receiverAssociatedTokenAddress: PublicKey, feeReceiverAssociatedTokenAddress: PublicKey): Promise<TransactionInstruction>;
+    createStreamCancelTokenInstruction(senderAddress: PublicKey, receiverAddress: PublicKey, feeReceiverAddress: PublicKey, feeVaultDataAddress: PublicKey, feeVaultAddress: PublicKey, zebecVaultAddress: PublicKey, escrowAccountAddress: PublicKey, withdrawEscrowDataAccountAddress: PublicKey, tokenMintAddress: PublicKey, escrowAssociatedTokenAddress: PublicKey, receiverAssociatedTokenAddress: PublicKey, feeReceiverAssociatedTokenAddress: PublicKey): Promise<TransactionInstruction>;
+    createStreamPauseTokenInstruction(senderAddress: PublicKey, receiverAddress: PublicKey, escrowAccountAddress: PublicKey): Promise<TransactionInstruction>;
+    createStreamResumeTokenInstruction(senderAddress: PublicKey, receiverAddress: PublicKey, escrowAccountAddress: PublicKey): Promise<TransactionInstruction>;
+}

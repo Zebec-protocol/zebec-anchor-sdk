@@ -76,16 +76,16 @@ export class TransactionSender {
         //    console.log(sig.publicKey.toBase58()) 
         // });
 
-        // let options = {
-        //     skipPreflight: false,
-        //     commitment: this.provider.connection.commitment
-        // };
+        let options = {
+            skipPreflight: false,
+            commitment: this.provider.connection.commitment
+        };
 
         // const startTime = now()
         // let done = false;
         // const retryTimeout = DEFAULT_TIMEOUT;
 
-        const txid = await connection.sendRawTransaction(rawTxn);
+        const txid = await connection.sendRawTransaction(rawTxn, options);
         console.log(txid, "ID before confirming")
         await connection.confirmTransaction({
                         signature: txid,

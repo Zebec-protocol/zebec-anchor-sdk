@@ -1,7 +1,8 @@
 import { AnchorProvider, Wallet } from "@project-serum/anchor";
-import { Connection, Keypair, PublicKey, Transaction, TransactionInstruction, TransactionSignature } from "@solana/web3.js";
+import { Connection, Keypair, Transaction, TransactionInstruction, TransactionSignature } from "@solana/web3.js";
 // import { InstructionsAndSigners } from "../models";
 import { ConfirmOptions } from "@solana/web3.js";
+
 
 // const DEFAULT_TIMEOUT = 30000;
 // const now = () => {
@@ -24,6 +25,7 @@ export class TransactionSender {
         const latestBlockhash = await this.provider.connection.getLatestBlockhash(
             this.provider.connection.commitment
         );
+        console.log("fee payer", this.provider.wallet.publicKey.toString())
         transaction.recentBlockhash = latestBlockhash.blockhash;
         transaction.lastValidBlockHeight = latestBlockhash.lastValidBlockHeight;
         transaction.feePayer = this.provider.wallet.publicKey
@@ -31,7 +33,6 @@ export class TransactionSender {
         if (escrow) {
             transaction.partialSign(escrow);
         }
-
         return transaction
     }
 
@@ -69,7 +70,7 @@ export class TransactionSender {
     async sendOne(txn: Transaction): Promise<string> {
         const connection = this.provider.connection;
         const signedTx = await this.provider.wallet.signTransaction(txn);
-        
+        console.log(signedTx, "signed transaction");
         const rawTxn = signedTx.serialize();
 
         // signedTx["signatures"].forEach(sig => {
@@ -77,8 +78,8 @@ export class TransactionSender {
         // });
 
         let options = {
-            skipPreflight: false,
-            commitment: this.provider.connection.commitment
+            skipPreflight: true,
+            commitment: "this.provider.connection.commitment"
         };
 
         // const startTime = now()
@@ -157,9 +158,9 @@ export const initAnchorProvider = (
 ) => {
     opts = opts ?? AnchorProvider.defaultOptions();
     const connection = new Connection(
-        rpcUrl ?? "https://api.devnet.solana.com",
+        rpcUrl ?? "http://localhost:8899",
         opts.preflightCommitment
     );
-    
-    return new AnchorProvider(connection, wallet, opts);
+    const provider = new AnchorProvider(connection, wallet, opts);
+    return provider
 }

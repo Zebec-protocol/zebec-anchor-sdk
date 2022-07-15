@@ -39,7 +39,7 @@ export class ZebecInstructionBuilder {
                 feeVault: feeVaultAddress,
                 createVaultData: feeVaultDataAddress,
                 owner: feeReceiverAddress,
-                SystemProgram: SystemProgram.programId,
+                systemProgram: SystemProgram.programId,
                 rent: SYSVAR_RENT_PUBKEY
             },
             signers: [feeReceiverAddress],
@@ -51,10 +51,10 @@ export class ZebecInstructionBuilder {
         // Eg. 0.25% is acceptable but 0.255% is not ?????? DISCUSS IT WITH THE TEAM, TODO
         const calculatedFeePercentage = new BN(feePercentage * 100);
 
-        const createSetVaultIx = await this._program.methods.createVault(
+        const createSetVaultIx = this._program.instruction.createFeeAccount(
             calculatedFeePercentage,
             ctx
-        ).instruction();
+        );
 
         return createSetVaultIx
     }
@@ -109,11 +109,11 @@ export class ZebecInstructionBuilder {
         return ix
     }
 
-    async createDepositSolToZebecWalletInstruction(
+    createDepositSolToZebecWalletInstruction(
         senderAddress: PublicKey,
         zebecVaultAddress: PublicKey,
         amount: number
-    ): Promise<TransactionInstruction> {
+    ): TransactionInstruction {
 
         const amountBN = new BN(amount);
 
@@ -127,7 +127,10 @@ export class ZebecInstructionBuilder {
             instructions: []
         };
 
-        const depositSolIx = await this._program.methods.depositSol(amountBN, ctx).instruction();
+        // synchronous `instruction` method, @depricated
+        const depositSolIx = this._program.instruction.depositSol(amountBN, ctx);
+
+        // asynchronous `methods` (alternative)
 
         return depositSolIx
     }

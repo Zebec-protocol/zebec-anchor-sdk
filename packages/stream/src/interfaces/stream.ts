@@ -1,6 +1,6 @@
 import { Program } from '@project-serum/anchor';
 import { PublicKey } from '@solana/web3.js'
-import { ZebecInstructionBuilder } from '../builders';
+import { ZebecInstructionBuilder } from '../instructions/stream';
 import { StreamResponse, ZebecResponse } from '../models'
 import { TransactionSender } from '../services/transaction-sender';
 

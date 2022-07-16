@@ -30,19 +30,14 @@ class ZebecStream implements IBaseStream {
     readonly feeReceiverAddress: PublicKey;
     readonly transactionSender: TransactionSender;
     readonly logger: boolean;
+    readonly console: Console;
 
-    constructor (anchorProvider: AnchorProvider, feeReceiver: string, logger: boolean = true) {
+    constructor (anchorProvider: AnchorProvider, feeReceiver: string, logger: boolean = false) {
         this.program = new Program(ZEBEC_PROGRAM_IDL as Idl, this.programId, anchorProvider);
         this.instructionBuilder = new ZebecInstructionBuilder(this.program);
         this.transactionSender = new TransactionSender(anchorProvider);
         this.feeReceiverAddress = new PublicKey(feeReceiver);
-        this.logger = logger
-    }
-
-    _consoleLog(message: string, error: boolean = false): any {
-        if (this.logger) {
-            console.log(message);
-        } 
+        this.console = new Console(logger);
     }
 
     async _findZebecVaultAccount(walletAddress: PublicKey): Promise<[PublicKey, number]> {
@@ -51,7 +46,7 @@ class ZebecStream implements IBaseStream {
             this.programId
         );
 
-        this._consoleLog(`zebec wallet address: ${zebecVaultAddress.toString()}`);
+        this.console.info(`zebec wallet address: ${zebecVaultAddress.toString()}`);
 
         return [zebecVaultAddress, nonce]
         
@@ -63,7 +58,7 @@ class ZebecStream implements IBaseStream {
             this.programId
         );
 
-        this._consoleLog(`fee vault address: ${feeVaultAddress.toString()}`);
+        this.console.info(`fee vault address: ${feeVaultAddress.toString()}`);
 
         return [feeVaultAddress, nonce]
     }
@@ -75,7 +70,7 @@ class ZebecStream implements IBaseStream {
             this.programId
         );
 
-        this._consoleLog(`fee vault data address: ${feeVaultDataAddress}`);
+        this.console.info(`fee vault data address: ${feeVaultDataAddress}`);
 
         return [feeVaultDataAddress, nonce]
     }
@@ -86,7 +81,7 @@ class ZebecStream implements IBaseStream {
             this.programId
         );
 
-        this._consoleLog(`withdraw-sol escrow account address: ${withdrawEscrowAccountAddress.toString()}`);
+        this.console.info(`withdraw-sol escrow account address: ${withdrawEscrowAccountAddress.toString()}`);
 
         return [withdrawEscrowAccountAddress, nonce]
     }
@@ -97,7 +92,7 @@ class ZebecStream implements IBaseStream {
             this.programId
         );
 
-        this._consoleLog(`withdraw-token escrow account address: ${withdrawTokenEscrowAddress}`);
+        this.console.info(`withdraw-token escrow account address: ${withdrawTokenEscrowAddress}`);
 
         return [withdrawTokenEscrowAddress, nonce]
     }
@@ -108,7 +103,7 @@ class ZebecStream implements IBaseStream {
             new PublicKey(SPL_ASSOCIATED_TOKEN_ACCOUNT_PROGRAM_ID)
         );
 
-        this._consoleLog(`associated token address: ${associatedTokenAddress}`);
+        this.console.info(`associated token address: ${associatedTokenAddress}`);
 
         return [associatedTokenAddress, nonce]
     }
@@ -120,35 +115,43 @@ class ZebecStream implements IBaseStream {
         const [feeVaultAddress,] = await this._findFeeVaultAddress(this.feeReceiverAddress);
         const [feeVaultDataAddress,] = await this._findFeeVaultDataAccount(this.feeReceiverAddress);
 
-        console.log(`creating fee vault for with ${fee_percentage}%`);
+        this.console.info(`creating fee vault for with ${fee_percentage}%`);
 
-        const ix = await this.instructionBuilder.createSetVaultInstruction(
+        const ix = this.instructionBuilder.createSetVaultInstruction(
             this.feeReceiverAddress,
             feeVaultAddress,
             feeVaultDataAddress,
             fee_percentage
         );
 
-        console.log(ix);
+        const tx = await this.transactionSender.createTxnObj(ix);
 
-        const tx = await this.transactionSender.makeTxn(ix);
-        const signature = await this.transactionSender.sendOne(tx);
-
-        console.log(signature)
-        return {
-            "status": "success",
-            "message": "created fee vault",
-            "data": {
-                transactionHash: signature
+        try {
+            const signature = await this.transactionSender.sendOne(tx);
+            this.console.info(`transaction success, TXID: ${signature}`);
+            return {
+                "status": "success",
+                "message": "created fee vault",
+                "data": {
+                    transactionHash: signature
+                }
+            }
+        } catch (err) {
+            this.console.error(err);
+            return {
+                status: "error",
+                message: "failed to create fee vault",
+                data: null
             }
         }
+
     }
 
-    public async depositSolToZebecVault(data: DepositWithdrawFromZebecVault): Promise<ZebecResponse> {
+    async depositSolToZebecVault(data: DepositWithdrawFromZebecVault): Promise<ZebecResponse> {
         
         const { sender, amount } = data;
 
-        console.log(`depositing, ${amount} SOL to zebec vault!`);
+        this.console.info(`depositing, ${amount} SOL to zebec vault!`);
 
         const senderAddress = new PublicKey(sender);
         const [zebecVaultAddress,] = await this._findZebecVaultAccount(senderAddress);
@@ -159,11 +162,11 @@ class ZebecStream implements IBaseStream {
             amount
         )
 
-        const tx = await this.transactionSender.makeTxn({...ix});
+        const tx = await this.transactionSender.createTxnObj({...ix});
 
         try {
             const signature = await this.transactionSender.sendOne(tx);
-            this._consoleLog(`transaction success, TXID: ${signature}`);
+            this.console.info(`transaction success, TXID: ${signature}`);
             
             return {
                 status: "success",
@@ -173,7 +176,7 @@ class ZebecStream implements IBaseStream {
                 }
             }
         } catch (err) {
-            console.error(err);
+            this.console.error(err);
             // throw error/exception here
             return {
                 status: "error",
@@ -188,24 +191,24 @@ class ZebecStream implements IBaseStream {
     async withdrawSolFromZebecVault(data: DepositWithdrawFromZebecVault): Promise<ZebecResponse> {
         const { sender, amount } = data;
 
-        console.log(`withdrawing ${amount} SOL fromm zebec vault!`);
+        this.console.info(`withdrawing ${amount} SOL fromm zebec vault!`);
 
         const senderAddress = new PublicKey(sender);
         const [zebecVaultAddress, ] = await this._findZebecVaultAccount(senderAddress);
         const [withdrawescrowAccountAddress,] = await this._findSolWithdrawEscrowAccount(senderAddress);
 
-        const ix = await this.instructionBuilder.createWithdrawSolFromZebecVaultInstruction(
+        const ix = this.instructionBuilder.createWithdrawSolFromZebecVaultInstruction(
             senderAddress,
             zebecVaultAddress,
             withdrawescrowAccountAddress,
             amount
         )
 
-        const tx = await this.transactionSender.makeTxn({...ix});
+        const tx = await this.transactionSender.createTxnObj({...ix});
 
         try {
             const signature = await this.transactionSender.sendOne(tx);
-            this._consoleLog(`transaction success, TXID: ${signature}`);
+            this.console.info(`transaction success, TXID: ${signature}`);
             
             return {
                 status: "success",
@@ -215,7 +218,7 @@ class ZebecStream implements IBaseStream {
                 }
             }
         } catch (err) {
-            console.error(err);
+            this.console.error(err);
             // throw error/exception here
             return {
                 status: "error",
@@ -226,9 +229,10 @@ class ZebecStream implements IBaseStream {
     }
 
     async depositTokenToZebecVault(data: DepositWithdrawFromZebecVault): Promise<ZebecResponse> {
-        console.log("Deposit Token to Zebec Vault data: ", data);
         
         const { sender, token_mint_address, amount } = data;
+
+        this.console.info(`depositing ${amount} to zebec wallet`);
 
         const senderAddress = new PublicKey(sender);
         const tokenMintAddress = new PublicKey(token_mint_address);
@@ -237,7 +241,7 @@ class ZebecStream implements IBaseStream {
         const [senderAssociatedTokenAddress,] = await this._findAssociatedTokenAddress(senderAddress, tokenMintAddress);
         const [zebecVaultAssocatedAccountAddress,] = await this._findAssociatedTokenAddress(zebecVaultAddress, tokenMintAddress);
 
-        const ix = await this.instructionBuilder.createDepositTokenToZebecWalletInstruction(
+        const ix = this.instructionBuilder.createDepositTokenToZebecWalletInstruction(
             zebecVaultAddress,
             senderAddress,
             tokenMintAddress,
@@ -246,21 +250,33 @@ class ZebecStream implements IBaseStream {
             amount
         )
 
-        // confirm the transaction
-        const signature = "string";
+        const tx = await this.transactionSender.createTxnObj({...ix});
 
-        return {
-            status: "success",
-            message: "hello world",
-            data: {
-                transactionHash: signature
+        try {
+            const signature = await this.transactionSender.sendOne(tx);
+            this.console.info(`transaction success, TXID: ${signature}`);
+            
+            return {
+                status: "success",
+                message: `${amount} is deposited to zebec vault`,
+                data: {
+                    transactionHash: signature
+                }
+            }
+        } catch (err) {
+            this.console.error(err);
+            // throw error/exception here
+            return {
+                status: "error",
+                message: `failed to deposit ${amount} to zebec vault`,
+                data: null
             }
         }
     }
 
     async withdrawTokenFromZebecVault(data: DepositWithdrawFromZebecVault): Promise<ZebecResponse> {
-        console.log("Withdraw Token From Zebec Vault data: ", data);
         const { sender, token_mint_address, amount } = data;
+        this.console.info(`withrawing ${amount} from zebec vault`)
 
         const senderAddress = new PublicKey(sender);
         const tokenMintAddress = new PublicKey(token_mint_address);
@@ -269,7 +285,7 @@ class ZebecStream implements IBaseStream {
         const [senderAssociatedTokenAddress,] = await this._findAssociatedTokenAddress(senderAddress, tokenMintAddress);
         const [zebecVaultAssocatedAccountAddress,] = await this._findAssociatedTokenAddress(zebecVaultAddress, tokenMintAddress);
 
-        const ix = await this.instructionBuilder.createWithdrawTokenFromZebecVaultInstruction(
+        const ix = this.instructionBuilder.createWithdrawTokenFromZebecVaultInstruction(
             senderAddress,
             zebecVaultAddress,
             withdrawescrowAccountAddress,
@@ -279,11 +295,26 @@ class ZebecStream implements IBaseStream {
             amount
         )
 
-        return {
-            status: "success",
-            message: "hello world",
-            data: {
-                transactionHash: "string"
+        const tx = await this.transactionSender.createTxnObj({...ix});
+
+        try {
+            const signature = await this.transactionSender.sendOne(tx);
+            this.console.info(`transaction success, TXID: ${signature}`);
+            
+            return {
+                status: "success",
+                message: `${amount} is withdrawn from zebec vault`,
+                data: {
+                    transactionHash: signature
+                }
+            }
+        } catch (err) {
+            this.console.error(err);
+            // throw error/exception here
+            return {
+                status: "error",
+                message: `failed to withdraw ${amount} from zebec vault`,
+                data: null
             }
         }
     }
@@ -296,21 +327,22 @@ export class ZebecNativeStream extends ZebecStream implements IZebecStream {
         feeReceiver: string
     ) {
         super(anchorProvider, feeReceiver);
-        console.log("Zebec Native Stream object is intialized!!!");
+        this.console.info("zebec native stream object initialized!");
     }
 
     async init(data: InitStream): Promise<ZebecResponse> {
-        // console.log("SDK, Data for INIT SOL Stream", data);
+
         const { sender, receiver, start_time, end_time, amount } = data;
+        this.console.log(`sending ${amount} SOL to ${receiver}`);
 
         const senderAddress = new PublicKey(sender);
         const receiverAddress = new PublicKey(receiver);
         const [feeVaultAddress, ] = await this._findFeeVaultAddress(this.feeReceiverAddress);
         const [withdrawEscrowAccountAddress, ] = await this._findSolWithdrawEscrowAccount(senderAddress);
         const [feeVaultDataAddress,] = await this._findFeeVaultDataAccount(this.feeReceiverAddress);
-        const escrowAccountKeypair = new Keypair();
+        const escrowAccountKeypair = Keypair.generate();
 
-        const ix = await this.instructionBuilder.createStreamInitSolInstruction(
+        const ix = this.instructionBuilder.createStreamInitSolInstruction(
             senderAddress,
             receiverAddress,
             escrowAccountKeypair,
@@ -323,17 +355,26 @@ export class ZebecNativeStream extends ZebecStream implements IZebecStream {
             amount
         )
 
-        const tx = await this.transactionSender.makeTxn({...ix}, escrowAccountKeypair);
-        const signature = await this.transactionSender.sendOne(tx);
+        const tx = await this.transactionSender.createTxnObj({...ix});
 
-        console.log(signature, "Signature");
-
-        // confirm the transaction and sign from wallet
-        return {
-            status: "success",
-            message: "hello world",
-            data: {
-                transactionHash: signature
+        try {
+            const signature = await this.transactionSender.sendOne(tx);
+            this.console.info(`transaction success, TXID: ${signature}`);
+            
+            return {
+                status: "success",
+                message: `stream started. ${amount} SOL`,
+                data: {
+                    transactionHash: signature
+                }
+            }
+        } catch (err) {
+            this.console.error(err);
+            // throw error/exception here
+            return {
+                status: "error",
+                message: `failed to start the stream`,
+                data: null
             }
         }
     }
@@ -342,21 +383,38 @@ export class ZebecNativeStream extends ZebecStream implements IZebecStream {
         
         const { sender, receiver, escrow } = data;
 
+        this.console.info(`stream pause data: `, data);
+
         const senderAddress = new PublicKey(sender);
         const receiverAddress = new PublicKey(receiver);
         const escrowAccountAddress = new PublicKey(escrow);
 
-        const ix = await this.instructionBuilder.createStreamPauseSolInstruction(
+        const ix = this.instructionBuilder.createStreamPauseSolInstruction(
             senderAddress,
             receiverAddress,
             escrowAccountAddress
         )
-        // confirm
-        return {
-            status: "success",
-            message: "hello world",
-            data: {
-                transactionHash: "string"
+
+        const tx = await this.transactionSender.createTxnObj({...ix});
+        
+        try {
+            const signature = await this.transactionSender.sendOne(tx);
+            this.console.info(`transaction success, TXID: ${signature}`);
+            
+            return {
+                status: "success",
+                message: `stream paused`,
+                data: {
+                    transactionHash: signature
+                }
+            }
+        } catch (err) {
+            this.console.error(err);
+            // throw error/exception here
+            return {
+                status: "error",
+                message: `failed to pause the stream`,
+                data: null
             }
         }
     }
@@ -364,23 +422,38 @@ export class ZebecNativeStream extends ZebecStream implements IZebecStream {
     async resume(data: PauseResumeWithdrawCancel): Promise<ZebecResponse> {
         const { sender, receiver, escrow } = data;
 
+        this.console.info(`resume stream data: `, data);
+
         const senderAddress = new PublicKey(sender);
         const receiverAddress = new PublicKey(receiver);
         const escrowAccountAddress = new PublicKey(escrow);
 
-        const ix = await this.instructionBuilder.createStreamResumeSolInstruction(
+        const ix = this.instructionBuilder.createStreamResumeSolInstruction(
             senderAddress,
             receiverAddress,
             escrowAccountAddress
-        )
+        );
 
-        // confirm
-
-        return {
-            status: "success",
-            message: "hello world",
-            data: {
-                transactionHash: "string"
+        const tx = await this.transactionSender.createTxnObj({...ix});
+        
+        try {
+            const signature = await this.transactionSender.sendOne(tx);
+            this.console.info(`transaction success, TXID: ${signature}`);
+            
+            return {
+                status: "success",
+                message: `stream resumed`,
+                data: {
+                    transactionHash: signature
+                }
+            }
+        } catch (err) {
+            this.console.error(err);
+            // throw error/exception here
+            return {
+                status: "error",
+                message: `failed to resume the stream`,
+                data: null
             }
         }
     }
@@ -388,6 +461,8 @@ export class ZebecNativeStream extends ZebecStream implements IZebecStream {
     async cancel(data: PauseResumeWithdrawCancel): Promise<ZebecResponse> {
         
         const { sender, receiver, escrow } = data;
+
+        this.console.info(`cancel stream data: `, data);
 
         const senderAddress = new PublicKey(sender);
         const receiverAddress = new PublicKey(receiver);
@@ -398,7 +473,7 @@ export class ZebecNativeStream extends ZebecStream implements IZebecStream {
         const [feeVaultDataAddress,] = await this._findFeeVaultDataAccount(this.feeReceiverAddress)
         const [withdrawescrowAccountAddress,] = await this._findSolWithdrawEscrowAccount(senderAddress);
 
-        const ix = await this.instructionBuilder.createStreamCancelSolInstruction(
+        const ix = this.instructionBuilder.createStreamCancelSolInstruction(
             zebecVaultAddress,
             senderAddress,
             receiverAddress,
@@ -409,13 +484,26 @@ export class ZebecNativeStream extends ZebecStream implements IZebecStream {
             feeVaultAddress
         )
 
-        // confirm and sign
+        const tx = await this.transactionSender.createTxnObj({...ix});
         
-        return {
-            status: "success",
-            message: "hello world",
-            data: {
-                transactionHash: "string"
+        try {
+            const signature = await this.transactionSender.sendOne(tx);
+            this.console.info(`transaction success, TXID: ${signature}`);
+            
+            return {
+                status: "success",
+                message: `stream canceled`,
+                data: {
+                    transactionHash: signature
+                }
+            }
+        } catch (err) {
+            this.console.error(err);
+            // throw error/exception here
+            return {
+                status: "error",
+                message: `failed to cancel the stream`,
+                data: null
             }
         }
     }
@@ -423,6 +511,8 @@ export class ZebecNativeStream extends ZebecStream implements IZebecStream {
     async withdraw(data: PauseResumeWithdrawCancel): Promise<ZebecResponse> {
 
         const { sender, receiver, escrow } = data;
+
+        this.console.info(`withdraw from stream data: `, data);
 
         const senderAddress = new PublicKey(sender);
         const receiverAddress = new PublicKey(receiver);
@@ -432,7 +522,7 @@ export class ZebecNativeStream extends ZebecStream implements IZebecStream {
         const [feeVaultAddress,] = await this._findFeeVaultAddress(this.feeReceiverAddress);
         const [feeVaultDataAddress,] = await this._findFeeVaultDataAccount(this.feeReceiverAddress);
         
-        const ix = await this.instructionBuilder.createStreamWithdrawSolInstruction(
+        const ix = this.instructionBuilder.createStreamWithdrawSolInstruction(
             senderAddress,
             receiverAddress,
             zebecVaultAddress,
@@ -442,13 +532,26 @@ export class ZebecNativeStream extends ZebecStream implements IZebecStream {
             feeVaultDataAddress
         )
 
-        // sign and confirm
-
-        return {
-            status: "success",
-            message: "hello world",
-            data: {
-                transactionHash: "string"
+        const tx = await this.transactionSender.createTxnObj({...ix});
+        
+        try {
+            const signature = await this.transactionSender.sendOne(tx);
+            this.console.info(`transaction success, TXID: ${signature}`);
+            
+            return {
+                status: "success",
+                message: `withdraw completed`,
+                data: {
+                    transactionHash: signature
+                }
+            }
+        } catch (err) {
+            this.console.error(err);
+            // throw error/exception here
+            return {
+                status: "error",
+                message: `failed to withdraw the streamed amount`,
+                data: null
             }
         }
     }

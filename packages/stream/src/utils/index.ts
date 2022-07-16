@@ -19,4 +19,12 @@ export const getTxTime = async(provider:AnchorProvider, tx: TransactionSignature
     );
     let { blockTime } = startStreamTxTime;
     return blockTime
+};
+
+export const now = () => {
+    return new Date().getTime();
+};
+
+export async function sleep(ms: any) {
+    return new Promise((resolve) => setTimeout(resolve, ms));
 }

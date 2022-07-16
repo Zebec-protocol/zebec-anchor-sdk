@@ -4,14 +4,7 @@ import { Connection, Keypair, Transaction, TransactionInstruction, TransactionSi
 import { ConfirmOptions } from "@solana/web3.js";
 
 
-// const DEFAULT_TIMEOUT = 30000;
-// const now = () => {
-//     return new Date().getTime();
-// };
-
-// export async function sleep(ms: any) {
-//     return new Promise((resolve) => setTimeout(resolve, ms));
-//   }
+const DEFAULT_TIMEOUT = 30000;
 
 export class TransactionSender {
     provider: AnchorProvider;
@@ -20,19 +13,20 @@ export class TransactionSender {
         this.provider = provider;
     }
 
-    async makeTxn(instruction: TransactionInstruction, escrow: Keypair = null): Promise<Transaction> {
+    async createTxnObj(instruction: TransactionInstruction, escrow: Keypair = null): Promise<Transaction> {
         let transaction = new Transaction().add(instruction);
         const latestBlockhash = await this.provider.connection.getLatestBlockhash(
             this.provider.connection.commitment
         );
-        console.log("fee payer", this.provider.wallet.publicKey.toString())
+        console.log("fee payer", this.provider.wallet.publicKey.toString());
         transaction.recentBlockhash = latestBlockhash.blockhash;
         transaction.lastValidBlockHeight = latestBlockhash.lastValidBlockHeight;
-        transaction.feePayer = this.provider.wallet.publicKey
+        transaction.feePayer = this.provider.wallet.publicKey;
 
         if (escrow) {
             transaction.partialSign(escrow);
-        }
+        };
+
         return transaction
     }
 
@@ -40,6 +34,7 @@ export class TransactionSender {
         // wait for all confirmation before geting transaction
         const commitment = "finalized"; // https://stackoverflow.com/a/68751515/1064858
         const latestBlockhash = await connection.getLatestBlockhash(commitment);
+        
         await connection.confirmTransaction(
           { signature: txid, ...latestBlockhash },
           commitment
@@ -47,10 +42,11 @@ export class TransactionSender {
     
         const tx = await connection.getParsedTransaction(txid, commitment);
         const errors: string[] = [];
+        
         if (tx?.meta && tx.meta.logMessages) {
-          tx.meta.logMessages.forEach((log: any) => {
-            const regex = /Error: (.*)/gm;
-            let m;
+          	tx.meta.logMessages.forEach((log: any) => {
+            	const regex = /Error: (.*)/gm;
+            	let m: any;
             while ((m = regex.exec(log)) !== null) {
               // This is necessary to avoid infinite loops with zero-width matches
               if (m.index === regex.lastIndex) {

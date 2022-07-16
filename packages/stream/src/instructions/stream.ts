@@ -27,12 +27,12 @@ export class ZebecInstructionBuilder {
         this._program = program;
     }
 
-    async createSetVaultInstruction(
+    createSetVaultInstruction(
         feeReceiverAddress: PublicKey,
         feeVaultAddress: PublicKey,
         feeVaultDataAddress: PublicKey,
         feePercentage: number
-    ): Promise<TransactionInstruction> {
+    ): TransactionInstruction {
 
         let ctx: any = {
             accounts: {
@@ -59,12 +59,12 @@ export class ZebecInstructionBuilder {
         return createSetVaultIx
     }
 
-    async createRetrieveSolFeesInstruction(
+    createRetrieveSolFeesInstruction(
         feeReceiverAddress: PublicKey,
         feeVaultDataAddress: PublicKey,
         feeVaultAddress: PublicKey
-    ): Promise<TransactionInstruction> {
-        const ctx = {
+    ): TransactionInstruction {
+        const ctx: any = {
             accounts: {
                 feeOwner: feeReceiverAddress,
                 createVaultData: feeVaultDataAddress,
@@ -74,20 +74,20 @@ export class ZebecInstructionBuilder {
             }
         };
 
-        const ix = await this._program.methods.withdrawFeesSol(ctx).instruction()
+        const ix = this._program.instruction.withdrawFeesSol(ctx);
 
         return ix
     }
 
-    async createRetrieveTokenFeesInstruction(
+    createRetrieveTokenFeesInstruction(
         feeReceiverAddress: PublicKey,
         feeVaultDataAddress: PublicKey,
         feeVaultAddress: PublicKey,
         tokenMintAddress: PublicKey,
         feeVaultTokenAccount: PublicKey,
         feeOwnerTokenAccount: PublicKey
-    ): Promise<TransactionInstruction> {
-        const ctx = {
+    ): TransactionInstruction {
+        const ctx: any = {
             accounts: {
                 feeOwner: feeReceiverAddress,
                 createVaultData: feeVaultDataAddress,
@@ -104,7 +104,7 @@ export class ZebecInstructionBuilder {
             instructions: []
         }
 
-        const ix = await this._program.methods.withdrawFeesToken(ctx).instruction()
+        const ix = this._program.instruction.withdrawFeesToken(ctx);
 
         return ix
     }
@@ -135,14 +135,14 @@ export class ZebecInstructionBuilder {
         return depositSolIx
     }
 
-    async createDepositTokenToZebecWalletInstruction(
+    createDepositTokenToZebecWalletInstruction(
         zebecVaultAddress: PublicKey,
         senderAddress: PublicKey,
         tokenMintAddress: PublicKey,
         senderAssociatedTokenAddress: PublicKey,
         zebecVaultAssociatedAccountAddress: PublicKey,
         amount: number
-    ): Promise<TransactionInstruction> {
+    ): TransactionInstruction {
         const amountBN = new BN(amount);
 
         const ctx: any = {
@@ -159,17 +159,17 @@ export class ZebecInstructionBuilder {
             }
         }
 
-        const ix = await this._program.methods.depositToken(amount, ctx).instruction();
+        const ix = this._program.instruction.depositToken(amount, ctx);
 
         return ix
     }
 
-    async createWithdrawSolFromZebecVaultInstruction(
+    createWithdrawSolFromZebecVaultInstruction(
         senderAddress: PublicKey,
         zebecVaultAddress: PublicKey,
         withdrawEscrowDataAccountAddress: PublicKey,
         amount: number
-    ): Promise<TransactionInstruction>{
+    ): TransactionInstruction {
         const amountBN = new BN(amount);
 
         const ctx: any = {
@@ -182,12 +182,12 @@ export class ZebecInstructionBuilder {
             signers: [senderAddress]
         };
 
-        const ix = await this._program.methods.initializerNativeWithdrawal(amountBN, ctx).instruction();
+        const ix = this._program.instruction.initializerNativeWithdrawal(amountBN, ctx);
 
         return ix
     }
 
-    async createWithdrawTokenFromZebecVaultInstruction(
+    createWithdrawTokenFromZebecVaultInstruction(
         senderAddress: PublicKey,
         zebecVaultAddress: PublicKey,
         withdrawEscrowDataAccountAddress: PublicKey,
@@ -195,10 +195,10 @@ export class ZebecInstructionBuilder {
         senderAssociatedTokenAddress: PublicKey,
         escrowAssociatedTokenAddress: PublicKey,
         amount: number
-    ): Promise<TransactionInstruction>{
+    ): TransactionInstruction {
         const amountBN = new BN(amount);
 
-        const ctx = {
+        const ctx: any = {
             accounts: {
                 zebecVault: zebecVaultAddress,
                 wtihdrawData: withdrawEscrowDataAccountAddress,
@@ -215,14 +215,14 @@ export class ZebecInstructionBuilder {
             instructions: []
         };
 
-        const ix = await this._program.methods.tokenWithdrawal(amount, ctx).instruction();
+        const ix = this._program.instruction.tokenWithdrawal(amount, ctx);
 
         return ix
 
     }
 
     // Native Stream
-    async createStreamInitSolInstruction(
+    createStreamInitSolInstruction(
         senderAddress: PublicKey,
         receiverAddress: PublicKey,
         escrowAccountKeypair: Keypair,
@@ -233,9 +233,9 @@ export class ZebecInstructionBuilder {
         startTime: number,
         endTime: number,
         amount: number,
-    ): Promise<TransactionInstruction> {
+    ): TransactionInstruction {
 
-        const dataSize = 8+8+8+8+8+32+32+8+8+32+200; // WHY???? HOW???
+        const dataSize = 8+8+8+8+8+32+32+8+8+32+200+400+200; // WHY???? HOW???
         
         const ctx: any = {
             accounts: {
@@ -271,7 +271,7 @@ export class ZebecInstructionBuilder {
         return streamSolIx
     }
 
-    async createStreamWithdrawSolInstruction(
+    createStreamWithdrawSolInstruction(
         senderAddress: PublicKey,
         receiverAddress: PublicKey,
         zebecVaultAddress: PublicKey,
@@ -279,7 +279,7 @@ export class ZebecInstructionBuilder {
         feeReceiverAddress: PublicKey,
         feeVaultAddress: PublicKey,
         feeVaultDataAddress: PublicKey,
-    ): Promise<TransactionInstruction> {
+    ): TransactionInstruction {
 
         const ctx: any = {
             accounts: {
@@ -295,12 +295,12 @@ export class ZebecInstructionBuilder {
             signers: [receiverAddress]
         };
 
-        const withdrawSolIx = await this._program.methods.withdrawStream(ctx).instruction();
+        const withdrawSolIx = this._program.instruction.withdrawStream(ctx);
 
         return withdrawSolIx
     }
 
-    async createStreamCancelSolInstruction(
+    createStreamCancelSolInstruction(
         zebecVaultAddress: PublicKey,
         senderAddress: PublicKey,
         receiverAddress: PublicKey,
@@ -309,8 +309,8 @@ export class ZebecInstructionBuilder {
         feeReceiverAddress: PublicKey,
         feeVaultDataAddress: PublicKey,
         feeVaultAddress: PublicKey
-    ): Promise<TransactionInstruction> {
-        const ctx = {
+    ): TransactionInstruction {
+        const ctx: any = {
             accounts: {
                 zebecVault: zebecVaultAddress,
                 sender: senderAddress,
@@ -322,20 +322,20 @@ export class ZebecInstructionBuilder {
                 feeVault: feeVaultAddress,
                 systemProgram: SystemProgram.programId
             },
-            singers: [senderAddress]
+            signers: [senderAddress]
         }
 
-        const ix = await this._program.methods.cancelStream(ctx).instruction();
+        const ix = this._program.instruction.cancelStream(ctx);
 
         return ix
     }
 
-    async createStreamPauseSolInstruction(
+    createStreamPauseSolInstruction(
         senderAddress: PublicKey,
         receiverAddress: PublicKey,
         escrowAccountAddress: PublicKey
-    ): Promise<TransactionInstruction> {
-        const ctx = {
+    ): TransactionInstruction {
+        const ctx: any = {
             accounts: {
                 sender: senderAddress,
                 receiver: receiverAddress,
@@ -345,33 +345,32 @@ export class ZebecInstructionBuilder {
             instructions: []
         };
 
-        const ix = await this._program.methods.pauseStream(ctx).instruction();
+        const ix = this._program.instruction.pauseStream(ctx);
 
         return ix
     }
 
-    async createStreamResumeSolInstruction(
+    createStreamResumeSolInstruction(
         senderAddress: PublicKey,
         receiverAddress: PublicKey,
         escrowAccountAddress: PublicKey
-    ): Promise<TransactionInstruction> {
-        const ctx = {
+    ): TransactionInstruction {
+        const ctx: any = {
             accounts: {
                 sender: senderAddress,
                 receiver: receiverAddress,
                 dataAccount: escrowAccountAddress
             },
-            signers: [senderAddress],
-            instructions: []
+            signers: [senderAddress]
         };
 
-        const ix = await this._program.methods.resumeStream(ctx).instruction();
+        const ix = this._program.instruction.resumeStream(ctx);
 
         return ix
     }
 
     // Token Stream
-    async createStreamInitTokenInstruction(
+    createStreamInitTokenInstruction(
         escrowAccountKeypair: Keypair,
         withdrawEscrowDataAccountAddress: PublicKey,
         feeReceiverAddress: PublicKey,
@@ -384,7 +383,7 @@ export class ZebecInstructionBuilder {
         endTime: number,
         amount: number,
         withdrawLimit: number
-    ): Promise<TransactionInstruction> {
+    ): TransactionInstruction {
 
         const ctx: any = {
             accounts: {
@@ -409,20 +408,20 @@ export class ZebecInstructionBuilder {
         const amountBN = new BN(amount);
         const withdrawLimitBN = new BN(withdrawLimit);
 
-        const tokenStreamIx = this._program.methods.tokenStream(
+        const tokenStreamIx = this._program.instruction.tokenStream(
             startTimeBN,
             endTimeBN,
             amountBN,
             withdrawLimitBN,
             ctx
-        ).instruction();
+        );
 
         // const ix = this._program.methods.tokenStream(startTimeBN, endTimeBN, amountBN, withdrawLimitBN, ctx).instruction()
 
         return tokenStreamIx
     }
 
-    async createStreamWithdrawTokenInstruction(
+    createStreamWithdrawTokenInstruction(
         receiverAddress: PublicKey,
         senderAddress: PublicKey,
         feeReceiverAddress: PublicKey,
@@ -435,7 +434,7 @@ export class ZebecInstructionBuilder {
         zebecVaultAssociatedAccountAddress: PublicKey,
         receiverAssociatedTokenAddress: PublicKey,
         feeReceiverAssociatedTokenAddress: PublicKey
-    ): Promise<TransactionInstruction> {
+    ): TransactionInstruction {
         const ctx: any = {
             accounts: {
                 destAccount: receiverAddress,
@@ -457,12 +456,12 @@ export class ZebecInstructionBuilder {
             },
             signers: [receiverAddress]
         }
-        const ix = this._program.methods.withdrawTokenStream(ctx).instruction();
+        const ix = this._program.instruction.withdrawTokenStream(ctx);
 
         return ix
     }
 
-    async createStreamCancelTokenInstruction(
+    createStreamCancelTokenInstruction(
         senderAddress: PublicKey,
         receiverAddress: PublicKey,
         feeReceiverAddress: PublicKey,
@@ -475,8 +474,8 @@ export class ZebecInstructionBuilder {
         escrowAssociatedTokenAddress: PublicKey,
         receiverAssociatedTokenAddress: PublicKey,
         feeReceiverAssociatedTokenAddress: PublicKey
-    ): Promise<TransactionInstruction>{
-        const ctx = {
+    ): TransactionInstruction{
+        const ctx: any = {
             accounts: {
                 destAccount: receiverAddress,
                 sourceAccount: senderAddress,
@@ -498,48 +497,46 @@ export class ZebecInstructionBuilder {
             signers: [senderAddress]
         };
 
-        const ix = await this._program.methods.cancelTokenStream(ctx).instruction();
+        const ix = this._program.instruction.cancelTokenStream(ctx);
 
         return ix
 
     }
     
-    async createStreamPauseTokenInstruction(
+    createStreamPauseTokenInstruction(
         senderAddress: PublicKey,
         receiverAddress: PublicKey,
         escrowAccountAddress: PublicKey
-    ): Promise<TransactionInstruction> {
-        const ctx = {
+    ): TransactionInstruction {
+        const ctx: any = {
             accounts: {
                 sender: senderAddress,
                 receiver: receiverAddress,
                 dataAccount: escrowAccountAddress
             },
-            signers: [senderAddress],
-            instructions: []
+            signers: [senderAddress]
         };
 
-        const ix = await this._program.methods.pauseResumeTokenStream(ctx).instruction();
+        const ix = this._program.instruction.pauseResumeTokenStream(ctx);
 
         return ix
     }
     
-    async createStreamResumeTokenInstruction(
+    createStreamResumeTokenInstruction(
         senderAddress: PublicKey,
         receiverAddress: PublicKey,
         escrowAccountAddress: PublicKey
-    ): Promise<TransactionInstruction> {
-        const ctx = {
+    ): TransactionInstruction {
+        const ctx: any = {
             accounts: {
                 sender: senderAddress,
                 receiver: receiverAddress,
                 dataAccount: escrowAccountAddress
             },
-            signers: [senderAddress],
-            instructions: []
+            signers: [senderAddress]
         };
 
-        const ix = await this._program.methods.pauseResumeTokenStream(ctx).instruction();
+        const ix = this._program.instruction.pauseResumeTokenStream(ctx);
 
         return ix
     }

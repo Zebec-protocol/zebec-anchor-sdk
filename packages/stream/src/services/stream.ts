@@ -384,7 +384,7 @@ export class ZebecNativeStream extends ZebecStream implements IZebecStream {
         
         const { sender, receiver, escrow } = data;
 
-        this.console.info(`stream pause data: `, data);
+        this.console.info(`stream pause data: ${data}`);
 
         const senderAddress = new PublicKey(sender);
         const receiverAddress = new PublicKey(receiver);
@@ -423,7 +423,7 @@ export class ZebecNativeStream extends ZebecStream implements IZebecStream {
     async resume(data: PauseResumeWithdrawCancel): Promise<ZebecResponse> {
         const { sender, receiver, escrow } = data;
 
-        this.console.info(`resume stream data: `, data);
+        this.console.info(`resume stream data: ${data}`);
 
         const senderAddress = new PublicKey(sender);
         const receiverAddress = new PublicKey(receiver);
@@ -463,7 +463,7 @@ export class ZebecNativeStream extends ZebecStream implements IZebecStream {
         
         const { sender, receiver, escrow } = data;
 
-        this.console.info(`cancel stream data: `, data);
+        this.console.info(`cancel stream data: ${data}`);
 
         const senderAddress = new PublicKey(sender);
         const receiverAddress = new PublicKey(receiver);
@@ -513,7 +513,7 @@ export class ZebecNativeStream extends ZebecStream implements IZebecStream {
 
         const { sender, receiver, escrow } = data;
 
-        this.console.info(`withdraw from stream data: `, data);
+        this.console.info(`withdraw from stream data: ${data}`);
 
         const senderAddress = new PublicKey(sender);
         const receiverAddress = new PublicKey(receiver);

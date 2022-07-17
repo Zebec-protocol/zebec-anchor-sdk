@@ -1,5 +1,5 @@
 
-class Console {
+export class Console {
     readonly logger: boolean;
     constructor(logger: boolean) {
         this.logger = logger;

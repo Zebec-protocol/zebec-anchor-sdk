@@ -333,7 +333,7 @@ export class ZebecNativeStream extends ZebecStream implements IZebecStream {
     async init(data: InitStream): Promise<ZebecResponse> {
 
         const { sender, receiver, start_time, end_time, amount } = data;
-        this.console.log(`sending ${amount} SOL to ${receiver}`);
+        this.console.info(`sending ${amount} SOL to ${receiver}`);
 
         const senderAddress = new PublicKey(sender);
         const receiverAddress = new PublicKey(receiver);

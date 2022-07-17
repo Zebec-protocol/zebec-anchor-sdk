@@ -9,6 +9,7 @@ import { ZEBEC_PROGRAM_IDL } from "../idl";
 import { IBaseStream, IZebecStream } from "../interfaces";
 import { DepositWithdrawFromZebecVault, InitStream, PauseResumeWithdrawCancel, StreamResponse, ZebecResponse } from "../models";
 import { TransactionSender } from "./transaction-sender";
+import { ConsoleLog } from '../utils';
 
 window.Buffer = window.Buffer || require("buffer").Buffer; 
 
@@ -30,14 +31,14 @@ class ZebecStream implements IBaseStream {
     readonly feeReceiverAddress: PublicKey;
     readonly transactionSender: TransactionSender;
     readonly logger: boolean;
-    readonly console: Console;
+    readonly console: ConsoleLog;
 
     constructor (anchorProvider: AnchorProvider, feeReceiver: string, logger: boolean = false) {
         this.program = new Program(ZEBEC_PROGRAM_IDL as Idl, this.programId, anchorProvider);
         this.instructionBuilder = new ZebecInstructionBuilder(this.program);
         this.transactionSender = new TransactionSender(anchorProvider);
         this.feeReceiverAddress = new PublicKey(feeReceiver);
-        this.console = new Console(logger);
+        this.console = new ConsoleLog(logger);
     }
 
     async _findZebecVaultAccount(walletAddress: PublicKey): Promise<[PublicKey, number]> {

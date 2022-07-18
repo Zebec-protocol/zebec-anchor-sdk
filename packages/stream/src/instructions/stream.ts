@@ -222,7 +222,7 @@ export class ZebecInstructionBuilder {
     }
 
     // Native Stream
-    createStreamInitSolInstruction(
+    async createStreamInitSolInstruction(
         senderAddress: PublicKey,
         receiverAddress: PublicKey,
         escrowAccountKeypair: Keypair,
@@ -233,10 +233,14 @@ export class ZebecInstructionBuilder {
         startTime: number,
         endTime: number,
         amount: number,
-    ): TransactionInstruction {
+    ): Promise<TransactionInstruction> {
 
         const dataSize = 8+8+8+8+8+32+32+8+8+32+200+400+200; // WHY???? HOW???
         
+        const ix = await this._program.account.stream.createInstruction(
+            escrowAccountKeypair, dataSize
+        );
+
         const ctx: any = {
             accounts: {
                 dataAccount: escrowAccountKeypair.publicKey,
@@ -248,12 +252,7 @@ export class ZebecInstructionBuilder {
                 sender: senderAddress,
                 receiver: receiverAddress
             },
-            instructions: [
-                this._program.account.stream.createInstruction(
-                    escrowAccountKeypair,
-                    dataSize
-                )
-            ],
+            instructions: [{...ix}],
             signers: [senderAddress, escrowAccountKeypair]
         };
 
@@ -262,11 +261,6 @@ export class ZebecInstructionBuilder {
         const amountBN = new BN(amount);
 
         const streamSolIx = this._program.instruction.nativeStream(startTimeBN, endTimeBN, amountBN, ctx);
-        // methods.nativeStream(
-        //     startTimeBN,
-        //     endTimeBN,
-        //     amountBN
-        // ).instruction();
 
         return streamSolIx
     }

@@ -343,7 +343,7 @@ export class ZebecNativeStream extends ZebecStream implements IZebecStream {
         const [feeVaultDataAddress,] = await this._findFeeVaultDataAccount(this.feeReceiverAddress);
         const escrowAccountKeypair = Keypair.generate();
 
-        const ix = this.instructionBuilder.createStreamInitSolInstruction(
+        const ix = await this.instructionBuilder.createStreamInitSolInstruction(
             senderAddress,
             receiverAddress,
             escrowAccountKeypair,

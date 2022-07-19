@@ -152,7 +152,7 @@
         {
           "name": "dataAccount",
           "isMut": true,
-          "isSigner": false
+          "isSigner": true
         },
         {
           "name": "withdrawData",

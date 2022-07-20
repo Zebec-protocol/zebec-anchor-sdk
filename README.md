@@ -68,7 +68,8 @@ The `feeReceiverAddress` is the address to receive service fees for transactions
     })
 ```
 Response:
-```
+
+```typescript
 {
     status: either `success` or `error`,
     message: <string>,

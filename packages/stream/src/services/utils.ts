@@ -1,5 +1,15 @@
-import { Connection, ParsedAccountData, SYSVAR_CLOCK_PUBKEY, TransactionSignature, ConfirmOptions } from "@solana/web3.js";
+import { Connection, ParsedAccountData, SYSVAR_CLOCK_PUBKEY, TransactionSignature, ConfirmOptions, LAMPORTS_PER_SOL, PublicKey } from "@solana/web3.js";
 import { AnchorProvider, Wallet } from "@project-serum/anchor";
+
+
+export const getAmountInLamports = (amount: number): number => {
+    return amount * LAMPORTS_PER_SOL
+};
+
+export const getTokenAmountInLamports = (amount: number, tokenMintAddress: PublicKey): number => {
+    // get Amount Decimal Digit number
+    return amount
+}
 
 
 export const getClusterTime = async(provider: AnchorProvider) => {

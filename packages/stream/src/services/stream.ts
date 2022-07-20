@@ -3,7 +3,7 @@ import { Keypair, PublicKey } from "@solana/web3.js";
 import { AnchorProvider, Idl, Program } from "@project-serum/anchor";
 import { TOKEN_PROGRAM_ID } from "@project-serum/anchor/dist/cjs/utils/token";
 import { ZEBEC_PROGRAM_IDL } from "../idl";
-import { ConsoleLog } from './utils';
+import { ConsoleLog, getAmountInLamports, getTokenAmountInLamports } from './utils';
 import { IBaseStream, IZebecStream } from "../interface";
 import { ZebecTransactionBuilder } from '../instruction';
 import { OPERATE, OPERATE_DATA, PREFIX, PREFIX_TOKEN, SPL_ASSOCIATED_TOKEN_ACCOUNT_PROGRAM_ID, ZEBEC_PROGRAM_ID } from "../config/constants";
@@ -101,7 +101,7 @@ class ZebecStream implements IBaseStream {
 
         this.console.info(`creating fee vault for with ${fee_percentage}%`);
 
-        // try {
+        try {
             const signature = await this.transactionBuilder.execFeeVault(
                 this.feeReceiverAddress,
                 feeVaultAddress,
@@ -116,14 +116,14 @@ class ZebecStream implements IBaseStream {
                     transactionHash: signature
                 }
             }
-        // } catch (err) {
-        //     this.console.error(err);
-        //     return {
-        //         status: "error",
-        //         message: "failed to create fee vault",
-        //         data: null
-        //     }
-        // }
+        } catch (err) {
+            this.console.error(err);
+            return {
+                status: "error",
+                message: "failed to create fee vault",
+                data: null
+            }
+        }
 
     }
 
@@ -135,13 +135,13 @@ class ZebecStream implements IBaseStream {
 
         const senderAddress = new PublicKey(sender);
         const [zebecVaultAddress,] = await this._findZebecVaultAccount(senderAddress);
-
+        const amountInLamports = getAmountInLamports(amount)
         
         try {
             const signature = await this.transactionBuilder.execDepositSolToZebecWallet(
                 senderAddress,
                 zebecVaultAddress,
-                amount
+                amountInLamports
             )
             this.console.info(`transaction success, TXID: ${signature}`);
             return {
@@ -171,14 +171,14 @@ class ZebecStream implements IBaseStream {
         const senderAddress = new PublicKey(sender);
         const [zebecVaultAddress, ] = await this._findZebecVaultAccount(senderAddress);
         const [withdrawescrowAccountAddress,] = await this._findSolWithdrawEscrowAccount(senderAddress);
+        const amountInLamports = getAmountInLamports(amount);
 
-        
         try {
             const signature = await this.transactionBuilder.execWithdrawSolFromZebecVault(
                 senderAddress,
                 zebecVaultAddress,
                 withdrawescrowAccountAddress,
-                amount
+                amountInLamports
             );
             this.console.info(`transaction success, TXID: ${signature}`);
             return {
@@ -209,6 +209,7 @@ class ZebecStream implements IBaseStream {
 
         const [senderAssociatedTokenAddress,] = await this._findAssociatedTokenAddress(senderAddress, tokenMintAddress);
         const [zebecVaultAssocatedAccountAddress,] = await this._findAssociatedTokenAddress(zebecVaultAddress, tokenMintAddress);
+        const amountInLamports = getTokenAmountInLamports(amount, tokenMintAddress);
 
         try {
             const signature = await this.transactionBuilder.execDepositTokenToZebecWallet(
@@ -217,7 +218,7 @@ class ZebecStream implements IBaseStream {
                 tokenMintAddress,
                 senderAssociatedTokenAddress,
                 zebecVaultAssocatedAccountAddress,
-                amount
+                amountInLamports
             );
             this.console.info(`transaction success, TXID: ${signature}`);
             return {
@@ -248,7 +249,8 @@ class ZebecStream implements IBaseStream {
         const [withdrawescrowAccountAddress,] = await this._findTokenWithdrawEscrowAccount(senderAddress, tokenMintAddress);
         const [senderAssociatedTokenAddress,] = await this._findAssociatedTokenAddress(senderAddress, tokenMintAddress);
         const [zebecVaultAssocatedAccountAddress,] = await this._findAssociatedTokenAddress(zebecVaultAddress, tokenMintAddress);
-        
+        const amountInLamports = getTokenAmountInLamports(amount, tokenMintAddress);
+
         try {
             const signature = await this.transactionBuilder.execWithdrawTokenFromZebecVault(
                 senderAddress,
@@ -257,7 +259,7 @@ class ZebecStream implements IBaseStream {
                 tokenMintAddress,
                 senderAssociatedTokenAddress,
                 zebecVaultAssocatedAccountAddress,
-                amount
+                amountInLamports
             );
             this.console.info(`transaction success, TXID: ${signature}`);
             return {
@@ -302,6 +304,8 @@ export class ZebecNativeStream extends ZebecStream implements IZebecStream {
         const [feeVaultDataAddress,] = await this._findFeeVaultDataAccount(this.feeReceiverAddress);
         const escrowAccountKeypair = new Keypair();
 
+        const amountInLamports = getAmountInLamports(amount);
+
         try {
             const signature = await this.transactionBuilder.execStreamInitSol(
                 senderAddress,
@@ -313,7 +317,7 @@ export class ZebecNativeStream extends ZebecStream implements IZebecStream {
                 feeVaultDataAddress,
                 start_time,
                 end_time,
-                amount
+                amountInLamports
             );
             this.console.info(`transaction success, TXID: ${signature}`);
             return {
@@ -522,6 +526,8 @@ export class ZebecTokenStream extends ZebecStream implements IZebecStream {
 
         const escrowAccountKeypair = Keypair.generate();
 
+        const amountInLamports = getTokenAmountInLamports(amount, tokenMintAddress);
+
         
         try {
             const signature = await this.transactionBuilder.execStreamInitToken(
@@ -535,7 +541,7 @@ export class ZebecTokenStream extends ZebecStream implements IZebecStream {
                 tokenMintAddress,
                 start_time,
                 end_time,
-                amount,
+                amountInLamports,
                 withdraw_limit
             );
 

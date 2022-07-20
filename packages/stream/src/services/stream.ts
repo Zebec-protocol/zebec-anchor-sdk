@@ -209,7 +209,7 @@ class ZebecStream implements IBaseStream {
 
         const [senderAssociatedTokenAddress,] = await this._findAssociatedTokenAddress(senderAddress, tokenMintAddress);
         const [zebecVaultAssocatedAccountAddress,] = await this._findAssociatedTokenAddress(zebecVaultAddress, tokenMintAddress);
-        const amountInLamports = getTokenAmountInLamports(amount, tokenMintAddress);
+        const amountInLamports = await getTokenAmountInLamports(amount, tokenMintAddress, this.program);
 
         try {
             const signature = await this.transactionBuilder.execDepositTokenToZebecWallet(
@@ -249,7 +249,7 @@ class ZebecStream implements IBaseStream {
         const [withdrawescrowAccountAddress,] = await this._findTokenWithdrawEscrowAccount(senderAddress, tokenMintAddress);
         const [senderAssociatedTokenAddress,] = await this._findAssociatedTokenAddress(senderAddress, tokenMintAddress);
         const [zebecVaultAssocatedAccountAddress,] = await this._findAssociatedTokenAddress(zebecVaultAddress, tokenMintAddress);
-        const amountInLamports = getTokenAmountInLamports(amount, tokenMintAddress);
+        const amountInLamports = await getTokenAmountInLamports(amount, tokenMintAddress, this.program);
 
         try {
             const signature = await this.transactionBuilder.execWithdrawTokenFromZebecVault(
@@ -526,7 +526,7 @@ export class ZebecTokenStream extends ZebecStream implements IZebecStream {
 
         const escrowAccountKeypair = Keypair.generate();
 
-        const amountInLamports = getTokenAmountInLamports(amount, tokenMintAddress);
+        const amountInLamports = await getTokenAmountInLamports(amount, tokenMintAddress, this.program);
 
         
         try {

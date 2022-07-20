@@ -331,7 +331,7 @@ export class ZebecNativeStream extends ZebecStream implements IZebecStream {
             // throw error/exception here
             return {
                 status: "error",
-                message: `failed to withdraw ${amount} from zebec vault`,
+                message: `failed to start stream`,
                 data: null
             }
         }

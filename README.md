@@ -11,7 +11,7 @@ Make sure, you've the following installed.
 ## Install Packages
 
 ```
-    npm install --save @zebec-io/<package-name>
+npm install --save @zebec-io/<package-name>
 ```
 
 

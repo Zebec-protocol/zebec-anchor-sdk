@@ -9,7 +9,7 @@ import { ZebecTransactionBuilder } from '../instruction';
 import { OPERATE, OPERATE_DATA, PREFIX, PREFIX_TOKEN, SPL_ASSOCIATED_TOKEN_ACCOUNT_PROGRAM_ID, ZEBEC_PROGRAM_ID } from "../config/constants";
 import { MDepositWithdrawFromZebecVault, MInitStream, MPauseResumeWithdrawCancel, MZebecResponse } from "../models";
 
-window.Buffer = window.Buffer || require("buffer").Buffer; 
+// window.Buffer = window.Buffer || require("buffer").Buffer; 
 
 /**
  * ## Base Zebec Stream  

@@ -1,4 +1,4 @@
 export * from "./idl";
-export * from "./interfaces";
+export * from "./interface";
 export * from "./models";
 export * from "./services";

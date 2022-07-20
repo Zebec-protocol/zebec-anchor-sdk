@@ -58,28 +58,28 @@ let stream = new ZebecNativeStream(provider, feeReceiverAddress);
 The `feeReceiverAddress` is the address to receive service fees for transactions. We need to create a fee vault before performing any transaction using the stream instance. 
 
 #### Start a Stream (SOL)
-    ```typescript
-        let response = stream.init({
-            sender: wallet.publicKey.toString(),
-            receiver: "receiver_wallet_address",
-            start_time: unixtimestamp,
-            end_time: unixtimestamp,
-            amount: <amount in SOL>
-        })
-    ```
-    Response:
+```typescript
+    let response = stream.init({
+        sender: wallet.publicKey.toString(),
+        receiver: "receiver_wallet_address",
+        start_time: unixtimestamp,
+        end_time: unixtimestamp,
+        amount: <amount in SOL>
+    })
+```
+##### Response:
 
-    ```typescript
-    {
-        status: either `success` or `error`,
-        message: <string>,
-        data: {
-            transactionHash: TransactionSignature,
-            pda: Escrow Account Address
-        }
+```typescript
+{
+    status: either `success` or `error`,
+    message: <string>,
+    data: {
+        transactionHash: TransactionSignature,
+        pda: Escrow Account Address
     }
-    ```
-    In case of any failure, the `data` will be `null`.
+}
+```
+In case of any failure, the `data` will be `null`.
 
 
-#### Pause/Resume a 
+#### Pause/Resume a Stream:

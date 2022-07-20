@@ -92,7 +92,6 @@ class ZebecStream implements IBaseStream {
         return [associatedTokenAddress, nonce]
     }
 
-    // create fee (set) Vault
     async createFeeVault(data: any): Promise<MZebecResponse> {
         const { fee_percentage } = data;
 
@@ -279,7 +278,6 @@ class ZebecStream implements IBaseStream {
             }
         }
     }
-
 }
 
 export class ZebecNativeStream extends ZebecStream implements IZebecStream {
@@ -511,7 +509,6 @@ export class ZebecTokenStream extends ZebecStream implements IZebecStream {
         this.console.info("zebec token stream object is initialized!!!")
     }
 
-    // init
     async init(data: MInitStream): Promise<MZebecResponse> {
         const { sender, receiver, token_mint_address, start_time, end_time, amount, withdraw_limit } = data;
 
@@ -556,7 +553,6 @@ export class ZebecTokenStream extends ZebecStream implements IZebecStream {
             }
         } catch (err) {
             this.console.error(err);
-            // throw error/exception here
             return {
                 status: "error",
                 message: `failed to init token stream`,
@@ -564,7 +560,7 @@ export class ZebecTokenStream extends ZebecStream implements IZebecStream {
             }
         }
     }
-    // pause
+
     async pause(data: MPauseResumeWithdrawCancel): Promise<MZebecResponse> {
 
         const { sender, receiver, escrow } = data;
@@ -590,7 +586,6 @@ export class ZebecTokenStream extends ZebecStream implements IZebecStream {
             }
         } catch (err) {
             this.console.error(err);
-            // throw error/exception here
             return {
                 status: "error",
                 message: `failed to pause token stream`,
@@ -598,7 +593,7 @@ export class ZebecTokenStream extends ZebecStream implements IZebecStream {
             }
         }
     }
-    // resume
+
     async resume(data: MPauseResumeWithdrawCancel): Promise<MZebecResponse> {
 
         const { sender, receiver, escrow } = data;
@@ -606,8 +601,6 @@ export class ZebecTokenStream extends ZebecStream implements IZebecStream {
         const senderAddress = new PublicKey(sender);
         const receiverAddress = new PublicKey(receiver);
         const escrowAccountAddress = new PublicKey(escrow);
-
-        
 
         try {
             const signature = await this.transactionBuilder.execStreamPauseToken(
@@ -632,7 +625,7 @@ export class ZebecTokenStream extends ZebecStream implements IZebecStream {
             }
         }
     }
-    // cancel
+
     async cancel(data: MPauseResumeWithdrawCancel): Promise<MZebecResponse> {
         
         const { sender, receiver, escrow, token_mint_address } = data;
@@ -676,7 +669,6 @@ export class ZebecTokenStream extends ZebecStream implements IZebecStream {
             }
         } catch (err) {
             this.console.error(err);
-            // throw error/exception here
             return {
                 status: "error",
                 message: `failed to cancel token stream`,
@@ -684,7 +676,7 @@ export class ZebecTokenStream extends ZebecStream implements IZebecStream {
             }
         }
     }
-    // withdraw
+
     async withdraw(data: MPauseResumeWithdrawCancel): Promise<MZebecResponse> {
 
         const { sender, receiver, token_mint_address, escrow } = data;
@@ -729,7 +721,6 @@ export class ZebecTokenStream extends ZebecStream implements IZebecStream {
             }
         } catch (err) {
             this.console.error(err);
-            // throw error/exception here
             return {
                 status: "error",
                 message: `failed to withdraw from token stream`,

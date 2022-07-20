@@ -295,7 +295,7 @@ export class ZebecTransactionBuilder {
         escrowAccountAddress: PublicKey
     ): Promise<TransactionSignature> {
 
-        const signature = await this._program.methods.resumeStream().accounts({
+        const signature = await this._program.methods.pauseStream().accounts({
             sender: senderAddress,
             receiver: receiverAddress,
             dataAccount: escrowAccountAddress
@@ -304,7 +304,6 @@ export class ZebecTransactionBuilder {
         return signature
     }
 
-    // Token Stream
     async execStreamInitToken(
         escrowAccountKeypair: Keypair,
         withdrawEscrowDataAccountAddress: PublicKey,

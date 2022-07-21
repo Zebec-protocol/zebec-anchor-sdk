@@ -124,7 +124,7 @@ export class ZebecTransactionBuilder {
     ): Promise<TransactionSignature> {
         const amountBN = new BN(amount);
 
-        const signature = await this._program.methods.depositToken(amount).accounts({
+        const signature = await this._program.methods.depositToken(amountBN).accounts({
             zebecVault: zebecVaultAddress,
             sourceAccount: senderAddress,
             systemProgram: SystemProgram.programId,

@@ -1,6 +1,101 @@
-import { Connection, ParsedAccountData, SYSVAR_CLOCK_PUBKEY, TransactionSignature, ConfirmOptions, LAMPORTS_PER_SOL, PublicKey } from "@solana/web3.js";
+import { Connection, ParsedAccountData, SYSVAR_CLOCK_PUBKEY, TransactionSignature, ConfirmOptions, LAMPORTS_PER_SOL, PublicKey, Transaction } from "@solana/web3.js";
 import { AnchorProvider, Program, Wallet } from "@project-serum/anchor";
 
+
+const getErrorForTransaction = async (connection: Connection, txid: TransactionSignature) => {
+    // wait for all confirmation before geting transaction
+    const commitment = "finalized";
+    const latestBlockhash = await connection.getLatestBlockhash(commitment);
+    await connection.confirmTransaction(
+        { signature: txid, ...latestBlockhash },
+        commitment
+    );
+
+    const tx = await connection.getParsedTransaction(txid, commitment);
+    const errors: string[] = [];
+
+    if(tx?.meta && tx.meta.logMessages) {
+        tx.meta.logMessages.forEach((log: any) => {
+            const regex = /Error: (.*)/gm;
+            let m: any;
+            while((m = regex.exec(log)) !== null) {
+                // this is necessary to avoid infinite loops with zero-width matches
+                if(m.index === regex.lastIndex) {
+                    regex.lastIndex++;
+                }
+                if (m.length > 1) {
+                    errors.push(m[1]);
+                }
+            }
+        })
+    }
+    return errors;
+}
+
+export const sendOne = async(tx: Transaction, provider: AnchorProvider): Promise<TransactionSignature> => {
+    console.log("--- smart txn - sending one...", tx);
+    const connection = provider.connection;
+    const rawTxn = tx.serialize();
+
+    let options = {
+        skipPreflight: false,
+        commitment: provider.connection.commitment
+    };
+
+    const startTime = now();
+    let done = false;
+    const retryTimeout = 3000; //ms
+
+    const txid = await connection.sendRawTransaction(rawTxn, options);
+    (async () => {
+        while(!done && now() - startTime < retryTimeout) {
+            connection.sendRawTransaction(rawTxn, options);
+            console.log(
+                "retry sending transaction continuously every 2 seconds...",
+                txid
+            );
+            await sleep(2000);
+        }
+    })();
+
+    let status: any;
+
+    try {
+        const signatureResult = await connection.confirmTransaction(
+            {
+                signature: txid,
+                blockhash: tx.recentBlockhash,
+                lastValidBlockHeight: tx.lastValidBlockHeight
+            } as any,
+            provider.connection.commitment
+        );
+        status = signatureResult.value;
+    } catch (error) {
+        status = {
+            err: error
+        };
+    } finally {
+        done = true;
+    }
+
+    if (status?.err) {
+        let errors: string[] = [];
+        if (
+            (status.err as Error).message &&
+            ((status.err as Error).message.includes("block height exceeded") ||
+            (status.err as Error).message.includes("timeout exceeded"))
+        ) {
+            errors = [(status.err as Error).message];
+        } else {
+            errors = await getErrorForTransaction(connection, txid);
+        }
+
+        throw new Error(
+            `Raw transaction ${txid} faied (${JSON.stringify(status)})`
+        );
+    }
+    return txid;
+}
 
 export const getAmountInLamports = (amount: number): number => {
     return amount * LAMPORTS_PER_SOL
@@ -61,15 +156,30 @@ export class ConsoleLog {
         this.logger = logger;
     }
 
-    info(message: string) {
-        if (this.logger) { console.log(message); }
+    info(message: string, value: any = null) {
+        if (this.logger) { 
+            if (value) {
+                console.log(message, value); 
+            }
+            console.log(message);
+        }
     }
 
-    error(message: string) {
-        if (this.logger) { console.error(message); }
+    error(message: string, value: any = null) {
+        if (this.logger) { 
+            if (value) {
+                console.error(message, value); 
+            }
+            console.error(message);
+         }
     }
 
-    warning(message: string) {
-        if(this.logger) { console.warn(message); }
+    warning(message: string, value: any = null) {
+        if(this.logger) { 
+            if (value) {
+                console.warn(message, value); 
+            }
+            console.warn(message);
+         }
     }
 }

@@ -1,4 +1,4 @@
-import { Program } from '@project-serum/anchor';
+import { AnchorProvider, Program } from '@project-serum/anchor';
 import { PublicKey } from '@solana/web3.js'
 import { ZebecTransactionBuilder } from './instruction';
 import { MInitStream, MDepositWithdrawFromZebecVault, MPauseResumeWithdrawCancel, MStreamResponse, MZebecResponse } from './models'
@@ -12,6 +12,8 @@ export interface IBaseStream {
     feeReceiverAddress: PublicKey;
 
     transactionBuilder: ZebecTransactionBuilder;
+
+    anchorProvider: AnchorProvider;
 
     _findZebecVaultAccount(walletAddress: PublicKey): Promise<[PublicKey, number]>;
 

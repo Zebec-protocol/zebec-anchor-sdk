@@ -105,7 +105,7 @@ export const getTokenAmountInLamports = async (amount: number, tokenMintAddress:
     // get Amount Decimal Digit number
     const tokenMetaData = await program.provider.connection.getTokenSupply(tokenMintAddress);
     const decimals = tokenMetaData.value?.decimals;
-    return amount * decimals
+    return amount * Math.pow(10, decimals);
 }
 
 

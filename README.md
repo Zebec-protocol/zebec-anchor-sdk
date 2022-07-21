@@ -59,6 +59,9 @@ The `feeReceiverAddress` is the address to receive service fees for transactions
 
 #### Start a Stream (SOL)
 
+Before starting a stream, we need to deposit SOL to Zebec Wallet. 
+We could also create a stream without even depositing SOL to the Zebec Wallet. In this scenario, the receiver will not be able to receive any funds and rather receive `insufficient amount in sender's wallet`.
+
 > In case of any failure, the `data` in `response` will be `null`.
 
 ##### call `init` method:
@@ -85,7 +88,7 @@ The `feeReceiverAddress` is the address to receive service fees for transactions
 ```
 
 
-#### Pause a Stream:
+#### Pause Stream:
 
 ##### call `pause` method:
 ```typescript
@@ -98,7 +101,7 @@ let response = stream.pause({
 The `escrow` address is the public key received as response after successfully starting a stream.
 
 
-#### Resume a Stream:
+#### Resume Stream:
 
 ##### call `resume` method:
 ```typescript
@@ -106,5 +109,24 @@ let response = stream.resume({
     sender: "sender_wallet_address",
     receiver: "receiver_wallet_address,
     escrow: "escrow_address"
+})
+```
+
+#### Cancel Stream:
+
+##### call `cancel` method:
+```typescript
+let response = stream.cancel({
+
+})
+```
+
+### Withdraw SOL
+The amount that is streamed can be withdrawn while streaming or after completion of the stream.
+
+##### call `withdraw` method:
+```typescript
+let response = stream.withdraw({
+
 })
 ```

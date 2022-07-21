@@ -2,7 +2,7 @@ import { BN, Program } from "@project-serum/anchor";
 import { ASSOCIATED_PROGRAM_ID, TOKEN_PROGRAM_ID } from "@project-serum/anchor/dist/cjs/utils/token";
 import { 
     Keypair, PublicKey, SystemProgram, 
-    SYSVAR_RENT_PUBKEY, TransactionSignature 
+    SYSVAR_RENT_PUBKEY, Transaction, TransactionInstruction, TransactionSignature 
 } from "@solana/web3.js";
 
 /**
@@ -35,14 +35,14 @@ export class ZebecTransactionBuilder {
         feeVaultAddress: PublicKey,
         feeVaultDataAddress: PublicKey,
         feePercentage: number
-    ): Promise<TransactionSignature> {
+    ): Promise<Transaction> {
 
         // calculate Fee percentage here.
         // Fee Percentage must have atmost 2 digits after decimal. 
         // Eg. 0.25% is acceptable but 0.255% is not ?????? DISCUSS IT WITH THE TEAM, TODO
         const calculatedFeePercentage = new BN(feePercentage * 100);
 
-        const signature = await this._program.methods.createFeeAccount(
+        const tx = await this._program.methods.createFeeAccount(
             calculatedFeePercentage
         ).accounts({
             owner: feeReceiverAddress,
@@ -50,9 +50,9 @@ export class ZebecTransactionBuilder {
             createVaultData: feeVaultDataAddress,
             systemProgram: SystemProgram.programId,
             rent: SYSVAR_RENT_PUBKEY
-        }).rpc();
+        }).transaction();
 
-        return signature
+        return tx;
     }
 
     async execRetrieveSolFees(
@@ -101,17 +101,15 @@ export class ZebecTransactionBuilder {
         senderAddress: PublicKey,
         zebecVaultAddress: PublicKey,
         amount: number
-    ): Promise<TransactionSignature> {
-
+    ): Promise<Transaction> {
         const amountBN = new BN(amount);
-
-        const signature = await this._program.methods.depositSol(amountBN).accounts({
+        const tx = await this._program.methods.depositSol(amountBN).accounts({
             zebecVault: zebecVaultAddress,
             sender: senderAddress,
             systemProgram: SystemProgram.programId
-        }).rpc();
+        }).transaction();
 
-        return signature
+        return tx;
     }
 
     async execDepositTokenToZebecWallet(
@@ -121,10 +119,10 @@ export class ZebecTransactionBuilder {
         senderAssociatedTokenAddress: PublicKey,
         zebecVaultAssociatedAccountAddress: PublicKey,
         amount: number
-    ): Promise<TransactionSignature> {
+    ): Promise<Transaction> {
         const amountBN = new BN(amount);
 
-        const signature = await this._program.methods.depositToken(amountBN).accounts({
+        const tx = await this._program.methods.depositToken(amountBN).accounts({
             zebecVault: zebecVaultAddress,
             sourceAccount: senderAddress,
             systemProgram: SystemProgram.programId,
@@ -134,9 +132,9 @@ export class ZebecTransactionBuilder {
             mint: tokenMintAddress,
             sourceAccountTokenAccount: senderAssociatedTokenAddress,
             pdaAccountTokenAccount: zebecVaultAssociatedAccountAddress
-        }).rpc();
+        }).transaction();
 
-        return signature
+        return tx;
     }
 
     async execWithdrawSolFromZebecVault(
@@ -144,17 +142,17 @@ export class ZebecTransactionBuilder {
         zebecVaultAddress: PublicKey,
         withdrawEscrowDataAccountAddress: PublicKey,
         amount: number
-    ): Promise<TransactionSignature> {
+    ): Promise<Transaction> {
         const amountBN = new BN(amount);
 
-        const signature = await this._program.methods.initializerNativeWithdrawal(amountBN).accounts({
+        const tx = await this._program.methods.nativeWithdrawal(amountBN).accounts({
             zebecVault: zebecVaultAddress,
             withdrawData: withdrawEscrowDataAccountAddress,
             systemProgram: SystemProgram.programId,
             sender: senderAddress
-        }).rpc();
+        }).transaction();
 
-        return signature
+        return tx;
     }
 
     async execWithdrawTokenFromZebecVault(
@@ -165,10 +163,10 @@ export class ZebecTransactionBuilder {
         senderAssociatedTokenAddress: PublicKey,
         escrowAssociatedTokenAddress: PublicKey,
         amount: number
-    ): Promise<TransactionSignature> {
+    ): Promise<Transaction> {
         const amountBN = new BN(amount);
 
-        const signature = await this._program.methods.tokenWithdrawal(amount).accounts({
+        const tx = await this._program.methods.tokenWithdrawal(amountBN).accounts({
             zebecVault: zebecVaultAddress,
             wtihdrawData: withdrawEscrowDataAccountAddress,
             sourceAccount: senderAddress,
@@ -179,9 +177,9 @@ export class ZebecTransactionBuilder {
             mint: tokenMintAddress,
             sourceAccountTokenAccount: senderAssociatedTokenAddress,
             pdaAccountTokenAccount: escrowAssociatedTokenAddress
-        }).rpc();
+        }).transaction();
 
-        return signature
+        return tx;
 
     }
 
@@ -196,7 +194,7 @@ export class ZebecTransactionBuilder {
         startTime: number,
         endTime: number,
         amount: number,
-    ): Promise<string> {
+    ): Promise<Transaction> {
 
         const dataSize = 8+8+8+8+8+32+32+8+8+32+200; // WHY???? HOW???
         
@@ -219,7 +217,7 @@ export class ZebecTransactionBuilder {
             systemProgram: SystemProgram.programId,
             sender: senderAddress,
             receiver: receiverAddress
-        }).preInstructions([createAccountIx]).signers([escrowAccountKeypair]).rpc();
+        }).preInstructions([createAccountIx]).signers([escrowAccountKeypair]).transaction();
 
         return signature
     }
@@ -232,20 +230,20 @@ export class ZebecTransactionBuilder {
         feeReceiverAddress: PublicKey,
         feeVaultAddress: PublicKey,
         feeVaultDataAddress: PublicKey,
-    ): Promise<TransactionSignature> {
+    ): Promise<Transaction> {
 
-        const signature = await this._program.methods.withdrawStream().accounts({
+        const tx = await this._program.methods.withdrawStream().accounts({
             zebecVault: zebecVaultAddress,
             sender: senderAddress,
             receiver: receiverAddress,
             dataAccount: escrowAccountAddress,
             feeOwner: feeReceiverAddress,
-            feeVaultDataAddress: feeVaultDataAddress,
+            createVaultData: feeVaultDataAddress,
             feeVault: feeVaultAddress,
             systemProgram: SystemProgram.programId
-        }).rpc();
+        }).transaction();
 
-        return signature
+        return tx
     }
 
     async execStreamCancelSol(
@@ -257,9 +255,9 @@ export class ZebecTransactionBuilder {
         feeReceiverAddress: PublicKey,
         feeVaultDataAddress: PublicKey,
         feeVaultAddress: PublicKey
-    ): Promise<TransactionSignature> {
+    ): Promise<Transaction> {
         
-        const signature = await this._program.methods.cancelStream().accounts({
+        const tx = await this._program.methods.cancelStream().accounts({
             zebecVault: zebecVaultAddress,
             sender: senderAddress,
             receiver: receiverAddress,
@@ -269,39 +267,39 @@ export class ZebecTransactionBuilder {
             createVaultData: feeVaultDataAddress,
             feeVault: feeVaultAddress,
             systemProgram: SystemProgram.programId
-        }).rpc();
+        }).transaction();
 
-        return signature
+        return tx
     }
 
     async execStreamPauseSol(
         senderAddress: PublicKey,
         receiverAddress: PublicKey,
         escrowAccountAddress: PublicKey
-    ): Promise<TransactionSignature> {
+    ): Promise<Transaction> {
 
-        const signature = await this._program.methods.pauseStream().accounts({
+        const tx = await this._program.methods.pauseStream().accounts({
             sender: senderAddress,
             receiver: receiverAddress,
             dataAccount: escrowAccountAddress
-        }).rpc();
+        }).transaction();
 
-        return signature
+        return tx;
     }
 
     async execStreamResumeSol(
         senderAddress: PublicKey,
         receiverAddress: PublicKey,
         escrowAccountAddress: PublicKey
-    ): Promise<TransactionSignature> {
+    ): Promise<Transaction> {
 
-        const signature = await this._program.methods.pauseStream().accounts({
+        const tx = await this._program.methods.pauseStream().accounts({
             sender: senderAddress,
             receiver: receiverAddress,
             dataAccount: escrowAccountAddress
-        }).rpc();
+        }).transaction();
 
-        return signature
+        return tx
     }
 
     async execStreamInitToken(
@@ -315,20 +313,17 @@ export class ZebecTransactionBuilder {
         tokenMintAddress: PublicKey,
         startTime: number,
         endTime: number,
-        amount: number,
-        withdrawLimit: number
-    ): Promise<TransactionSignature> {
+        amount: number
+    ): Promise<Transaction> {
 
         const startTimeBN = new BN(startTime);
         const endTimeBN = new BN(endTime);
         const amountBN = new BN(amount);
-        const withdrawLimitBN = new BN(withdrawLimit);
 
-        const signature = await this._program.methods.tokenStream(
+        const tx = await this._program.methods.tokenStream(
             startTimeBN,
             endTimeBN,
-            amountBN,
-            withdrawLimitBN
+            amountBN
         ).accounts({
             dataAccount: escrowAccountKeypair.publicKey,
             withdrawData: withdrawEscrowDataAccountAddress,
@@ -341,9 +336,9 @@ export class ZebecTransactionBuilder {
             tokenProgram: TOKEN_PROGRAM_ID,
             mint: tokenMintAddress,
             rent: SYSVAR_RENT_PUBKEY
-        }).signers([escrowAccountKeypair]).rpc();
+        }).signers([escrowAccountKeypair]).transaction();
 
-        return signature
+        return tx;
     }
 
     async execStreamWithdrawToken(
@@ -359,9 +354,9 @@ export class ZebecTransactionBuilder {
         zebecVaultAssociatedAccountAddress: PublicKey,
         receiverAssociatedTokenAddress: PublicKey,
         feeReceiverAssociatedTokenAddress: PublicKey
-    ): Promise<TransactionSignature> {
+    ): Promise<Transaction> {
 
-        const signature = await this._program.methods.withdrawTokenStream().accounts({
+        const tx = await this._program.methods.withdrawTokenStream().accounts({
             destAccount: receiverAddress,
             sourceAccount: senderAddress,
             feeOwner: feeReceiverAddress,
@@ -378,9 +373,9 @@ export class ZebecTransactionBuilder {
             pdaAccountTokenAccount: zebecVaultAssociatedAccountAddress,
             destTokenAccount: receiverAssociatedTokenAddress,
             feeReceiverAssociatedTokenAddress: feeReceiverAssociatedTokenAddress
-        }).rpc();
+        }).transaction();
 
-        return signature
+        return tx
     }
 
     async execStreamCancelToken(
@@ -396,9 +391,9 @@ export class ZebecTransactionBuilder {
         escrowAssociatedTokenAddress: PublicKey,
         receiverAssociatedTokenAddress: PublicKey,
         feeReceiverAssociatedTokenAddress: PublicKey
-    ): Promise<TransactionSignature>{
+    ): Promise<Transaction>{
 
-        const signature = await this._program.methods.cancelTokenStream().accounts({
+        const tx = await this._program.methods.cancelTokenStream().accounts({
             destAccount: receiverAddress,
             sourceAccount: senderAddress,
             feeOwner: feeReceiverAddress,
@@ -415,9 +410,9 @@ export class ZebecTransactionBuilder {
             pdaAccountTokenAccount: escrowAssociatedTokenAddress,
             destTokenAccount: receiverAssociatedTokenAddress,
             feeReceiverTokenAccount: feeReceiverAssociatedTokenAddress
-        }).rpc();
+        }).transaction();
 
-        return signature
+        return tx
 
     }
     
@@ -425,31 +420,15 @@ export class ZebecTransactionBuilder {
         senderAddress: PublicKey,
         receiverAddress: PublicKey,
         escrowAccountAddress: PublicKey
-    ): Promise<TransactionSignature> {
+    ): Promise<Transaction> {
 
-        const signature = await this._program.methods.pauseResumeTokenStream().accounts({
+        const tx = await this._program.methods.pauseResumeTokenStream().accounts({
             sender: senderAddress,
             receiver: receiverAddress,
             dataAccount: escrowAccountAddress
-        }).rpc();
+        }).transaction();
 
-        return signature
+        return tx;
     }
-    
-    async execStreamResumeToken(
-        senderAddress: PublicKey,
-        receiverAddress: PublicKey,
-        escrowAccountAddress: PublicKey
-    ): Promise<TransactionSignature> {
-        
-        const signature = await this._program.methods.pauseResumeTokenStream().accounts({
-            sender: senderAddress,
-            receiver: receiverAddress,
-            dataAccount: escrowAccountAddress
-        }).rpc();
-
-        return signature
-    }
-
     // instant transfers SOL/TOKEN
 }

@@ -594,12 +594,14 @@ export class ZebecNativeStream extends ZebecStream implements IZebecStream {
         const [zebecVaultAddress,] = await this._findZebecVaultAccount(senderAddress);
         const [feeVaultAddress,] = await this._findFeeVaultAddress(this.feeReceiverAddress);
         const [feeVaultDataAddress,] = await this._findFeeVaultDataAccount(this.feeReceiverAddress);
-        
+        const [withdrawEscrowAccountAddress,] = await this._findSolWithdrawEscrowAccount(senderAddress);
+
         const anchorTx = await this.transactionBuilder.execStreamWithdrawSol(
             senderAddress,
             receiverAddress,
             zebecVaultAddress,
             escrowAccountAddress,
+            withdrawEscrowAccountAddress,
             this.feeReceiverAddress,
             feeVaultAddress,
             feeVaultDataAddress

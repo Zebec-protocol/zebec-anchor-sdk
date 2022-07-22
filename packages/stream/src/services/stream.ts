@@ -785,7 +785,7 @@ export class ZebecTokenStream extends ZebecStream implements IZebecStream {
 
         const [zebecVaultAssociatedTokenAddress,] = await this._findAssociatedTokenAddress(zebecVaultAddress, tokenMintAddress);
         const [receiverAssociatedTokenAddress,] = await this._findAssociatedTokenAddress(receiverAddress, tokenMintAddress);
-        const [feeReceiverAssociatedTokenAddress,] = await this._findAssociatedTokenAddress(feeVaultAddress, tokenMintAddress);
+        const [feeVaultAssociatedTokenAddress,] = await this._findAssociatedTokenAddress(feeVaultAddress, tokenMintAddress);
 
         const anchorTx = await this.transactionBuilder.execStreamCancelToken(
             senderAddress,
@@ -799,7 +799,7 @@ export class ZebecTokenStream extends ZebecStream implements IZebecStream {
             tokenMintAddress,
             zebecVaultAssociatedTokenAddress,
             receiverAssociatedTokenAddress,
-            feeReceiverAssociatedTokenAddress
+            feeVaultAssociatedTokenAddress
         );
         const tx = await this._makeTxn(anchorTx);
         const signedRawTx = await this.anchorProvider.wallet.signTransaction(tx);
@@ -841,7 +841,7 @@ export class ZebecTokenStream extends ZebecStream implements IZebecStream {
         
         const [zebecVaultAssociatedAccountAddress,] = await this._findAssociatedTokenAddress(zebecVaultAddress, tokenMintAddress);
         const [receiverAssociatedTokenAddress,] = await this._findAssociatedTokenAddress(receiverAddress, tokenMintAddress);
-        const [feeReceiverAssociatedTokenAddress,] = await this._findAssociatedTokenAddress(this.feeReceiverAddress, tokenMintAddress);
+        const [feeVaultAssociatedTokenAddress,] = await this._findAssociatedTokenAddress(feeVaultAddress, tokenMintAddress);
 
         const anchorTx = await this.transactionBuilder.execStreamWithdrawToken(
             receiverAddress,
@@ -855,7 +855,7 @@ export class ZebecTokenStream extends ZebecStream implements IZebecStream {
             tokenMintAddress,
             zebecVaultAssociatedAccountAddress,
             receiverAssociatedTokenAddress,
-            feeReceiverAssociatedTokenAddress 
+            feeVaultAssociatedTokenAddress 
         );
         const tx = await this._makeTxn(anchorTx);
         const signedRawTx = await this.anchorProvider.wallet.signTransaction(tx);

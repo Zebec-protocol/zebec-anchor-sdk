@@ -359,7 +359,7 @@ export class ZebecTransactionBuilder {
         tokenMintAddress: PublicKey,
         zebecVaultAssociatedAccountAddress: PublicKey,
         receiverAssociatedTokenAddress: PublicKey,
-        feeReceiverAssociatedTokenAddress: PublicKey
+        feeVaultAssociatedTokenAddress: PublicKey
     ): Promise<Transaction> {
 
         const tx = await this._program.methods.withdrawTokenStream().accounts({
@@ -378,7 +378,7 @@ export class ZebecTransactionBuilder {
             mint: tokenMintAddress,
             pdaAccountTokenAccount: zebecVaultAssociatedAccountAddress,
             destTokenAccount: receiverAssociatedTokenAddress,
-            feeReceiverAssociatedTokenAddress: feeReceiverAssociatedTokenAddress
+            feeReceiverTokenAccount: feeVaultAssociatedTokenAddress
         }).transaction();
 
         return tx
@@ -396,7 +396,7 @@ export class ZebecTransactionBuilder {
         tokenMintAddress: PublicKey,
         zebecVaultAssociatedTokenAddress: PublicKey,
         receiverAssociatedTokenAddress: PublicKey,
-        feeReceiverAssociatedTokenAddress: PublicKey
+        feeVaultAssociatedTokenAddress: PublicKey
     ): Promise<Transaction>{
 
         const tx = await this._program.methods.cancelTokenStream().accounts({
@@ -415,7 +415,7 @@ export class ZebecTransactionBuilder {
             mint: tokenMintAddress,
             pdaAccountTokenAccount: zebecVaultAssociatedTokenAddress,
             destTokenAccount: receiverAssociatedTokenAddress,
-            feeReceiverTokenAccount: feeReceiverAssociatedTokenAddress
+            feeReceiverTokenAccount: feeVaultAssociatedTokenAddress
         }).transaction();
 
         return tx

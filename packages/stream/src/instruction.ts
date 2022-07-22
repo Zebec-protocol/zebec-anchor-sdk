@@ -313,6 +313,13 @@ export class ZebecTransactionBuilder {
         amount: number
     ): Promise<Transaction> {
 
+        const dataSize = 8+8+8+8+8+8+32+32+8+8+200;
+
+        const createAccountIx = await this._program.account.stream.createInstruction(
+            escrowAccountKeypair,
+            dataSize
+        );
+
         const startTimeBN = new BN(startTime);
         const endTimeBN = new BN(endTime);
         const amountBN = new BN(amount);
@@ -333,7 +340,7 @@ export class ZebecTransactionBuilder {
             tokenProgram: TOKEN_PROGRAM_ID,
             mint: tokenMintAddress,
             rent: SYSVAR_RENT_PUBKEY
-        }).signers([escrowAccountKeypair]).transaction();
+        }).preInstructions([createAccountIx]).signers([escrowAccountKeypair]).transaction();
 
         return tx;
     }

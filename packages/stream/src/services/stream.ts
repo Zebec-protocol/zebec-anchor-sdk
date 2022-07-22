@@ -785,7 +785,7 @@ export class ZebecTokenStream extends ZebecStream implements IZebecStream {
 
         const [zebecVaultAssociatedTokenAddress,] = await this._findAssociatedTokenAddress(zebecVaultAddress, tokenMintAddress);
         const [receiverAssociatedTokenAddress,] = await this._findAssociatedTokenAddress(receiverAddress, tokenMintAddress);
-        const [feeReceiverAssociatedTokenAddress,] = await this._findAssociatedTokenAddress(this.feeReceiverAddress, tokenMintAddress);
+        const [feeReceiverAssociatedTokenAddress,] = await this._findAssociatedTokenAddress(feeVaultAddress, tokenMintAddress);
 
         const anchorTx = await this.transactionBuilder.execStreamCancelToken(
             senderAddress,

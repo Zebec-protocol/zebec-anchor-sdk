@@ -396,7 +396,7 @@ export class ZebecTransactionBuilder {
         tokenMintAddress: PublicKey,
         escrowAssociatedTokenAddress: PublicKey,
         receiverAssociatedTokenAddress: PublicKey,
-        feeReceiverAssociatedTokenAddress: PublicKey
+        feeRecieverAssociatedTokenAddress: PublicKey
     ): Promise<Transaction>{
 
         const tx = await this._program.methods.cancelTokenStream().accounts({
@@ -415,7 +415,7 @@ export class ZebecTransactionBuilder {
             mint: tokenMintAddress,
             pdaAccountTokenAccount: escrowAssociatedTokenAddress,
             destTokenAccount: receiverAssociatedTokenAddress,
-            feeReceiverTokenAccount: feeReceiverAssociatedTokenAddress
+            feeRecieverTokenAccount: feeRecieverAssociatedTokenAddress
         }).transaction();
 
         return tx

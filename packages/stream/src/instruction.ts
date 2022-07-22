@@ -165,7 +165,7 @@ export class ZebecTransactionBuilder {
 
         const tx = await this._program.methods.tokenWithdrawal(amountBN).accounts({
             zebecVault: zebecVaultAddress,
-            wtihdrawData: withdrawEscrowDataAccountAddress,
+            withdrawData: withdrawEscrowDataAccountAddress,
             sourceAccount: senderAddress,
             systemProgram: SystemProgram.programId,
             tokenProgram: TOKEN_PROGRAM_ID,

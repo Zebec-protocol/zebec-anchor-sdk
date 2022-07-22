@@ -44,7 +44,7 @@ export class ZebecTransactionBuilder {
         ).accounts({
             owner: feeReceiverAddress,
             feeVault: feeVaultAddress,
-            createVaultData: feeVaultDataAddress,
+            vaultData: feeVaultDataAddress,
             systemProgram: SystemProgram.programId,
             rent: SYSVAR_RENT_PUBKEY
         }).transaction();
@@ -60,7 +60,7 @@ export class ZebecTransactionBuilder {
 
         const tx = await this._program.methods.withdrawFeesSol().accounts({
             feeOwner: feeReceiverAddress,
-            createVaultData: feeVaultDataAddress,
+            vaultData: feeVaultDataAddress,
             feeVault: feeVaultAddress,
             systemProgram: SystemProgram.programId,
             rent: SYSVAR_RENT_PUBKEY
@@ -80,7 +80,7 @@ export class ZebecTransactionBuilder {
 
         const tx = await this._program.methods.withdrawFeesToken().accounts({
             feeOwner: feeReceiverAddress,
-            createVaultData: feeVaultDataAddress,
+            vaultData: feeVaultDataAddress,
             feeVault: feeVaultAddress,
             systemProgram: SystemProgram.programId,
             tokenProgram: TOKEN_PROGRAM_ID,
@@ -209,7 +209,7 @@ export class ZebecTransactionBuilder {
             dataAccount: escrowAccountKeypair.publicKey,
             withdrawData: withdrawEscrowDataAccountAddress,
             feeOwner: feeReceiverAddress,
-            createVaultData: feeVaultDataAddress,
+            vaultData: feeVaultDataAddress,
             feeVault: feeVaultAddress,
             systemProgram: SystemProgram.programId,
             sender: senderAddress,
@@ -237,7 +237,7 @@ export class ZebecTransactionBuilder {
             dataAccount: escrowAccountAddress,
             withdrawData: withdrawEscrowDataAccountAddress,
             feeOwner: feeReceiverAddress,
-            createVaultData: feeVaultDataAddress,
+            vaultData: feeVaultDataAddress,
             feeVault: feeVaultAddress,
             systemProgram: SystemProgram.programId
         }).transaction();
@@ -263,7 +263,7 @@ export class ZebecTransactionBuilder {
             dataAccount: escrowDataAccountAddress,
             withdrawData: withdrawEscrowDataAccountAddress,
             feeOwner: feeReceiverAddress,
-            createVaultData: feeVaultDataAddress,
+            vaultData: feeVaultDataAddress,
             feeVault: feeVaultAddress,
             systemProgram: SystemProgram.programId
         }).transaction();
@@ -334,7 +334,7 @@ export class ZebecTransactionBuilder {
             dataAccount: escrowAccountKeypair.publicKey,
             withdrawData: withdrawEscrowDataAccountAddress,
             feeOwner: feeReceiverAddress,
-            createVaultData: feeVaultDataAddress,
+            vaultData: feeVaultDataAddress,
             feeVault: feeVaultAddress,
             sourceAccount: senderAddress,
             destAccount: receiverAddress,
@@ -366,7 +366,7 @@ export class ZebecTransactionBuilder {
             destAccount: receiverAddress,
             sourceAccount: senderAddress,
             feeOwner: feeReceiverAddress,
-            createVaultData: feeVaultDataAddress,
+            vaultData: feeVaultDataAddress,
             feeVault: feevaultAddress,
             zebecVault: zebecVaultAddress,
             dataAccount: escrowAccountAddress,
@@ -396,14 +396,14 @@ export class ZebecTransactionBuilder {
         tokenMintAddress: PublicKey,
         escrowAssociatedTokenAddress: PublicKey,
         receiverAssociatedTokenAddress: PublicKey,
-        feeRecieverAssociatedTokenAddress: PublicKey
+        feeReceiverAssociatedTokenAddress: PublicKey
     ): Promise<Transaction>{
 
         const tx = await this._program.methods.cancelTokenStream().accounts({
             destAccount: receiverAddress,
             sourceAccount: senderAddress,
             feeOwner: feeReceiverAddress,
-            createVaultData: feeVaultDataAddress,
+            vaultData: feeVaultDataAddress,
             feeVault: feeVaultAddress,
             zebecVault: zebecVaultAddress,
             dataAccount: escrowAccountAddress,
@@ -415,7 +415,7 @@ export class ZebecTransactionBuilder {
             mint: tokenMintAddress,
             pdaAccountTokenAccount: escrowAssociatedTokenAddress,
             destTokenAccount: receiverAssociatedTokenAddress,
-            feeRecieverTokenAccount: feeRecieverAssociatedTokenAddress
+            feeReceiverTokenAccount: feeReceiverAssociatedTokenAddress
         }).transaction();
 
         return tx

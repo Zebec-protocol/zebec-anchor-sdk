@@ -783,7 +783,7 @@ export class ZebecTokenStream extends ZebecStream implements IZebecStream {
         const [feeVaultDataAddress,] = await this._findFeeVaultDataAccount(this.feeReceiverAddress);
         const [withdrawEscrowDataAccountAddress,] = await this._findTokenWithdrawEscrowAccount(senderAddress, tokenMintAddress);
 
-        const [escrowAssociatedTokenAddress,] = await this._findAssociatedTokenAddress(escrowAccountAddress, tokenMintAddress);
+        const [zebecVaultAssociatedTokenAddress,] = await this._findAssociatedTokenAddress(zebecVaultAddress, tokenMintAddress);
         const [receiverAssociatedTokenAddress,] = await this._findAssociatedTokenAddress(receiverAddress, tokenMintAddress);
         const [feeReceiverAssociatedTokenAddress,] = await this._findAssociatedTokenAddress(this.feeReceiverAddress, tokenMintAddress);
 
@@ -797,7 +797,7 @@ export class ZebecTokenStream extends ZebecStream implements IZebecStream {
             escrowAccountAddress,
             withdrawEscrowDataAccountAddress,
             tokenMintAddress,
-            escrowAssociatedTokenAddress,
+            zebecVaultAssociatedTokenAddress,
             receiverAssociatedTokenAddress,
             feeReceiverAssociatedTokenAddress
         );

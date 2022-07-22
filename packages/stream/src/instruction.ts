@@ -394,7 +394,7 @@ export class ZebecTransactionBuilder {
         escrowAccountAddress: PublicKey,
         withdrawEscrowDataAccountAddress: PublicKey,
         tokenMintAddress: PublicKey,
-        escrowAssociatedTokenAddress: PublicKey,
+        zebecVaultAssociatedTokenAddress: PublicKey,
         receiverAssociatedTokenAddress: PublicKey,
         feeReceiverAssociatedTokenAddress: PublicKey
     ): Promise<Transaction>{
@@ -413,7 +413,7 @@ export class ZebecTransactionBuilder {
             associatedTokenProgram: ASSOCIATED_PROGRAM_ID,
             rent: SYSVAR_RENT_PUBKEY,
             mint: tokenMintAddress,
-            pdaAccountTokenAccount: escrowAssociatedTokenAddress,
+            pdaAccountTokenAccount: zebecVaultAssociatedTokenAddress,
             destTokenAccount: receiverAssociatedTokenAddress,
             feeReceiverTokenAccount: feeReceiverAssociatedTokenAddress
         }).transaction();

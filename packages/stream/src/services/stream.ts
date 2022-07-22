@@ -835,13 +835,13 @@ export class ZebecTokenStream extends ZebecStream implements IZebecStream {
         const escrowAccountAddress = new PublicKey(escrow);
 
         const [zebecVaultAddress,] = await this._findZebecVaultAccount(senderAddress);
-        const [withdrawEscrowAccountAddress, ] = await this._findTokenWithdrawEscrowAccount(senderAddress, tokenMintAddress);
+        const [withdrawEscrowAccountAddress, ] = await this._findTokenWithdrawEscrowAccount(zebecVaultAddress, tokenMintAddress);
         const [feeVaultAddress,] = await this._findFeeVaultAddress(this.feeReceiverAddress);
         const [feeVaultDataAddress,] = await this._findFeeVaultDataAccount(this.feeReceiverAddress);
         
         const [zebecVaultAssociatedAccountAddress,] = await this._findAssociatedTokenAddress(zebecVaultAddress, tokenMintAddress);
         const [receiverAssociatedTokenAddress,] = await this._findAssociatedTokenAddress(receiverAddress, tokenMintAddress);
-        const [feeVaultAssociatedTokenAddress,] = await this._findAssociatedTokenAddress(feeVaultAddress, tokenMintAddress);
+        const [feeVaultAssociatedTokenAddress,] = await this._findAssociatedTokenAddress(this.feeReceiverAddress, tokenMintAddress);
 
         const anchorTx = await this.transactionBuilder.execStreamWithdrawToken(
             receiverAddress,

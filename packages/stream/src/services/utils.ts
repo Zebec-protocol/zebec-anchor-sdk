@@ -1,6 +1,25 @@
 import { Connection, ParsedAccountData, SYSVAR_CLOCK_PUBKEY, TransactionSignature, ConfirmOptions, LAMPORTS_PER_SOL, PublicKey, Transaction } from "@solana/web3.js";
 import { AnchorProvider, Program, Wallet } from "@project-serum/anchor";
+import { ZEBEC_PROGRAM_IDL } from "../idl";
 
+
+export const parseErrorMessage = (message: string): string => {
+    const regex = /error: 0x(.*)/gm;
+    const errors = ZEBEC_PROGRAM_IDL.errors;
+
+    let m: any, errcode: number;
+
+    while ((m = regex.exec(message)) !== null) {
+        // This is necessary to avoid infinite loops with zero-width matches
+        if (m.index === regex.lastIndex) { regex.lastIndex++; }
+        if (m.length >  1) { errcode = parseInt(m[1], 16);}
+    }
+
+    const errObj = errors.find(e => e.code === errcode)
+    if (errcode && errObj) { return errObj.msg.toLowerCase() }
+
+    return message
+}
 
 const getErrorForTransaction = async (connection: Connection, txid: TransactionSignature) => {
     // wait for all confirmation before geting transaction
@@ -12,6 +31,7 @@ const getErrorForTransaction = async (connection: Connection, txid: TransactionS
     );
 
     const tx = await connection.getParsedTransaction(txid, commitment);
+    console.log("parsed transaction: ", tx);
     const errors: string[] = [];
 
     if(tx?.meta && tx.meta.logMessages) {
@@ -32,8 +52,8 @@ const getErrorForTransaction = async (connection: Connection, txid: TransactionS
     return errors;
 }
 
-export const sendOne = async(tx: Transaction, provider: AnchorProvider): Promise<TransactionSignature> => {
-    console.log("--- smart txn - sending one...", tx);
+export const sendTx = async(tx: Transaction, provider: AnchorProvider): Promise<TransactionSignature> => {
+    console.log("------ sending transaction --------", tx);
     const connection = provider.connection;
     const rawTxn = tx.serialize();
 
@@ -47,6 +67,7 @@ export const sendOne = async(tx: Transaction, provider: AnchorProvider): Promise
     const retryTimeout = 3000; //ms
 
     const txid = await connection.sendRawTransaction(rawTxn, options);
+
     (async () => {
         while(!done && now() - startTime < retryTimeout) {
             connection.sendRawTransaction(rawTxn, options);
@@ -78,6 +99,8 @@ export const sendOne = async(tx: Transaction, provider: AnchorProvider): Promise
         done = true;
     }
 
+    console.log("status: ", status);
+
     if (status?.err) {
         let errors: string[] = [];
         if (
@@ -103,29 +126,17 @@ export const getAmountInLamports = (amount: number): number => {
 
 export const getTokenAmountInLamports = async (amount: number, tokenMintAddress: PublicKey, program: Program): Promise<number> => {
     // get Amount Decimal Digit number
-    const tokenMetaData = await program.provider.connection.getTokenSupply(tokenMintAddress);
+    const connection = program.provider.connection;
+    const tokenMetaData = await connection.getTokenSupply(tokenMintAddress);
     const decimals = tokenMetaData.value?.decimals;
     return amount * Math.pow(10, decimals);
-}
-
+};
 
 export const getClusterTime = async(provider: AnchorProvider) => {
     const parsedClock = await provider.connection.getParsedAccountInfo(SYSVAR_CLOCK_PUBKEY)
     const parsedClockAccount = (parsedClock.value!.data as ParsedAccountData).parsed;
     const clusterTimestamp = parsedClockAccount.info.unixTimestamp;
     return clusterTimestamp
-};
-
-export const getTxTime = async(provider:AnchorProvider, tx: TransactionSignature) => {
-    await new Promise((r) => setTimeout(r, 1000));
-    let startStreamTxTime = await provider.connection.getTransaction(
-        tx,
-        {
-            commitment: "confirmed"
-        }
-    );
-    let { blockTime } = startStreamTxTime;
-    return blockTime
 };
 
 export const now = () => {
@@ -152,34 +163,15 @@ export const initAnchorProvider = (
 
 export class ConsoleLog {
     readonly logger: boolean;
+    
     constructor(logger: boolean) {
         this.logger = logger;
     }
 
     info(message: string, value: any = null) {
-        if (this.logger) { 
-            if (value) {
-                console.log(message, value); 
-            }
-            console.log(message);
+        if (this.logger && value) { 
+            console.log(message, value); 
         }
-    }
-
-    error(message: string, value: any = null) {
-        if (this.logger) { 
-            if (value) {
-                console.error(message, value); 
-            }
-            console.error(message);
-         }
-    }
-
-    warning(message: string, value: any = null) {
-        if(this.logger) { 
-            if (value) {
-                console.warn(message, value); 
-            }
-            console.warn(message);
-         }
+        console.log(message);
     }
 }

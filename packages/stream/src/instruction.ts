@@ -1,15 +1,12 @@
 import { BN, Program } from "@project-serum/anchor";
 import { ASSOCIATED_PROGRAM_ID, TOKEN_PROGRAM_ID } from "@project-serum/anchor/dist/cjs/utils/token";
-import { 
-    Keypair, PublicKey, SystemProgram, 
-    SYSVAR_RENT_PUBKEY, Transaction, TransactionInstruction, TransactionSignature 
-} from "@solana/web3.js";
+import { Keypair, PublicKey, SystemProgram, SYSVAR_RENT_PUBKEY, Transaction } from "@solana/web3.js";
 
 /**
- * ## Zebec Instruction Builder 
+ * ## Zebec Transaction Builder 
  *
- * Zebec Instruction Builder object provides a set of
- * dynamically generated instruction that is mapped one-to-one to 
+ * Zebec Transaction Builder object provides a set of
+ * dynamically generated transaction that is mapped one-to-one to 
  * program methods.
  * This can be used as follows:
  *
@@ -17,7 +14,7 @@ import {
  *
  * ```javascript
  * const txBuilder = new ZebecTransactionBuilder(program)
- * txBuilder.<specific-method-for-instruction>
+ * txBuilder.<method>
  * ```
  *
  * [here](https://github.com/Zebec-protocol/zebec-anchor-sdk/blob/master/packages/stream/src/instruction.ts).
@@ -59,17 +56,17 @@ export class ZebecTransactionBuilder {
         feeReceiverAddress: PublicKey,
         feeVaultDataAddress: PublicKey,
         feeVaultAddress: PublicKey
-    ): Promise<TransactionSignature> {
+    ): Promise<Transaction> {
 
-        const signature = await this._program.methods.withdrawFeesSol().accounts({
+        const tx = await this._program.methods.withdrawFeesSol().accounts({
             feeOwner: feeReceiverAddress,
             createVaultData: feeVaultDataAddress,
             feeVault: feeVaultAddress,
             systemProgram: SystemProgram.programId,
             rent: SYSVAR_RENT_PUBKEY
-        }).rpc();
+        }).transaction();
 
-        return signature
+        return tx
     }
 
     async execRetrieveTokenFees(
@@ -79,9 +76,9 @@ export class ZebecTransactionBuilder {
         tokenMintAddress: PublicKey,
         feeVaultTokenAccount: PublicKey,
         feeOwnerTokenAccount: PublicKey
-    ): Promise<TransactionSignature> {
+    ): Promise<Transaction> {
 
-        const signature = await this._program.methods.withdrawFeesToken().accounts({
+        const tx = await this._program.methods.withdrawFeesToken().accounts({
             feeOwner: feeReceiverAddress,
             createVaultData: feeVaultDataAddress,
             feeVault: feeVaultAddress,
@@ -92,9 +89,9 @@ export class ZebecTransactionBuilder {
             mint: tokenMintAddress,
             feeReceiverVaultTokenAccount: feeVaultTokenAccount,
             feeOwnerTokenAccount: feeOwnerTokenAccount
-        }).rpc();
+        }).transaction();
 
-        return signature
+        return tx
     }
 
     async execDepositSolToZebecWallet(
@@ -196,7 +193,7 @@ export class ZebecTransactionBuilder {
         amount: number,
     ): Promise<Transaction> {
 
-        const dataSize = 8+8+8+8+8+32+32+8+8+32+200; // WHY???? HOW???
+        const dataSize = 8+8+8+8+8+32+32+8+8+32+200;
         
         const createAccountIx = await this._program.account.stream.createInstruction(
             escrowAccountKeypair,
@@ -207,7 +204,7 @@ export class ZebecTransactionBuilder {
         const endTimeBN = new BN(endTime);
         const amountBN = new BN(amount);
 
-        const signature = this._program.methods.nativeStream(startTimeBN, endTimeBN, amountBN)
+        const tx = this._program.methods.nativeStream(startTimeBN, endTimeBN, amountBN)
         .accounts({
             dataAccount: escrowAccountKeypair.publicKey,
             withdrawData: withdrawEscrowDataAccountAddress,
@@ -219,7 +216,7 @@ export class ZebecTransactionBuilder {
             receiver: receiverAddress
         }).preInstructions([createAccountIx]).signers([escrowAccountKeypair]).transaction();
 
-        return signature
+        return tx;
     }
 
     async execStreamWithdrawSol(
@@ -299,7 +296,7 @@ export class ZebecTransactionBuilder {
             dataAccount: escrowAccountAddress
         }).transaction();
 
-        return tx
+        return tx;
     }
 
     async execStreamInitToken(
@@ -430,5 +427,6 @@ export class ZebecTransactionBuilder {
 
         return tx;
     }
+    
     // instant transfers SOL/TOKEN
 }

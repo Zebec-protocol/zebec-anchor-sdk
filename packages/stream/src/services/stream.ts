@@ -629,6 +629,50 @@ export class ZebecNativeStream extends ZebecStream implements IZebecStream {
             }
         }
     }
+
+    async instantTransfer(data: any): Promise<MZebecResponse> {
+
+        const { sender, receiver, amount } = data;
+        this.console.info("instant token transfer: ", data);
+
+        const senderAddress = new PublicKey(sender);
+        const receiverAddress = new PublicKey(receiver);
+        const amountInLamports = getAmountInLamports(amount);
+
+        const [zebecVaultAddress,] = await this._findZebecVaultAccount(senderAddress);
+        const [withdrawEscrowAccountAddress,] = await this._findSolWithdrawEscrowAccount(senderAddress);
+
+        const anchorTx = await this.transactionBuilder.execInstantSolTransfer(
+            zebecVaultAddress,
+            senderAddress,
+            receiverAddress,
+            withdrawEscrowAccountAddress,
+            amountInLamports
+        );
+
+        const tx = await this._makeTxn(anchorTx);
+        const signedRawTx = await this.anchorProvider.wallet.signTransaction(tx);
+        this.console.info("transaction after signing: ", signedRawTx);
+        
+        try {
+            const signature = await sendTx(signedRawTx, this.anchorProvider);
+            this.console.info(`transaction success, TXID: ${signature}`);
+            
+            return {
+                status: "success",
+                message: `transfer completed`,
+                data: {
+                    transactionHash: signature
+                }
+            }
+        } catch (err) {
+            return {
+                status: "error",
+                message: parseErrorMessage(err.message),
+                data: null
+            }
+        }
+    }
 }
 
 export class ZebecTokenStream extends ZebecStream implements IZebecStream {
@@ -867,6 +911,55 @@ export class ZebecTokenStream extends ZebecStream implements IZebecStream {
             return {
                 status: "success",
                 message: `withdraw successful`,
+                data: {
+                    transactionHash: signature,
+                }
+            }
+        } catch (err) {
+            return {
+                status: "error",
+                message: parseErrorMessage(err.message),
+                data: null
+            }
+        }
+    }
+
+    async instantTransfer(data: any): Promise<MZebecResponse> {
+        const { sender, receiver, token_mint_address, amount } = data;
+        this.console.info("token instant transfer: ", data);
+
+        const senderAddress = new PublicKey(sender);
+        const receiverAddress = new PublicKey(receiver);
+        const tokenMintAddress = new PublicKey(token_mint_address);
+
+        const amountInLamports = await getTokenAmountInLamports(amount, tokenMintAddress, this.program);
+        const [zebecVaultAddress,] = await this._findZebecVaultAccount(senderAddress);
+        const [withdrawEscrowDataAccountAddress,] = await this._findTokenWithdrawEscrowAccount(senderAddress, tokenMintAddress);
+        const [zebecVaultAssociatedTokenAddress,] = await this._findAssociatedTokenAddress(zebecVaultAddress, tokenMintAddress);
+        const [receiverAssociatedTokenAddress,] = await this._findAssociatedTokenAddress(receiverAddress, tokenMintAddress);
+
+
+        const anchorTx = await this.transactionBuilder.execInstantTokenTransfer(
+            zebecVaultAddress,
+            receiverAddress,
+            senderAddress,
+            withdrawEscrowDataAccountAddress,
+            tokenMintAddress,
+            zebecVaultAssociatedTokenAddress,
+            receiverAssociatedTokenAddress,
+            amountInLamports
+        );
+
+        const tx = await this._makeTxn(anchorTx);
+        const signedRawTx = await this.anchorProvider.wallet.signTransaction(tx);
+        this.console.info("transaction after signing: ", signedRawTx);
+
+        try {
+            const signature = await sendTx(signedRawTx, this.anchorProvider);
+            this.console.info(`transaction success, TXID: ${signature}`);
+            return {
+                status: "success",
+                message: `token instant transfer successful`,
                 data: {
                     transactionHash: signature,
                 }

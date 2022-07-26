@@ -45,6 +45,8 @@ export interface IZebecStream extends IBaseStream  {
     resume(data: MPauseResumeWithdrawCancel): Promise<MZebecResponse>
 
     withdraw(data: MPauseResumeWithdrawCancel): Promise<MZebecResponse>
+
+    instantTransfer(data: any): Promise<MZebecResponse>
 }
 
 export interface ITokenZebecStream extends IBaseStream  {
@@ -58,4 +60,6 @@ export interface ITokenZebecStream extends IBaseStream  {
     resume(data: MPauseResumeWithdrawCancel): Promise<MZebecResponse>
 
     withdraw(data: MPauseResumeWithdrawCancel): Promise<MZebecResponse>
+    
+    instantTransfer(data: any): Promise<MZebecResponse>
 }

@@ -1,6 +1,7 @@
 import { BN, Program } from "@project-serum/anchor";
 import { ASSOCIATED_PROGRAM_ID, TOKEN_PROGRAM_ID } from "@project-serum/anchor/dist/cjs/utils/token";
 import { Keypair, PublicKey, SystemProgram, SYSVAR_RENT_PUBKEY, Transaction } from "@solana/web3.js";
+import { SPL_ASSOCIATED_TOKEN_ACCOUNT_PROGRAM_ID } from "./config";
 
 /**
  * ## Zebec Transaction Builder 
@@ -437,5 +438,57 @@ export class ZebecTransactionBuilder {
         return tx;
     }
     
-    // instant transfers SOL/TOKEN
+    async execInstantSolTransfer(
+        zebecVaultAddress: PublicKey,
+        senderAddress: PublicKey,
+        receiverAddress: PublicKey,
+        withdrawEscrowDataAccountAddress: PublicKey,
+        amount: number
+    ): Promise<Transaction> {
+        const amountBN = new BN(amount);
+
+        const tx = await this._program.methods.instantNativeTransfer(
+            amountBN
+        ).accounts({
+            zebecVault: zebecVaultAddress,
+            sender: senderAddress,
+            receiver: receiverAddress,
+            withdrawData: withdrawEscrowDataAccountAddress,
+            systemProgram: SystemProgram.programId
+        }).transaction();
+
+        return tx;
+    }
+
+    async execInstantTokenTransfer(
+        zebecVaultAddress: PublicKey,
+        receiverAddress: PublicKey,
+        senderAddress: PublicKey,
+        withdrawEscrowDataAccountAddress: PublicKey,
+        tokenMintAddress: PublicKey,
+        zebecVaultAssociatedTokenAddress: PublicKey,
+        receiverAssociatedTokenAddress: PublicKey,
+        amount: number
+    ): Promise<Transaction> {
+
+        const amountBN = new BN(amount);
+
+        const tx = await this._program.methods.instantTokenTransfer(
+            amountBN
+        ).accounts({
+            zebecVault: zebecVaultAddress,
+            destAccount: receiverAddress,
+            sourceAccount: senderAddress,
+            withdrawData: withdrawEscrowDataAccountAddress,
+            systemProgram: SystemProgram.programId,
+            tokenProgram: TOKEN_PROGRAM_ID,
+            associatedTokenProgram: SPL_ASSOCIATED_TOKEN_ACCOUNT_PROGRAM_ID,
+            rent: SYSVAR_RENT_PUBKEY,
+            mint: tokenMintAddress,
+            pdaAccountTokenAccount: zebecVaultAssociatedTokenAddress,
+            receiverTokenAccount: receiverAssociatedTokenAddress
+        }).transaction();
+
+        return tx;
+    }
 }

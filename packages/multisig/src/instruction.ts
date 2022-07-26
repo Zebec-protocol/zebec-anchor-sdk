@@ -15,7 +15,7 @@ export class ZebecTransactionBuilder {
         this._streamProgram = streamProgram;
     }
 
-    async approveTransaction(
+    async execApproveTransaction(
         multisigSafeAddress: PublicKey,
         zebecAccountAndDataStoringTxAccount: PublicKey,
         senderAddress: PublicKey
@@ -30,25 +30,38 @@ export class ZebecTransactionBuilder {
         return tx;
     }
 
-    async executeTransaction(
+    async execTransaction(
         multisigSafeAddress: PublicKey,
         multisigDataAccount: PublicKey,
         multisigSafeZebecWalletAddress: PublicKey,
         zebecAccountAndDataStoringTxAccount: PublicKey
-    ): Promise<Transaction> {
+    ): Promise<any> {
 
-        const zebecStreamAccounts = [
+        const zebecDepositSolAccounts = [
             { pubkey: multisigSafeZebecWalletAddress, isSigner: false, isWritable: true },
-            { pubkey: multisigSafeAddress, isSigner: false, isWritable: true },
-            { pubkey: SystemProgram.programId, isSigner: false, isWritable: false },
-            { pubkey: this._streamProgram.programId, isSigner: false, isWritable: false }
-        ]
+            { pubkey: multisigSafeAddress, isSigner: true, isWritable: true },
+            { pubkey: SystemProgram.programId, isSigner: false, isWritable: false }
+        ];
 
         const tx = await this._multisigProgram.methods.executeTransaction().accounts({
             multisig: multisigDataAccount,
-            multisigSafeAddress,
+            multisigSigner: multisigSafeAddress,
             transaction: zebecAccountAndDataStoringTxAccount
-        }).remainingAccounts(zebecStreamAccounts).transaction();
+        }).remainingAccounts(
+            zebecDepositSolAccounts.map((t: any) => {
+                if (t.pubkey.equals(multisigSafeAddress)) {
+                    return { ...t, isSigner: false };
+                }
+                console.log(t)
+                return t;
+              })
+              .concat({
+                pubkey: this._streamProgram.programId,
+                isWritable: false,
+                isSigner: false,
+              })
+        ).transaction();
+        console.log(tx, "hello")
 
         return tx;
     }
@@ -72,7 +85,7 @@ export class ZebecTransactionBuilder {
         const preIx = await this._multisigProgram.account.multisig.createInstruction(
             multisigDataAccount,
             multisigAccountSize
-        )
+        );
 
         // const multisigDataAccount = Keypair.generate(); // in test code its `multisig`
         const tx = await this._multisigProgram.methods.createMultisig(

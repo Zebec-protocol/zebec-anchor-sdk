@@ -486,7 +486,7 @@ export class ZebecTransactionBuilder {
             rent: SYSVAR_RENT_PUBKEY,
             mint: tokenMintAddress,
             pdaAccountTokenAccount: zebecVaultAssociatedTokenAddress,
-            receiverTokenAccount: receiverAssociatedTokenAddress
+            destTokenAccount: receiverAssociatedTokenAddress
         }).transaction();
 
         return tx;

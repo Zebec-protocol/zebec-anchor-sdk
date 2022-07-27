@@ -1,4 +1,5 @@
 import { BN, Program, web3 } from "@project-serum/anchor";
+import { ASSOCIATED_PROGRAM_ID, TOKEN_PROGRAM_ID } from "@project-serum/anchor/dist/cjs/utils/token";
 import { AccountMeta, Keypair, PublicKey, SystemProgram, SYSVAR_RENT_PUBKEY, Transaction } from "@solana/web3.js";
 
 // Test code Mappings
@@ -66,7 +67,6 @@ export class ZebecTransactionBuilder {
         return tx;
     }
 
-    // create safe
     async execCreateSafe(
         multisigDataAccount: Keypair,
         multisigSafeNonce: number,
@@ -97,7 +97,6 @@ export class ZebecTransactionBuilder {
         return tx;
     }
 
-    // create fee vault
     async execFeeVault(
         feeReceiverAddress: PublicKey,
         feeVaultAddress: PublicKey,
@@ -123,54 +122,60 @@ export class ZebecTransactionBuilder {
         return tx;
     }
 
-    // Deposit SOL
     async execDepositSol(
+        zebecVaultAddress: PublicKey,
         senderAddress: PublicKey,
-        multisigSafeAddress: PublicKey,
-        multisigDataAccount: PublicKey,
-        multisigSafeZebecWalletAddress: PublicKey,
-        zebecAccountAndDataStoringTxAccount: Keypair,
+        receiverAddress: PublicKey,
+        withdrawEscrowDataAccountAddress: PublicKey,
         amount: number
     ): Promise<Transaction> {
+        const amountBN = new BN(amount);
 
-        const depositAmountBN = new BN(amount);
-        const txAccountSize = 1000; // Correct it later
-
-        const depositSolIxBuffer = this._streamProgram.coder.instruction.encode(
-            "depositSol",
-            { amount: depositAmountBN }
-        );
-
-        const zebecDepositSolAccounts = [
-            { pubkey: multisigSafeZebecWalletAddress, isSigner: false, isWritable: true },
-            { pubkey: multisigSafeAddress, isSigner: true, isWritable: true },
-            { pubkey: SystemProgram.programId, isSigner: false, isWritable: false }
-        ];
-
-        const createTxDataStoringAccountIx = await this._multisigProgram.account.transaction.createInstruction(
-            zebecAccountAndDataStoringTxAccount,
-            txAccountSize
-        );
-
-        const tx = await this._multisigProgram.methods.createTransaction(
-            this._streamProgram.programId,
-            zebecDepositSolAccounts,
-            depositSolIxBuffer
+        const tx = await this._streamProgram.methods.instantNativeTransfer(
+            amountBN
         ).accounts({
-            multisig: multisigDataAccount,
-            transaction: zebecAccountAndDataStoringTxAccount.publicKey,
-            proposer: senderAddress
-        }).preInstructions([createTxDataStoringAccountIx]).signers([zebecAccountAndDataStoringTxAccount]).transaction();
+            zebecVault: zebecVaultAddress,
+            sender: senderAddress,
+            receiver: receiverAddress,
+            withdrawData: withdrawEscrowDataAccountAddress,
+            systemProgram: SystemProgram.programId
+        }).transaction();
 
-        // sign this transaction and create signature
-        // store the signature
-        // approve the transaction with other owners
-        // after all the transaction is signed by the owners
-        // executeTransaction
         return tx;
     }
 
-    // Init Stream
+    async execDepositToken(
+        zebecVaultAddress: PublicKey,
+        receiverAddress: PublicKey,
+        senderAddress: PublicKey,
+        withdrawEscrowDataAccountAddress: PublicKey,
+        tokenMintAddress: PublicKey,
+        zebecVaultAssociatedTokenAddress: PublicKey,
+        receiverAssociatedTokenAddress: PublicKey,
+        amount: number
+    ): Promise<Transaction> {
+
+        const amountBN = new BN(amount);
+
+        const tx = await this._streamProgram.methods.instantTokenTransfer(
+            amountBN
+        ).accounts({
+            zebecVault: zebecVaultAddress,
+            destAccount: receiverAddress,
+            sourceAccount: senderAddress,
+            withdrawData: withdrawEscrowDataAccountAddress,
+            systemProgram: SystemProgram.programId,
+            tokenProgram: TOKEN_PROGRAM_ID,
+            associatedTokenProgram: ASSOCIATED_PROGRAM_ID,
+            rent: SYSVAR_RENT_PUBKEY,
+            mint: tokenMintAddress,
+            pdaAccountTokenAccount: zebecVaultAssociatedTokenAddress,
+            destTokenAccount: receiverAssociatedTokenAddress
+        }).transaction();
+
+        return tx;
+    }
+
     async execInitStream(
         multisigSafeAddress: PublicKey,
         multisigDataAccount: Keypair,
@@ -239,7 +244,6 @@ export class ZebecTransactionBuilder {
         return tx;
     }
 
-    // Pause Stream
     async execPauseStream(
         multisigSafeAddress: PublicKey,
         receiverAddress: PublicKey,
@@ -281,7 +285,6 @@ export class ZebecTransactionBuilder {
 
     }
 
-    // Resume Stream
     async execResumeStream(
         multisigSafeAddress: PublicKey,
         receiverAddress: PublicKey,
@@ -319,5 +322,4 @@ export class ZebecTransactionBuilder {
 
         return tx;
     }
-    //
 }

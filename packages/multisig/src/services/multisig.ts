@@ -1,6 +1,6 @@
 import { AnchorProvider, Idl, Program } from "@project-serum/anchor";
 import { Keypair, PublicKey, SystemProgram, Transaction } from "@solana/web3.js";
-import { OPERATE, OPERATE_DATA, ZEBEC_MULTISIG_PROGRAM_ID, ZEBEC_STREAM_PROGRAM_ID } from "../config";
+import { OPERATE, OPERATE_DATA, PREFIX, ZEBEC_MULTISIG_PROGRAM_ID, ZEBEC_STREAM_PROGRAM_ID } from "../config";
 import { ZEBEC_MULTISIG_PROGRAM_IDL, ZEBEC_STREAM_PROGRAM_IDL } from "../idl";
 import { ZebecTransactionBuilder } from "../instruction";
 import { ConsoleLog, getAmountInLamports, parseErrorMessage, sendTx } from "./utils";
@@ -35,6 +35,15 @@ export class ZebecMultisig {
         );
         this.consolelog.info(`zebec wallet address: ${zebecVaultAddress.toString()}`);
         return [zebecVaultAddress, nonce]
+    }
+
+    async _findSolWithdrawEscrowAccount(walletAddress: PublicKey): Promise<[PublicKey, number]> {
+        const [withdrawEscrowAccountAddress, nonce] =  await PublicKey.findProgramAddress(
+            [Buffer.from(PREFIX), walletAddress.toBuffer()],
+            this.streamProgram.programId
+        );
+        this.consolelog.info(`withdraw-sol escrow account address: ${withdrawEscrowAccountAddress.toString()}`);
+        return [withdrawEscrowAccountAddress, nonce]
     }
 
     async _findSafeAddress(walletAddress: PublicKey): Promise<[PublicKey, number]> {
@@ -213,35 +222,34 @@ export class ZebecMultisig {
     }
 
     async depositSolToSafe(data: any): Promise<any> {
-        const { sender, safe_address, safe_data_account, amount } = data;
-        this.consolelog.info("deposit sol to safe: ", data);
+       
+        const { sender, safe_address, amount } = data;
 
-        const safeAddress = new PublicKey(safe_address);    // multisigSigner
+        console.log("deposit to safe: ", data);
+
         const senderAddress = new PublicKey(sender);
-        const safeDataAccountAddress = new PublicKey(safe_data_account);
-        const [safeZebecWalletAddress,] = await this._findZebecVaultAccount(safeAddress);
-
-        const zebecAccountAndDataStoringTxAccount = Keypair.generate();
-
+        const zebecSafeAddress = new PublicKey(safe_address);
+        
+        const [zebecVaultAddress,] = await this._findZebecVaultAccount(senderAddress);
+        const [withdrawEscrowDataAccountAddress,] = await this._findSolWithdrawEscrowAccount(senderAddress);
+        
         const amountInLamports = getAmountInLamports(amount);
-
+        
+        console.log("senderAddress", senderAddress.toString())
+        console.log("zebecVaultAddress", zebecVaultAddress.toString())
+        console.log("zebecSafeAddress", zebecSafeAddress.toString())
+        console.log("withdrawEscrowDataAccountAddress", withdrawEscrowDataAccountAddress.toString())
+        
+        
         const anchorTx = await this.transactionBuilder.execDepositSol(
+            zebecVaultAddress,
             senderAddress,
-            safeAddress,
-            safeDataAccountAddress,
-            safeZebecWalletAddress,
-            zebecAccountAndDataStoringTxAccount,
+            zebecSafeAddress,
+            withdrawEscrowDataAccountAddress,
             amountInLamports
         );
 
-        console.log("senderAddress", senderAddress.toString());
-        console.log("safeAddress", safeAddress.toString());
-        console.log("safeData Account", safeDataAccountAddress.toBase58());
-        console.log("Safe Zebec Wallet: ", safeZebecWalletAddress.toBase58());
-        console.log("Zebec Account Data Storing Tx Account: ", zebecAccountAndDataStoringTxAccount.publicKey.toString());
-        
-
-        const tx = await this._makeTxn(anchorTx, zebecAccountAndDataStoringTxAccount);
+        const tx = await this._makeTxn(anchorTx);
         const signedRawTx = await this.anchorProvider.wallet.signTransaction(tx);
         this.consolelog.info("transaction after signing: ", signedRawTx);
 
@@ -252,9 +260,7 @@ export class ZebecMultisig {
                 "status": "success",
                 "message": "deposit successful",
                 "data": {
-                    transactionHash: signature,
-                    zebec_data_account: zebecAccountAndDataStoringTxAccount.publicKey.toBase58(),
-                    zebec_safe_wallet: safeZebecWalletAddress.toBase58()
+                    transactionHash: signature
                 }
             }
         } catch (err) {

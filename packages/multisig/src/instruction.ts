@@ -1,6 +1,8 @@
 import { BN, Program, web3 } from "@project-serum/anchor";
 import { ASSOCIATED_PROGRAM_ID, TOKEN_PROGRAM_ID } from "@project-serum/anchor/dist/cjs/utils/token";
 import { AccountMeta, Keypair, PublicKey, SystemProgram, SYSVAR_RENT_PUBKEY, Transaction } from "@solana/web3.js";
+import { ZEBEC_STREAM } from "./config";
+import { AccountKeys } from "./services/accounts";
 
 // Test code Mappings
 // multisig: MultisigDataAccount
@@ -32,37 +34,17 @@ export class ZebecTransactionBuilder {
     }
 
     async execTransaction(
-        multisigSafeAddress: PublicKey,
-        multisigDataAccount: PublicKey,
-        multisigSafeZebecWalletAddress: PublicKey,
-        zebecAccountAndDataStoringTxAccount: PublicKey
+        safeAddress: PublicKey,
+        safeDataAccount: PublicKey,
+        zebecTxAccount: PublicKey,
+        remainingAccounts: AccountMeta[]
     ): Promise<any> {
 
-        const zebecDepositSolAccounts = [
-            { pubkey: multisigSafeZebecWalletAddress, isSigner: false, isWritable: true },
-            { pubkey: multisigSafeAddress, isSigner: true, isWritable: true },
-            { pubkey: SystemProgram.programId, isSigner: false, isWritable: false }
-        ];
-
         const tx = await this._multisigProgram.methods.executeTransaction().accounts({
-            multisig: multisigDataAccount,
-            multisigSigner: multisigSafeAddress,
-            transaction: zebecAccountAndDataStoringTxAccount
-        }).remainingAccounts(
-            zebecDepositSolAccounts.map((t: any) => {
-                if (t.pubkey.equals(multisigSafeAddress)) {
-                    return { ...t, isSigner: false };
-                }
-                console.log(t)
-                return t;
-              })
-              .concat({
-                pubkey: this._streamProgram.programId,
-                isWritable: false,
-                isSigner: false,
-              })
-        ).transaction();
-        console.log(tx, "hello")
+            multisig: safeDataAccount,
+            multisigSigner: safeAddress,
+            transaction: zebecTxAccount
+        }).remainingAccounts(remainingAccounts).transaction();
 
         return tx;
     }
@@ -73,11 +55,6 @@ export class ZebecTransactionBuilder {
         owners: PublicKey[],
         threshold: number
     ): Promise<Transaction> {
-        // call createMultisig method with (owners, threshold, nonce & context)
-
-        // owners_count:  number of multisig owners OR list of PublicKeys???
-        // threshold: number of signers required to confirm the transaction.
-        // const { owners_count, threshold } = data;
 
         const multisigAccountSize = 200;
         const thresholdBN = new BN(threshold);
@@ -87,7 +64,6 @@ export class ZebecTransactionBuilder {
             multisigAccountSize
         );
 
-        // const multisigDataAccount = Keypair.generate(); // in test code its `multisig`
         const tx = await this._multisigProgram.methods.createMultisig(
             owners, thresholdBN, multisigSafeNonce
         ).accounts({
@@ -104,9 +80,6 @@ export class ZebecTransactionBuilder {
         feePercentage: number
     ): Promise<Transaction> {
 
-        // calculate Fee percentage here.
-        // Fee Percentage must have atmost 2 digits after decimal. 
-        // Eg. 0.25% is acceptable but 0.255% is not ?????? DISCUSS IT WITH THE TEAM, TODO
         const calculatedFeePercentage = new BN(feePercentage * 100);
 
         const tx = await this._streamProgram.methods.createFeeAccount(
@@ -177,11 +150,11 @@ export class ZebecTransactionBuilder {
     }
 
     async execInitStream(
-        multisigSafeAddress: PublicKey,
-        multisigDataAccount: Keypair,
-        zebecAccountAndDataStoringTxAccount: Keypair,
-        streamEscrowAccountAddress: Keypair,
-        withdrawEscrowDataAddress: PublicKey,
+        safeAddress: PublicKey,
+        safeDataAccount: PublicKey,
+        zebecTransactionAccount: Keypair,
+        streamDataAccountAddress: Keypair,
+        withdrawDataAccountAddress: PublicKey,
         feeReceiverAddress: PublicKey,
         feeVaultDataAddress: PublicKey,
         feeVaultAddress: PublicKey,
@@ -197,21 +170,22 @@ export class ZebecTransactionBuilder {
         const amountBN = new BN(amount);
 
         const txAccountSize = 1000;
-        const streamEscrowAccountDataSize = 8+8+8+8+8+32+32+8+8+32+200
+        const streamEscrowAccountDataSize = 8+8+8+8+8+32+32+8+8+32+200;
 
-        const zebecInitStreamAccounts = [
-            { pubkey: streamEscrowAccountAddress.publicKey, isSigner: false, isWritable: true },
-            { pubkey: withdrawEscrowDataAddress, isSigner: false, isWritable: true },
-            { pubkey: feeReceiverAddress, isSigner: false, isWritable: false },
-            { pubkey: feeVaultDataAddress, isSigner: false, isWritable: false },
-            { pubkey: feeVaultAddress, isSigner: false, isWritable: false },
-            { pubkey: multisigSafeAddress, isSigner: true, isWritable: true },
-            { pubkey: receiverAddress, isSigner: false, isWritable: false },
-            { pubkey: SystemProgram.programId, isSigner: false, isWritable: false }
-        ];
+        const zebecInitStreamAccounts = AccountKeys.init(
+            streamDataAccountAddress.publicKey,
+            withdrawDataAccountAddress,
+            feeReceiverAddress,
+            feeVaultDataAddress,
+            feeVaultAddress,
+            safeAddress,
+            receiverAddress
+        );
+
+        console.log(zebecInitStreamAccounts, "hhhh")
 
         const streamSolIxDataBuffer = this._streamProgram.coder.instruction.encode(
-            "nativeStream",
+            ZEBEC_STREAM.INIT_STREAM_SOL,
             {
                 startTime: startTimeBN,
                 endTime: endTimeBN,
@@ -220,12 +194,12 @@ export class ZebecTransactionBuilder {
         );
 
         const createTxDataStoringAccountIx = await this._multisigProgram.account.transaction.createInstruction(
-            zebecAccountAndDataStoringTxAccount,
+            zebecTransactionAccount,
             txAccountSize
         );
 
         const createStreamEscrowAccountIx = await this._multisigProgram.account.transaction.createInstruction(
-            streamEscrowAccountAddress,
+            streamDataAccountAddress,
             streamEscrowAccountDataSize
         );
 
@@ -234,40 +208,39 @@ export class ZebecTransactionBuilder {
             zebecInitStreamAccounts,
             streamSolIxDataBuffer
         ).accounts({
-            multisig: multisigDataAccount.publicKey,
-            transaction: zebecAccountAndDataStoringTxAccount.publicKey,
+            multisig: safeDataAccount,
+            transaction: zebecTransactionAccount.publicKey,
             proposer: senderAddress
         }).preInstructions([
-            createTxDataStoringAccountIx, createStreamEscrowAccountIx
-        ]).signers([zebecAccountAndDataStoringTxAccount, multisigDataAccount]).transaction();
+            createStreamEscrowAccountIx, createTxDataStoringAccountIx
+        ]).signers([streamDataAccountAddress, zebecTransactionAccount]).transaction();
 
         return tx;
     }
 
     async execPauseStream(
-        multisigSafeAddress: PublicKey,
+        safeAddress: PublicKey,
         receiverAddress: PublicKey,
-        streamEscrowAccountAddress: PublicKey,
-        zebecAccountAndDataStoringTxAccount: Keypair,
-        multisigDataAccount: PublicKey,
+        streamDataAccountAddress: PublicKey,
+        zebecTransactionAccount: Keypair,
+        safeDataAccount: PublicKey,
         senderAddress: PublicKey
     ): Promise<Transaction> {
 
         const txAccountSize = 1000;
 
-
-        const zebecPauseStreamAccounts = [
-            { pubkey: multisigSafeAddress, isSigner: true, isWritable: false },
-            { pubkey: receiverAddress, isSigner: false, isWritable: false },
-            { pubkey: streamEscrowAccountAddress, isSigner: false, isWritable: true }
-        ];
+        const zebecPauseStreamAccounts = AccountKeys.pause(
+            safeAddress,
+            receiverAddress,
+            streamDataAccountAddress
+        );
 
         const pauseSolIxDataBuffer = this._streamProgram.coder.instruction.encode(
-            "pauseStream", {}
+            ZEBEC_STREAM.PAUSE_STREAM_SOL, {}
         );
 
         const createTxDataStoringAccountIx = await this._multisigProgram.account.transaction.createInstruction(
-            zebecAccountAndDataStoringTxAccount,
+            zebecTransactionAccount,
             txAccountSize
         );
 
@@ -276,37 +249,37 @@ export class ZebecTransactionBuilder {
             zebecPauseStreamAccounts,
             pauseSolIxDataBuffer
         ).accounts({
-            multisig: multisigDataAccount,
-            transaction: zebecAccountAndDataStoringTxAccount.publicKey,
+            multisig: safeDataAccount,
+            transaction: zebecTransactionAccount.publicKey,
             proposer: senderAddress
-        }).preInstructions([createTxDataStoringAccountIx]).signers([zebecAccountAndDataStoringTxAccount]).transaction();
+        }).preInstructions([createTxDataStoringAccountIx]).signers([zebecTransactionAccount]).transaction();
 
         return tx;
 
     }
 
     async execResumeStream(
-        multisigSafeAddress: PublicKey,
+        safeAddress: PublicKey,
         receiverAddress: PublicKey,
-        streamEscrowAccountAddress: PublicKey, // data account
-        multisigDataAccount: PublicKey,
-        zebecAccountAndDataStoringTxAccount: Keypair,
-        senderAddress: PublicKey,
+        streamDataAccountAddress: PublicKey,
+        zebecTransactionAccount: Keypair,
+        safeDataAccount: PublicKey,
+        senderAddress: PublicKey
     ): Promise<Transaction> {
 
         const txAccountSize = 1000;
-        const zebecResumeStreamAccounts = [
-            { pubkey: multisigSafeAddress, isSigner: true, isWritable: false },
-            { pubkey: receiverAddress, isSigner: false, isWritable: false },
-            { pubkey: streamEscrowAccountAddress, isSigner: false, isWritable: true }
-        ];
+        const zebecResumeStreamAccounts = AccountKeys.resume(
+            safeAddress,
+            receiverAddress,
+            streamDataAccountAddress
+        );
 
         const resumeSolIxDataBuffer = this._streamProgram.coder.instruction.encode(
-            "pauseStream", {}
+            ZEBEC_STREAM.RESUME_STREAM_SOL, {}
         );
 
         const createTxDataStoringAccountIx = await this._multisigProgram.account.transaction.createInstruction(
-            zebecAccountAndDataStoringTxAccount,
+            zebecTransactionAccount,
             txAccountSize
         );
 
@@ -315,10 +288,10 @@ export class ZebecTransactionBuilder {
             zebecResumeStreamAccounts,
             resumeSolIxDataBuffer
         ).accounts({
-            multisig: multisigDataAccount,
-            transaction: zebecAccountAndDataStoringTxAccount.publicKey,
+            multisig: safeDataAccount,
+            transaction: zebecTransactionAccount.publicKey,
             proposer: senderAddress
-        }).preInstructions([createTxDataStoringAccountIx]).signers([zebecAccountAndDataStoringTxAccount]).transaction();
+        }).preInstructions([createTxDataStoringAccountIx]).signers([zebecTransactionAccount]).transaction();
 
         return tx;
     }

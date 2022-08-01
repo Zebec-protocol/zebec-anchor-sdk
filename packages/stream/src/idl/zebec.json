@@ -202,6 +202,58 @@
         {
           "name": "amount",
           "type": "u64"
+        },
+        {
+          "name": "canCancel",
+          "type": "bool"
+        },
+        {
+          "name": "canUpdate",
+          "type": "bool"
+        }
+      ]
+    },
+    {
+      "name": "nativeStreamUpdate",
+      "accounts": [
+        {
+          "name": "dataAccount",
+          "isMut": true,
+          "isSigner": false
+        },
+        {
+          "name": "withdrawData",
+          "isMut": true,
+          "isSigner": false
+        },
+        {
+          "name": "sender",
+          "isMut": true,
+          "isSigner": true
+        },
+        {
+          "name": "receiver",
+          "isMut": false,
+          "isSigner": false
+        },
+        {
+          "name": "systemProgram",
+          "isMut": false,
+          "isSigner": false
+        }
+      ],
+      "args": [
+        {
+          "name": "startTime",
+          "type": "u64"
+        },
+        {
+          "name": "endTime",
+          "type": "u64"
+        },
+        {
+          "name": "amount",
+          "type": "u64"
         }
       ]
     },
@@ -506,6 +558,58 @@
         },
         {
           "name": "rent",
+          "isMut": false,
+          "isSigner": false
+        }
+      ],
+      "args": [
+        {
+          "name": "startTime",
+          "type": "u64"
+        },
+        {
+          "name": "endTime",
+          "type": "u64"
+        },
+        {
+          "name": "amount",
+          "type": "u64"
+        },
+        {
+          "name": "canCancel",
+          "type": "bool"
+        },
+        {
+          "name": "canUpdate",
+          "type": "bool"
+        }
+      ]
+    },
+    {
+      "name": "tokenStreamUpdate",
+      "accounts": [
+        {
+          "name": "dataAccount",
+          "isMut": true,
+          "isSigner": false
+        },
+        {
+          "name": "withdrawData",
+          "isMut": true,
+          "isSigner": false
+        },
+        {
+          "name": "sourceAccount",
+          "isMut": true,
+          "isSigner": true
+        },
+        {
+          "name": "destAccount",
+          "isMut": false,
+          "isSigner": false
+        },
+        {
+          "name": "mint",
           "isMut": false,
           "isSigner": false
         }
@@ -915,6 +1019,14 @@
           {
             "name": "pausedAmt",
             "type": "u64"
+          },
+          {
+            "name": "canCancel",
+            "type": "bool"
+          },
+          {
+            "name": "canUpdate",
+            "type": "bool"
           }
         ]
       }
@@ -983,6 +1095,14 @@
           {
             "name": "pausedAmt",
             "type": "u64"
+          },
+          {
+            "name": "canCancel",
+            "type": "bool"
+          },
+          {
+            "name": "canUpdate",
+            "type": "bool"
           }
         ]
       }
@@ -1105,9 +1225,16 @@
       "code": 6020,
       "name": "PausedAmountExceeds",
       "msg": "PausedAmountExceeds"
+    },
+    {
+      "code": 6021,
+      "name": "StreamAlreadyStarted",
+      "msg": "StreamAlreadyStarted"
+    },
+    {
+      "code": 6022,
+      "name": "UpdateNotAllowed",
+      "msg": "UpdateNotAllowed"
     }
-  ],
-  "metadata": {
-    "address": "14NJEfpvoq6PywHdwFhXcfnHTsPUK3cScCaezKBSDWLd"
-  }
+  ]
 }

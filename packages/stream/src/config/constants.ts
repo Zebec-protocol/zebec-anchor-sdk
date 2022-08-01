@@ -8,5 +8,5 @@ export const PREFIX_TOKEN = "withdraw_token";
 export const SPL_ASSOCIATED_TOKEN_ACCOUNT_PROGRAM_ID = "ATokenGPvbdGVxr1b2hvZbsiqW5xWH25efTNsLJA8knL";
 
 export const ZEBEC_PROGRAM_ID = new PublicKey(
-    "14NJEfpvoq6PywHdwFhXcfnHTsPUK3cScCaezKBSDWLd"
+    "Gvg5iMmgu8zs4rn5zJ6YGGnzsu6WqZJawKUndbqneXia"
 );

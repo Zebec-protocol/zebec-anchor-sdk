@@ -194,7 +194,7 @@ export class ZebecTransactionBuilder {
         amount: number,
     ): Promise<Transaction> {
 
-        const dataSize = 8+8+8+8+8+32+32+8+8+32+200;
+        const dataSize = 8+8+8+8+8+32+32+8+8+32+500;
         
         const createAccountIx = await this._program.account.stream.createInstruction(
             escrowAccountKeypair,
@@ -205,7 +205,10 @@ export class ZebecTransactionBuilder {
         const endTimeBN = new BN(endTime);
         const amountBN = new BN(amount);
 
-        const tx = this._program.methods.nativeStream(startTimeBN, endTimeBN, amountBN)
+        const canCancel = true;
+        const canUpdate = true;
+
+        const tx = this._program.methods.nativeStream(startTimeBN, endTimeBN, amountBN, canCancel, canUpdate)
         .accounts({
             dataAccount: escrowAccountKeypair.publicKey,
             withdrawData: withdrawEscrowDataAccountAddress,

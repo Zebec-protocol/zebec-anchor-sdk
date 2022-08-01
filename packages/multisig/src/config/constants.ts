@@ -9,7 +9,7 @@ export enum SC_CONSTANT {
 
 export enum ZEBEC_PROGRAM_ID {
     MULTISIG = "5BU6x2H7WXeyaP75D7daNJQAipZfVUr5FM9zdhzajK6p",
-    STREAM = "14NJEfpvoq6PywHdwFhXcfnHTsPUK3cScCaezKBSDWLd"
+    STREAM = "Gvg5iMmgu8zs4rn5zJ6YGGnzsu6WqZJawKUndbqneXia"
 }
 
 export enum ZEBEC_STREAM {

@@ -377,13 +377,6 @@ export class ZebecNativeTreasury extends ZebecMultisig {
         );
 
         const remainingAccounts = AccountKeys.remainingAccounts(initAccounts, safeAddress);
-        console.log(remainingAccounts, "remaining accounts");
-        // accounts, remaining accounts, program ID
-        // const anchorTx = await this.multisigProgram.methods.executeTransaction().accounts({
-        //     multisig: safeDataAccountAddress,
-        //     multisigSigner: safeAddress,
-        //     transaction: initTransactionAccountAddress
-        // }).remainingAccounts(remainingAccounts).transaction();
 
         const anchorTx = await this.transactionBuilder.execTransaction(
             safeAddress,

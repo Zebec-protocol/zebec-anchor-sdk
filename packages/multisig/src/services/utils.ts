@@ -54,7 +54,7 @@ const getErrorForTransaction = async (connection: Connection, txid: TransactionS
 
 export const sendTx = async(tx: Transaction, provider: AnchorProvider): Promise<TransactionSignature> => {
     console.log("------ sending transaction --------", tx);
-    tx.instructions.map(i => i.keys.map(k => console.log(k.pubkey.toBase58(), k.isSigner, k.isWritable)))
+    // tx.instructions.map(i => i.keys.map(k => console.log(k.pubkey.toBase58(), k.isSigner, k.isWritable)))
     const connection = provider.connection;
     const rawTxn = tx.serialize();
 

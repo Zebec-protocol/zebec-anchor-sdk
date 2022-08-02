@@ -168,6 +168,8 @@ export class ZebecTransactionBuilder {
         const startTimeBN = new BN(startTime);
         const endTimeBN = new BN(endTime);
         const amountBN = new BN(amount);
+        const canCancel = true;
+        const canUpdate = true;
 
         const txAccountSize = 1000;
         const streamEscrowAccountDataSize = 8+8+8+8+8+32+32+8+8+32+200;
@@ -189,7 +191,9 @@ export class ZebecTransactionBuilder {
             {
                 startTime: startTimeBN,
                 endTime: endTimeBN,
-                amount: amountBN
+                amount: amountBN,
+                canCancel,
+                canUpdate
             }
         );
 
@@ -198,7 +202,7 @@ export class ZebecTransactionBuilder {
             txAccountSize
         );
 
-        const createStreamEscrowAccountIx = await this._multisigProgram.account.transaction.createInstruction(
+        const createStreamEscrowAccountIx = await this._streamProgram.account.stream.createInstruction(
             streamDataAccountAddress,
             streamEscrowAccountDataSize
         );

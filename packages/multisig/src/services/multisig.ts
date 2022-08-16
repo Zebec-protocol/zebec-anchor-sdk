@@ -579,8 +579,94 @@ export class ZebecTokenTreasury extends ZebecMultisig {
 
         }
 
-    async pause(): Promise<any> {}
-    async resume(): Promise<any> {}
+    async pause(data: any): Promise<any> {
+        const { safe_address, receiver, stream_data_account, safe_data_account, sender } = data;
+
+        const safeAddress = new PublicKey(safe_address);
+        const receiverAddress = new PublicKey(receiver);
+        const streamDataAccountAddress = new PublicKey(stream_data_account);
+        const safeDataAccount = new PublicKey(safe_data_account);
+        const senderAddress = new PublicKey(sender);
+
+        const zebecTransactionAccount = Keypair.generate();
+
+        const anchorTx = await this.transactionBuilder.execPauseStream(
+            safeAddress,
+            receiverAddress,
+            streamDataAccountAddress,
+            zebecTransactionAccount,
+            safeDataAccount,
+            senderAddress
+        );
+
+        const tx = await this._makeTxn(anchorTx, [zebecTransactionAccount]);
+        const signedRawTx = await this.anchorProvider.wallet.signTransaction(tx);
+        this.consolelog.info("transaction after signing: ", signedRawTx);
+
+        try {
+            const signature = await sendTx(signedRawTx, this.anchorProvider);
+            this.consolelog.info(`transaction success, TXID: ${signature}`);
+            return {
+                "status": "success",
+                "message": "stream paused!",
+                "data": {
+                    transactionHash: signature,
+                    transaction_account: zebecTransactionAccount.publicKey.toString(),
+                }
+            }
+        } catch (err) {
+            console.log(err)
+            return {
+                status: "error",
+                message: parseErrorMessage(err.message),
+                data: null
+            }
+        }
+    }
+    async resume(data: any): Promise<any> {
+        const { safe_address, receiver, stream_data_account, safe_data_account, sender } = data;
+
+        const safeAddress = new PublicKey(safe_address);
+        const receiverAddress = new PublicKey(receiver);
+        const streamDataAccountAddress = new PublicKey(stream_data_account);
+        const safeDataAccount = new PublicKey(safe_data_account);
+        const senderAddress = new PublicKey(sender);
+
+        const zebecTransactionAccount = Keypair.generate();
+
+        const anchorTx = await this.transactionBuilder.execPauseStream(
+            safeAddress,
+            receiverAddress,
+            streamDataAccountAddress,
+            zebecTransactionAccount,
+            safeDataAccount,
+            senderAddress
+        );
+
+        const tx = await this._makeTxn(anchorTx, [zebecTransactionAccount]);
+        const signedRawTx = await this.anchorProvider.wallet.signTransaction(tx);
+        this.consolelog.info("transaction after signing: ", signedRawTx);
+
+        try {
+            const signature = await sendTx(signedRawTx, this.anchorProvider);
+            this.consolelog.info(`transaction success, TXID: ${signature}`);
+            return {
+                "status": "success",
+                "message": "stream Resumed!",
+                "data": {
+                    transactionHash: signature,
+                    transaction_account: zebecTransactionAccount.publicKey.toString(),
+                }
+            }
+        } catch (err) {
+            console.log(err)
+            return {
+                status: "error",
+                message: parseErrorMessage(err.message),
+                data: null
+            }
+        }
+    }
     async withdraw(): Promise<any> {}
     async cancel(): Promise<any> {}
 }

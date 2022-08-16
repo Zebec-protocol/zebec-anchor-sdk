@@ -128,4 +128,28 @@ export class AccountKeys {
             {pubkey: SYSVAR_RENT_PUBKEY , isSigner: false, isWritable: false}
         ]
     }
+
+    static pausetoken(
+        safeAddress: PublicKey,
+        receiverAddress: PublicKey,
+        streamDataAccount: PublicKey,
+    ) : AccountMeta[] {
+        return [
+            { pubkey: safeAddress, isSigner: true, isWritable: false },
+            { pubkey: receiverAddress, isSigner: false, isWritable: false },
+            { pubkey: streamDataAccount, isSigner: false, isWritable: false }
+        ]
+    }
+
+    static resumetoken(
+        safeAddress: PublicKey,
+        receiverAddress: PublicKey,
+        streamDataAccount: PublicKey,
+    ) : AccountMeta[] {
+        return [
+            { pubkey: safeAddress, isSigner: true, isWritable: false },
+            { pubkey: receiverAddress, isSigner: false, isWritable: false },
+            { pubkey: streamDataAccount, isSigner: false, isWritable: false }
+        ]
+    }
 }

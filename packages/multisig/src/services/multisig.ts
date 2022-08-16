@@ -459,27 +459,48 @@ export class ZebecNativeTreasury extends ZebecMultisig {
         }
     }
 
-    async resume(data: any): Promise<any> {
-        const { safe_address, receiver, stream_data_account, safe_data_account, sender } = data;
+    async execPause(data: any): Promise<any> {
+        
+        const { stream_data_account, safe_address, safe_data_account, transaction_account, receiver } = data;
 
-        const safeAddress = new PublicKey(safe_address);
+        console.log(data);
+        
         const receiverAddress = new PublicKey(receiver);
         const streamDataAccountAddress = new PublicKey(stream_data_account);
-        const safeDataAccount = new PublicKey(safe_data_account);
-        const senderAddress = new PublicKey(sender);
+        const [feeVaultAddress, ] = await this._findFeeVaultAddress(this.feeReceiverAddress);
+        const [feeVaultDataAddress,] = await this._findFeeVaultDataAccount(this.feeReceiverAddress);
+        const safeAddress = new PublicKey(safe_address);
+        const safeDataAccountAddress = new PublicKey(safe_data_account);
+        const pauseTransactionAccountAddress = new PublicKey(transaction_account);
+        // how to automate this transaction, trigger this transaction
+        // what happens to withdrawData (Since ownerA might start transaction) and has withdrawData accoridingly
+        // what if ownerB exec this function
+        const [withdrawDataAccountAddress,] = await this._findSolWithdrawEscrowAccount(safeAddress);
+        console.log("withdraw sol data", withdrawDataAccountAddress.toString())
+        console.log("feeVaultDataAddress sol data", feeVaultDataAddress.toString())
 
-        const zebecTransactionAccount = Keypair.generate();
-        
-        const anchorTx = await this.transactionBuilder.execPauseStream(
+        const initAccounts =  AccountKeys.init(
+            streamDataAccountAddress,
+            withdrawDataAccountAddress,
+            this.feeReceiverAddress,
+            feeVaultDataAddress,
+            feeVaultAddress,
             safeAddress,
             receiverAddress,
-            streamDataAccountAddress,
-            zebecTransactionAccount,
-            safeDataAccount,
-            senderAddress
         );
 
-        const tx = await this._makeTxn(anchorTx, [zebecTransactionAccount]);
+        const remainingAccounts = AccountKeys.remainingAccounts(initAccounts, safeAddress);
+
+        const anchorTx = await this.transactionBuilder.execTransaction(
+            safeAddress,
+            safeDataAccountAddress,
+            pauseTransactionAccountAddress,
+            remainingAccounts
+        )
+
+        console.log("anchor transaction", anchorTx);
+
+        const tx = await this._makeTxn(anchorTx);
         const signedRawTx = await this.anchorProvider.wallet.signTransaction(tx);
         this.consolelog.info("transaction after signing: ", signedRawTx);
 
@@ -488,10 +509,9 @@ export class ZebecNativeTreasury extends ZebecMultisig {
             this.consolelog.info(`transaction success, TXID: ${signature}`);
             return {
                 "status": "success",
-                "message": "stream resumed!",
+                "message": "Pause transaction executed!!",
                 "data": {
-                    transactionHash: signature,
-                    transaction_account: zebecTransactionAccount.publicKey.toString(),
+                    transactionHash: signature
                 }
             }
         } catch (err) {
@@ -502,7 +522,54 @@ export class ZebecNativeTreasury extends ZebecMultisig {
                 data: null
             }
         }
+
+
     }
+
+    // async resume(data: any): Promise<any> {
+    //     const { safe_address, receiver, stream_data_account, safe_data_account, sender } = data;
+
+    //     const safeAddress = new PublicKey(safe_address);
+    //     const receiverAddress = new PublicKey(receiver);
+    //     const streamDataAccountAddress = new PublicKey(stream_data_account);
+    //     const safeDataAccount = new PublicKey(safe_data_account);
+    //     const senderAddress = new PublicKey(sender);
+
+    //     const zebecTransactionAccount = Keypair.generate();
+        
+    //     const anchorTx = await this.transactionBuilder.execPauseStream(
+    //         safeAddress,
+    //         receiverAddress,
+    //         streamDataAccountAddress,
+    //         zebecTransactionAccount,
+    //         safeDataAccount,
+    //         senderAddress
+    //     );
+
+    //     const tx = await this._makeTxn(anchorTx, [zebecTransactionAccount]);
+    //     const signedRawTx = await this.anchorProvider.wallet.signTransaction(tx);
+    //     this.consolelog.info("transaction after signing: ", signedRawTx);
+
+    //     try {
+    //         const signature = await sendTx(signedRawTx, this.anchorProvider);
+    //         this.consolelog.info(`transaction success, TXID: ${signature}`);
+    //         return {
+    //             "status": "success",
+    //             "message": "stream resumed!",
+    //             "data": {
+    //                 transactionHash: signature,
+    //                 transaction_account: zebecTransactionAccount.publicKey.toString(),
+    //             }
+    //         }
+    //     } catch (err) {
+    //         console.log(err)
+    //         return {
+    //             status: "error",
+    //             message: parseErrorMessage(err.message),
+    //             data: null
+    //         }
+    //     }
+    // }
 
 
     async fetchStreamData(stream_data_account: PublicKey): Promise<any> {
@@ -579,94 +646,94 @@ export class ZebecTokenTreasury extends ZebecMultisig {
 
         }
 
-    async pause(data: any): Promise<any> {
-        const { safe_address, receiver, stream_data_account, safe_data_account, sender } = data;
+    // async pause(data: any): Promise<any> {
+    //     const { safe_address, receiver, stream_data_account, safe_data_account, sender } = data;
 
-        const safeAddress = new PublicKey(safe_address);
-        const receiverAddress = new PublicKey(receiver);
-        const streamDataAccountAddress = new PublicKey(stream_data_account);
-        const safeDataAccount = new PublicKey(safe_data_account);
-        const senderAddress = new PublicKey(sender);
+    //     const safeAddress = new PublicKey(safe_address);
+    //     const receiverAddress = new PublicKey(receiver);
+    //     const streamDataAccountAddress = new PublicKey(stream_data_account);
+    //     const safeDataAccount = new PublicKey(safe_data_account);
+    //     const senderAddress = new PublicKey(sender);
 
-        const zebecTransactionAccount = Keypair.generate();
+    //     const zebecTransactionAccount = Keypair.generate();
 
-        const anchorTx = await this.transactionBuilder.execPauseStream(
-            safeAddress,
-            receiverAddress,
-            streamDataAccountAddress,
-            zebecTransactionAccount,
-            safeDataAccount,
-            senderAddress
-        );
+    //     const anchorTx = await this.transactionBuilder.execPauseStream(
+    //         safeAddress,
+    //         receiverAddress,
+    //         streamDataAccountAddress,
+    //         zebecTransactionAccount,
+    //         safeDataAccount,
+    //         senderAddress
+    //     );
 
-        const tx = await this._makeTxn(anchorTx, [zebecTransactionAccount]);
-        const signedRawTx = await this.anchorProvider.wallet.signTransaction(tx);
-        this.consolelog.info("transaction after signing: ", signedRawTx);
+    //     const tx = await this._makeTxn(anchorTx, [zebecTransactionAccount]);
+    //     const signedRawTx = await this.anchorProvider.wallet.signTransaction(tx);
+    //     this.consolelog.info("transaction after signing: ", signedRawTx);
 
-        try {
-            const signature = await sendTx(signedRawTx, this.anchorProvider);
-            this.consolelog.info(`transaction success, TXID: ${signature}`);
-            return {
-                "status": "success",
-                "message": "stream paused!",
-                "data": {
-                    transactionHash: signature,
-                    transaction_account: zebecTransactionAccount.publicKey.toString(),
-                }
-            }
-        } catch (err) {
-            console.log(err)
-            return {
-                status: "error",
-                message: parseErrorMessage(err.message),
-                data: null
-            }
-        }
-    }
-    async resume(data: any): Promise<any> {
-        const { safe_address, receiver, stream_data_account, safe_data_account, sender } = data;
+    //     try {
+    //         const signature = await sendTx(signedRawTx, this.anchorProvider);
+    //         this.consolelog.info(`transaction success, TXID: ${signature}`);
+    //         return {
+    //             "status": "success",
+    //             "message": "stream paused!",
+    //             "data": {
+    //                 transactionHash: signature,
+    //                 transaction_account: zebecTransactionAccount.publicKey.toString(),
+    //             }
+    //         }
+    //     } catch (err) {
+    //         console.log(err)
+    //         return {
+    //             status: "error",
+    //             message: parseErrorMessage(err.message),
+    //             data: null
+    //         }
+    //     }
+    // }
+    // async resume(data: any): Promise<any> {
+    //     const { safe_address, receiver, stream_data_account, safe_data_account, sender } = data;
 
-        const safeAddress = new PublicKey(safe_address);
-        const receiverAddress = new PublicKey(receiver);
-        const streamDataAccountAddress = new PublicKey(stream_data_account);
-        const safeDataAccount = new PublicKey(safe_data_account);
-        const senderAddress = new PublicKey(sender);
+    //     const safeAddress = new PublicKey(safe_address);
+    //     const receiverAddress = new PublicKey(receiver);
+    //     const streamDataAccountAddress = new PublicKey(stream_data_account);
+    //     const safeDataAccount = new PublicKey(safe_data_account);
+    //     const senderAddress = new PublicKey(sender);
 
-        const zebecTransactionAccount = Keypair.generate();
+    //     const zebecTransactionAccount = Keypair.generate();
 
-        const anchorTx = await this.transactionBuilder.execPauseStream(
-            safeAddress,
-            receiverAddress,
-            streamDataAccountAddress,
-            zebecTransactionAccount,
-            safeDataAccount,
-            senderAddress
-        );
+    //     const anchorTx = await this.transactionBuilder.execPauseStream(
+    //         safeAddress,
+    //         receiverAddress,
+    //         streamDataAccountAddress,
+    //         zebecTransactionAccount,
+    //         safeDataAccount,
+    //         senderAddress
+    //     );
 
-        const tx = await this._makeTxn(anchorTx, [zebecTransactionAccount]);
-        const signedRawTx = await this.anchorProvider.wallet.signTransaction(tx);
-        this.consolelog.info("transaction after signing: ", signedRawTx);
+    //     const tx = await this._makeTxn(anchorTx, [zebecTransactionAccount]);
+    //     const signedRawTx = await this.anchorProvider.wallet.signTransaction(tx);
+    //     this.consolelog.info("transaction after signing: ", signedRawTx);
 
-        try {
-            const signature = await sendTx(signedRawTx, this.anchorProvider);
-            this.consolelog.info(`transaction success, TXID: ${signature}`);
-            return {
-                "status": "success",
-                "message": "stream Resumed!",
-                "data": {
-                    transactionHash: signature,
-                    transaction_account: zebecTransactionAccount.publicKey.toString(),
-                }
-            }
-        } catch (err) {
-            console.log(err)
-            return {
-                status: "error",
-                message: parseErrorMessage(err.message),
-                data: null
-            }
-        }
-    }
+    //     try {
+    //         const signature = await sendTx(signedRawTx, this.anchorProvider);
+    //         this.consolelog.info(`transaction success, TXID: ${signature}`);
+    //         return {
+    //             "status": "success",
+    //             "message": "stream Resumed!",
+    //             "data": {
+    //                 transactionHash: signature,
+    //                 transaction_account: zebecTransactionAccount.publicKey.toString(),
+    //             }
+    //         }
+    //     } catch (err) {
+    //         console.log(err)
+    //         return {
+    //             status: "error",
+    //             message: parseErrorMessage(err.message),
+    //             data: null
+    //         }
+    //     }
+    // }
     async withdraw(): Promise<any> {}
     async cancel(): Promise<any> {}
 }

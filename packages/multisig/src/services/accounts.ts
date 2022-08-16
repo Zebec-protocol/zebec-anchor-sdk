@@ -52,7 +52,7 @@ export class AccountKeys {
         return [
             { pubkey: safeAddress, isSigner: true, isWritable: false },
             { pubkey: receiverAddress, isSigner: false, isWritable: false },
-            { pubkey: streamDataAccount, isSigner: false, isWritable: false }
+            { pubkey: streamDataAccount, isSigner: false, isWritable: true }
         ]
     }
 

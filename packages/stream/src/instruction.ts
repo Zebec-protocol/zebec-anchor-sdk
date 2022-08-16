@@ -193,6 +193,7 @@ export class ZebecTransactionBuilder {
         endTime: number,
         amount: number,
     ): Promise<Transaction> {
+        
 
         const dataSize = 8+8+8+8+8+32+32+8+8+32+500;
         

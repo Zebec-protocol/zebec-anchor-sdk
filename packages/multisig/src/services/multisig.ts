@@ -504,6 +504,7 @@ export class ZebecNativeTreasury extends ZebecMultisig {
         }
     }
 
+
     async fetchStreamData(stream_data_account: PublicKey): Promise<any> {
 
         const response = await this.streamProgram.account.stream.fetch(
@@ -519,7 +520,65 @@ export class ZebecTokenTreasury extends ZebecMultisig {
         this.consolelog.info("zebec token treasury object initialized!")
     }
 
-    async init(): Promise<any> {}
+        async init(data:any):Promise<any>{
+            const { safe_address, safe_data_account, sender, receiver, start_time, end_time, amount , tokenMintAddress } = data;
+            this.consolelog.info("multisig init token stream", data);
+
+            const senderAddress = new PublicKey(sender);
+            const receiverAddress = new PublicKey(receiver);
+            const safeAddress = new PublicKey(safe_address);
+            const safeDataAccount = new PublicKey(safe_data_account);
+
+            const [feeVaultAddress,] = await this._findFeeVaultAddress(this.feeReceiverAddress);
+            const [feeVaultDataAddress,] = await this._findFeeVaultDataAccount(this.feeReceiverAddress);
+            const [withdrawDataAccountAddress,] = await this._findSolWithdrawEscrowAccount(safeAddress);
+
+            const streamDataAccountAddress = Keypair.generate();
+            const zebecTransactionAccount = Keypair.generate();
+
+            const anchorTx = await this.transactionBuilder.execStreamInitToken(
+                safeAddress,
+                safeDataAccount,
+                zebecTransactionAccount,
+                streamDataAccountAddress,
+                withdrawDataAccountAddress,
+                this.feeReceiverAddress,
+                feeVaultDataAddress,
+                feeVaultAddress,
+                senderAddress,
+                receiverAddress,
+                tokenMintAddress,
+                start_time,
+                end_time,
+                amount,
+            );
+
+            const tx = await this._makeTxn(anchorTx, [zebecTransactionAccount]);
+            const signedRawTx = await this.anchorProvider.wallet.signTransaction(tx);
+            this.consolelog.info("transaction after signing: ", signedRawTx);
+
+            try {
+                const signature = await sendTx(signedRawTx, this.anchorProvider);
+                this.consolelog.info(`transaction success, TXID: ${signature}`);
+                return {
+                    "status": "success",
+                    "message": "stream initialized!",
+                    "data": {
+                        transactionHash: signature,
+                        transaction_account: zebecTransactionAccount.publicKey.toString(),
+                    }
+                }
+            } catch (err) {
+                console.log(err)
+                return {
+                    status: "error",
+                    message: parseErrorMessage(err.message),
+                    data: null
+                }
+            }
+
+        }
+
     async pause(): Promise<any> {}
     async resume(): Promise<any> {}
     async withdraw(): Promise<any> {}

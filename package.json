@@ -29,5 +29,8 @@
 	"publishConfig": {
 		"access": "public"
 	},
-	"author": "Ashish | Zebec Protocol"
+	"author": "Ashish | Zebec Protocol",
+	"dependencies": {
+		"@project-serum/anchor": "^0.25.0"
+	}
 }

@@ -1,4 +1,5 @@
-import { AccountMeta, PublicKey, SystemProgram } from "@solana/web3.js";
+import { TOKEN_PROGRAM_ID } from "@project-serum/anchor/dist/cjs/utils/token";
+import { AccountMeta, PublicKey, SystemProgram, SYSVAR_RENT_PUBKEY } from "@solana/web3.js";
 import { ZEBEC_PROGRAM_ID } from "../config";
 
 
@@ -100,6 +101,31 @@ export class AccountKeys {
             { pubkey: safeAddress, isSigner: true, isWritable: true },
             { pubkey: withdrawDataAccountAddress, isSigner: false, isWritable: true },
             { pubkey: SystemProgram.programId, isSigner: false, isWritable: false }
+        ]
+    }
+
+    static inittoken(
+        streamDataAccountAddress: PublicKey,
+        withdrawDataAccountAddress: PublicKey,
+        feeReceiverAddress: PublicKey,
+        feeVaultDataAddress: PublicKey,
+        feeVaultAddress: PublicKey,
+        safeAddress: PublicKey,
+        receiverAddress: PublicKey,
+        tokenMintAddress: PublicKey,
+    ): AccountMeta[] {
+        return [
+            { pubkey: streamDataAccountAddress, isSigner: false, isWritable: true },
+            { pubkey: withdrawDataAccountAddress, isSigner: false, isWritable: true },
+            { pubkey: feeReceiverAddress, isSigner: false, isWritable: false },
+            { pubkey: feeVaultDataAddress, isSigner: false, isWritable: false },
+            { pubkey: feeVaultAddress, isSigner: false, isWritable: false },
+            { pubkey: safeAddress, isSigner: true, isWritable: true },
+            { pubkey: receiverAddress, isSigner: false, isWritable: false },
+            { pubkey: SystemProgram.programId, isSigner: false, isWritable: false },
+            { pubkey: TOKEN_PROGRAM_ID, isSigner: false, isWritable: false },
+            {pubkey: tokenMintAddress, isSigner: false, isWritable: false},
+            {pubkey: SYSVAR_RENT_PUBKEY , isSigner: false, isWritable: false}
         ]
     }
 }

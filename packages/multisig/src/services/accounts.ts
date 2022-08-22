@@ -1,4 +1,4 @@
-import { TOKEN_PROGRAM_ID } from "@project-serum/anchor/dist/cjs/utils/token";
+import { TOKEN_PROGRAM_ID, ASSOCIATED_PROGRAM_ID } from "@project-serum/anchor/dist/cjs/utils/token";
 import { AccountMeta, PublicKey, SystemProgram, SYSVAR_RENT_PUBKEY } from "@solana/web3.js";
 import { ZEBEC_PROGRAM_ID } from "../config";
 
@@ -64,7 +64,7 @@ export class AccountKeys {
         return [
             { pubkey: safeAddress, isSigner: true, isWritable: false },
             { pubkey: receiverAddress, isSigner: false, isWritable: false },
-            { pubkey: streamDataAccount, isSigner: false, isWritable: false }
+            { pubkey: streamDataAccount, isSigner: false, isWritable: true }
         ]
     }
 
@@ -78,8 +78,18 @@ export class AccountKeys {
         feeVaultDataAddress: PublicKey,
         feeVaultAddress: PublicKey
     ): AccountMeta[] {
+        console.log([
+            zebecVaultAddress.toString(),
+            safeAddress.toString(),
+            receiverAddress.toString(),
+            streamDataAccountAddress.toString(),
+            withdrawDataAccountAddress.toString(),
+            feeReceiverAddress.toString(),
+            feeVaultDataAddress.toString(),
+            feeVaultAddress.toString(),
+        ])
         return [
-            { pubkey: zebecVaultAddress, isSigner: false, isWritable: false },
+            { pubkey: zebecVaultAddress, isSigner: false, isWritable: true },
             { pubkey: safeAddress, isSigner: true, isWritable: true },
             { pubkey: receiverAddress, isSigner: false, isWritable: true },
             { pubkey: streamDataAccountAddress, isSigner: false, isWritable: true },
@@ -89,6 +99,7 @@ export class AccountKeys {
             { pubkey: feeVaultAddress, isSigner: false, isWritable: true },
             { pubkey: SystemProgram.programId, isSigner: false, isWritable: false } 
         ]
+
     }
 
     static withdraw(
@@ -106,7 +117,7 @@ export class AccountKeys {
 
     static inittoken(
         streamDataAccountAddress: PublicKey,
-        withdrawDataAccountAddress: PublicKey,
+        withdrawDataAccount: PublicKey,
         feeReceiverAddress: PublicKey,
         feeVaultDataAddress: PublicKey,
         feeVaultAddress: PublicKey,
@@ -116,7 +127,7 @@ export class AccountKeys {
     ): AccountMeta[] {
         return [
             { pubkey: streamDataAccountAddress, isSigner: false, isWritable: true },
-            { pubkey: withdrawDataAccountAddress, isSigner: false, isWritable: true },
+            { pubkey: withdrawDataAccount, isSigner: false, isWritable: true },
             { pubkey: feeReceiverAddress, isSigner: false, isWritable: false },
             { pubkey: feeVaultDataAddress, isSigner: false, isWritable: false },
             { pubkey: feeVaultAddress, isSigner: false, isWritable: false },
@@ -135,9 +146,9 @@ export class AccountKeys {
         streamDataAccount: PublicKey,
     ) : AccountMeta[] {
         return [
-            { pubkey: safeAddress, isSigner: true, isWritable: false },
+            { pubkey: safeAddress, isSigner: true, isWritable: true },
             { pubkey: receiverAddress, isSigner: false, isWritable: false },
-            { pubkey: streamDataAccount, isSigner: false, isWritable: false }
+            { pubkey: streamDataAccount, isSigner: false, isWritable: true }
         ]
     }
 
@@ -147,9 +158,43 @@ export class AccountKeys {
         streamDataAccount: PublicKey,
     ) : AccountMeta[] {
         return [
-            { pubkey: safeAddress, isSigner: true, isWritable: false },
+            { pubkey: safeAddress, isSigner: true, isWritable: true },
             { pubkey: receiverAddress, isSigner: false, isWritable: false },
-            { pubkey: streamDataAccount, isSigner: false, isWritable: false }
+            { pubkey: streamDataAccount, isSigner: false, isWritable: true }
+        ]
+    }
+
+    static canceltoken(
+        zebecVaultAddress: PublicKey,
+        receiverAddress: PublicKey,
+        safeAddress: PublicKey,
+        feeReceiverAddress: PublicKey,
+        feeVaultDataAddress: PublicKey,
+        feeVaultAddress: PublicKey,
+        streamDataAccountAddress: PublicKey,
+        withdrawDataAccountAddress: PublicKey,
+        tokenMintAddress: PublicKey,
+        pdaTokenData: PublicKey,
+        dest_token_data: PublicKey,
+        fee_token_data: PublicKey,
+    ) : AccountMeta[] {
+        return [
+            { pubkey: zebecVaultAddress, isSigner: false, isWritable: false },
+            { pubkey: receiverAddress, isSigner: false, isWritable: true },
+            { pubkey: safeAddress, isSigner: true, isWritable: true },
+            { pubkey: feeReceiverAddress, isSigner: false, isWritable: false },
+            { pubkey: feeVaultDataAddress, isSigner: false, isWritable: false },
+            { pubkey: feeVaultAddress, isSigner: false, isWritable: false },
+            { pubkey: streamDataAccountAddress, isSigner: false, isWritable: true },
+            { pubkey: withdrawDataAccountAddress, isSigner: false, isWritable: true },
+            { pubkey: SystemProgram.programId, isSigner: false, isWritable: false },
+            { pubkey: TOKEN_PROGRAM_ID, isSigner: false, isWritable: false },
+            { pubkey: ASSOCIATED_PROGRAM_ID, isSigner: false, isWritable: false },
+            { pubkey: SYSVAR_RENT_PUBKEY , isSigner: false, isWritable: false},
+            { pubkey: tokenMintAddress, isSigner: false, isWritable: false},
+            { pubkey: pdaTokenData, isSigner: false, isWritable: true},
+            { pubkey: dest_token_data, isSigner: false, isWritable: true},
+            { pubkey: fee_token_data, isSigner: false, isWritable: true},
         ]
     }
 }

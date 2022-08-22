@@ -24,7 +24,7 @@ export enum ZEBEC_STREAM {
     INIT_STREAM_TOKEN = "tokenStream",
     PAUSE_RESUME_STREAM_TOKEN = "pauseResumeTokenStream",
     UPDATE_STREAM_TOKEN = "tokenStreamUpdate",
-    CANCEL_STREAM_TOKEN = "tokenCancel"
+    CANCEL_STREAM_TOKEN = "cancelTokenStream"
 }
 
 // EDIT IT LATER

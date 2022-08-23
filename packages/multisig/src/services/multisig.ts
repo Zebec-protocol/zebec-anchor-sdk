@@ -437,7 +437,7 @@ export class ZebecNativeTreasury extends ZebecMultisig {
           remainingAccounts
       )
         
-      anchorTx.add(anchorExecTx)
+      anchorTx.add(anchorExecTx);
 
       console.log('anchor transaction', anchorTx)
 
@@ -544,7 +544,7 @@ export class ZebecNativeTreasury extends ZebecMultisig {
   }
 
   async execPause(data: any): Promise<any> {
-    const { stream_data_account, safe_address, safe_data_account, transaction_account, receiver } = data
+    const { stream_data_account, safe_address, safe_data_account, transaction_account, receiver, signer } = data
 
     console.log(data)
 
@@ -559,19 +559,52 @@ export class ZebecNativeTreasury extends ZebecMultisig {
     // what happens to withdrawData (Since ownerA might start transaction) and has withdrawData accoridingly
     // what if ownerB exec this function
     const [withdrawDataAccountAddress] = await this._findSolWithdrawEscrowAccount(safeAddress)
+    const safe_details = await this._fetchTresholdData(safeDataAccountAddress)
+    const transaction_details = await this.fetchMultiSigStreamData(pauseTransactionAccountAddress)
+    console.log('safe_details', safe_details)
+    const ownerarray = safe_details.owners
+    const signaturesarray = transaction_details.signers
+    console.log('signaturesarray', signaturesarray)
+    console.log('ownerarray', ownerarray)
+    const obj = {}
+    ownerarray.forEach((element, index) => {
+      obj[element] = signaturesarray[index]
+    })
+    const signcheck = obj[signer]
+    console.log('result', signcheck)
+    console.log('transactions', transaction_details)
     console.log('withdraw sol data', withdrawDataAccountAddress.toString())
     console.log('feeVaultDataAddress sol data', feeVaultDataAddress.toString())
 
     const initAccounts = AccountKeys.pause(safeAddress, receiverAddress, streamDataAccountAddress)
 
+    const threshholdCount = safe_details.threshold.toString() // minimum signers required to execute transaction
+
+    console.log('threshholdCount', threshholdCount)
+
+    const count = signaturesarray.filter((value) => value === true).length
+    console.log('count', count)
+
+    if(Number(count +1) === Number(threshholdCount)) {
+      console.log('approve');
+
+
+      const anchorTx = await this.transactionBuilder.execApproveTransaction(
+        safeDataAccountAddress,
+        pauseTransactionAccountAddress,
+        signer
+      )
+
     const remainingAccounts = AccountKeys.remainingAccounts(initAccounts, safeAddress)
 
-    const anchorTx = await this.transactionBuilder.execTransaction(
+    const anchorExecTx = await this.transactionBuilder.execTransaction(
       safeAddress,
       safeDataAccountAddress,
       pauseTransactionAccountAddress,
       remainingAccounts
     )
+
+    anchorTx.add(anchorExecTx);
 
     console.log('anchor transaction', anchorTx)
 
@@ -597,7 +630,41 @@ export class ZebecNativeTreasury extends ZebecMultisig {
         data: null
       }
     }
+  } else {
+    console.log('Approve transaction');
+
+    const anchorTx = await this.transactionBuilder.execApproveTransaction(
+      safeDataAccountAddress,
+      pauseTransactionAccountAddress,
+      signer
+    )
+
+    console.log('anchor transaction', anchorTx)
+
+    const tx = await this._makeTxn(anchorTx)
+    const signedRawTx = await this.anchorProvider.wallet.signTransaction(tx)
+    this.consolelog.info('transaction after signing: ', signedRawTx)
+
+    try {
+      const signature = await sendTx(signedRawTx, this.anchorProvider)
+      this.consolelog.info(`transaction success, TXID: ${signature}`)
+      return {
+        status: 'success',
+        message: 'Pause transaction Approved!!',
+        data: {
+          transactionHash: signature
+        }
+      }
+    } catch (err) {
+      console.log(err)
+      return {
+        status: 'error',
+        message: parseErrorMessage(err.message),
+        data: null
+      }
+    }
   }
+}
 
   async resume(data: any): Promise<any> {
     const { safe_address, receiver, stream_data_account, safe_data_account, sender } = data
@@ -645,7 +712,7 @@ export class ZebecNativeTreasury extends ZebecMultisig {
   }
 
   async execResume(data: any): Promise<any> {
-    const { stream_data_account, safe_address, safe_data_account, transaction_account, receiver } = data
+    const { stream_data_account, safe_address, safe_data_account, transaction_account, receiver, signer } = data
 
     console.log(data)
 
@@ -660,19 +727,50 @@ export class ZebecNativeTreasury extends ZebecMultisig {
     // what happens to withdrawData (Since ownerA might start transaction) and has withdrawData accoridingly
     // what if ownerB exec this function
     const [withdrawDataAccountAddress] = await this._findSolWithdrawEscrowAccount(safeAddress)
+    const safe_details = await this._fetchTresholdData(safeDataAccountAddress)
+    const transaction_details = await this.fetchMultiSigStreamData(pauseTransactionAccountAddress)
+    console.log('safe_details', safe_details)
+    const ownerarray = safe_details.owners
+    const signaturesarray = transaction_details.signers
+    console.log('signaturesarray', signaturesarray)
+    console.log('ownerarray', ownerarray)
+    const obj = {}
+    ownerarray.forEach((element, index) => {
+      obj[element] = signaturesarray[index]
+    })
+    const signcheck = obj[signer]
+    console.log('result', signcheck)
+    console.log('transactions', transaction_details)
     console.log('withdraw sol data', withdrawDataAccountAddress.toString())
     console.log('feeVaultDataAddress sol data', feeVaultDataAddress.toString())
 
+    
     const initAccounts = AccountKeys.resume(safeAddress, receiverAddress, streamDataAccountAddress)
+    
+    const threshholdCount = safe_details.threshold.toString() // minimum signers required to execute transaction
+    const count = signaturesarray.filter((value) => value === true).length
+    console.log('count', count)
+    console.log('threshholdCount', threshholdCount)
+
+    if(Number(count + 1) === Number(threshholdCount)) {
+      console.log('approve & execution')
+
+      const anchorTx = await this.transactionBuilder.execApproveTransaction(
+        safeDataAccountAddress,
+        pauseTransactionAccountAddress,
+        signer
+      )
 
     const remainingAccounts = AccountKeys.remainingAccounts(initAccounts, safeAddress)
 
-    const anchorTx = await this.transactionBuilder.execTransaction(
+    const anchorExecTx = await this.transactionBuilder.execTransaction(
       safeAddress,
       safeDataAccountAddress,
       pauseTransactionAccountAddress,
       remainingAccounts
     )
+
+    anchorTx.add(anchorExecTx);
 
     console.log('anchor transaction', anchorTx)
 
@@ -698,7 +796,37 @@ export class ZebecNativeTreasury extends ZebecMultisig {
         data: null
       }
     }
+  }else{
+    console.log('Approve Transaction');
+    const anchorTx = await this.transactionBuilder.execApproveTransaction(
+      safeDataAccountAddress,
+      pauseTransactionAccountAddress,
+      signer
+    )
+    const tx = await this._makeTxn(anchorTx)
+    const signedRawTx = await this.anchorProvider.wallet.signTransaction(tx)
+    this.consolelog.info('transaction after signing: ', signedRawTx)
+
+    try {
+      const signature = await sendTx(signedRawTx, this.anchorProvider)
+      this.consolelog.info(`transaction success, TXID: ${signature}`)
+      return {
+        status: 'success',
+        message: 'Resume transaction Aprroved!!',
+        data: {
+          transactionHash: signature
+        }
+      }
+    } catch (err) {
+      console.log(err)
+      return {
+        status: 'error',
+        message: parseErrorMessage(err.message),
+        data: null
+      }
+    }
   }
+}
 
   async cancel(data: any): Promise<any> {
     const { safe_address, receiver, stream_data_account, safe_data_account, sender } = data
@@ -754,7 +882,7 @@ export class ZebecNativeTreasury extends ZebecMultisig {
   }
 
   async execCancel(data: any): Promise<any> {
-    const { stream_data_account, safe_address, safe_data_account, transaction_account, receiver } = data
+    const { stream_data_account, safe_address, safe_data_account, transaction_account, receiver, signer } = data
     console.log(data)
     const safeAddress = new PublicKey(safe_address)
     const [zebecVaultAddress] = await this._findZebecVaultAccount(safeAddress)
@@ -768,6 +896,20 @@ export class ZebecNativeTreasury extends ZebecMultisig {
     // what happens to withdrawData (Since ownerA might start transaction) and has withdrawData accoridingly
     // what if ownerB exec this function
     const [withdrawDataAccountAddress] = await this._findSolWithdrawEscrowAccount(safeAddress)
+    const safe_details = await this._fetchTresholdData(safeDataAccountAddress)
+    const transaction_details = await this.fetchMultiSigStreamData(cancelTransactionAccountAddress)
+    console.log('safe_details', safe_details)
+    const ownerarray = safe_details.owners
+    const signaturesarray = transaction_details.signers
+    console.log('signaturesarray', signaturesarray)
+    console.log('ownerarray', ownerarray)
+    const obj = {}
+    ownerarray.forEach((element, index) => {
+      obj[element] = signaturesarray[index]
+    })
+    const signcheck = obj[signer]
+    console.log('result', signcheck)
+    console.log('transactions', transaction_details)
     console.log('withdraw sol data', withdrawDataAccountAddress.toString())
     console.log('feeVaultDataAddress sol data', feeVaultDataAddress.toString())
 
@@ -782,14 +924,30 @@ export class ZebecNativeTreasury extends ZebecMultisig {
       feeVaultAddress
     )
 
+    const threshholdCount = safe_details.threshold.toString() // minimum signers required to execute transaction
+
+    console.log('threshholdCount', threshholdCount)
+
+    const count = signaturesarray.filter((value) => value === true).length
+    console.log('count', count)
+
+    if (Number(count + 1) === Number(threshholdCount)) {
+    const anchorTx = await this.transactionBuilder.execApproveTransaction(
+      safeDataAccountAddress,
+      cancelTransactionAccountAddress,
+      signer
+    )
+
     const remainingAccounts = AccountKeys.remainingAccounts(initAccounts, safeAddress)
 
-    const anchorTx = await this.transactionBuilder.execTransaction(
+    const anchorExecTx = await this.transactionBuilder.execTransaction(
       safeAddress,
       safeDataAccountAddress,
       cancelTransactionAccountAddress,
       remainingAccounts
     )
+
+    anchorTx.add(anchorExecTx);
 
     console.log('anchor transaction', anchorTx)
 
@@ -815,7 +973,37 @@ export class ZebecNativeTreasury extends ZebecMultisig {
         data: null
       }
     }
+  }else{
+    console.log('Approve Transaction');
+    const anchorTx = await this.transactionBuilder.execApproveTransaction(
+      safeDataAccountAddress,
+      cancelTransactionAccountAddress,
+      signer
+    )
+    const tx = await this._makeTxn(anchorTx)
+    const signedRawTx = await this.anchorProvider.wallet.signTransaction(tx)
+    this.consolelog.info('transaction after signing: ', signedRawTx)
+
+    try {
+      const signature = await sendTx(signedRawTx, this.anchorProvider)
+      this.consolelog.info(`transaction success, TXID: ${signature}`)
+      return {
+        status: 'success',
+        message: 'Cancel transaction Aprroved!!',
+        data: {
+          transactionHash: signature
+        }
+      }
+    } catch (err) {
+      console.log(err)
+      return {
+        status: 'error',
+        message: parseErrorMessage(err.message),
+        data: null
+      }
+    }
   }
+}
 
   async fetchStreamData(stream_data_account: PublicKey): Promise<any> {
     const response = await this.streamProgram.account.stream.fetch(stream_data_account)

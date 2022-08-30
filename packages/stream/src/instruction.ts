@@ -330,11 +330,15 @@ export class ZebecTransactionBuilder {
         const startTimeBN = new BN(startTime);
         const endTimeBN = new BN(endTime);
         const amountBN = new BN(amount);
+        const canCancel = true;
+        const canUpdate = true;
 
         const tx = await this._program.methods.tokenStream(
             startTimeBN,
             endTimeBN,
-            amountBN
+            amountBN,
+            canCancel,
+            canUpdate
         ).accounts({
             dataAccount: escrowAccountKeypair.publicKey,
             withdrawData: withdrawEscrowDataAccountAddress,

@@ -102,6 +102,29 @@ export class AccountKeys {
 
     }
 
+
+    static instanttransfer(
+        zebecVaultAddress: PublicKey,
+        safeAddress: PublicKey,
+        receiverAddress: PublicKey,
+        withdrawDataAccountAddress: PublicKey,
+    ): AccountMeta[] {
+        console.log([
+            zebecVaultAddress.toString(),
+            safeAddress.toString(),
+            receiverAddress.toString(),
+            withdrawDataAccountAddress.toString(),
+        ])
+        return [
+            { pubkey: zebecVaultAddress, isSigner: false, isWritable: true },
+            { pubkey: safeAddress, isSigner: true, isWritable: true },
+            { pubkey: receiverAddress, isSigner: false, isWritable: true },
+            { pubkey: withdrawDataAccountAddress, isSigner: false, isWritable: true },
+            { pubkey: SystemProgram.programId, isSigner: false, isWritable: false } 
+        ]
+
+    }
+
     static withdraw(
         zebecVaultAddress: PublicKey,
         safeAddress: PublicKey,
@@ -196,5 +219,36 @@ export class AccountKeys {
             { pubkey: dest_token_data, isSigner: false, isWritable: true},
             { pubkey: fee_token_data, isSigner: false, isWritable: true},
         ]
+    }
+
+    static instanttransfertoken(
+        zebecVaultAddress: PublicKey,
+        receiverAddress: PublicKey,
+        safeAddress: PublicKey,
+        withdrawDataAccountAddress: PublicKey,
+        tokenMintAddress: PublicKey,
+        pdaTokenData: PublicKey,
+        destTokenData: PublicKey,
+    ): AccountMeta[] {
+        console.log([
+            zebecVaultAddress.toString(),
+            safeAddress.toString(),
+            receiverAddress.toString(),
+            withdrawDataAccountAddress.toString(),
+        ])
+        return [
+            { pubkey: zebecVaultAddress, isSigner: false, isWritable: false },
+            { pubkey: receiverAddress, isSigner: false, isWritable: true },
+            { pubkey: safeAddress, isSigner: true, isWritable: true },
+            { pubkey: withdrawDataAccountAddress, isSigner: false, isWritable: true },
+            { pubkey: SystemProgram.programId, isSigner: false, isWritable: false },
+            { pubkey: TOKEN_PROGRAM_ID, isSigner: false, isWritable: false },
+            { pubkey: ASSOCIATED_PROGRAM_ID, isSigner: false, isWritable: false },
+            { pubkey: SYSVAR_RENT_PUBKEY , isSigner: false, isWritable: false},
+            { pubkey: tokenMintAddress, isSigner: false, isWritable: false},
+            { pubkey: pdaTokenData, isSigner: false, isWritable: true},
+            { pubkey: destTokenData, isSigner: false, isWritable: true},
+        ]
+
     }
 }

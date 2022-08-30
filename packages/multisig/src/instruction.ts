@@ -353,6 +353,46 @@ export class ZebecTransactionBuilder {
         return tx;
     }
 
+    async execInstantStream(
+        zebecVaultAddress: PublicKey,
+        safeAddress: PublicKey,
+        receiverAddress: PublicKey,
+        zebecTransactionAccount: Keypair,
+        safeDataAccount: PublicKey,
+        senderAddress: PublicKey,
+        withdrawDataAccountAddress: PublicKey,
+    ): Promise<Transaction> {
+
+        const txAccountSize = 1000;
+        const zebecCancelStreamAccounts = AccountKeys.instanttransfer(
+            zebecVaultAddress,
+            safeAddress,
+            receiverAddress,
+            withdrawDataAccountAddress,
+        );
+
+        const cancelSolIxDataBuffer = this._streamProgram.coder.instruction.encode(
+            ZEBEC_STREAM.INSTANT_TRANSFER_SOL, {}
+        );
+
+        const createTxDataStoringAccountIx = await this._multisigProgram.account.transaction.createInstruction(
+            zebecTransactionAccount,
+            txAccountSize
+        );
+
+        const tx = await this._multisigProgram.methods.createTransaction(
+            this._streamProgram.programId,
+            zebecCancelStreamAccounts,
+            cancelSolIxDataBuffer
+        ).accounts({
+            multisig: safeDataAccount,
+            transaction: zebecTransactionAccount.publicKey,
+            proposer: senderAddress
+        }).preInstructions([createTxDataStoringAccountIx]).signers([zebecTransactionAccount]).transaction();
+
+        return tx;
+    }
+
     async execStreamInitToken(
         safeAddress: PublicKey,
         safeDataAccount: PublicKey,
@@ -544,6 +584,52 @@ export class ZebecTransactionBuilder {
 
         const cancelTokenIxDataBuffer = this._streamProgram.coder.instruction.encode(
             ZEBEC_STREAM.CANCEL_STREAM_TOKEN, {}
+        );
+
+        const createTxDataStoringAccountIx = await this._multisigProgram.account.transaction.createInstruction(
+            zebecTransactionAccount,
+            txAccountSize
+        );
+
+        const tx = await this._multisigProgram.methods.createTransaction(
+            this._streamProgram.programId,
+            zebecCancelStreamAccounts,
+            cancelTokenIxDataBuffer
+        ).accounts({
+            multisig: safeDataAccount,
+            transaction: zebecTransactionAccount.publicKey,
+            proposer: senderAddress
+        }).preInstructions([createTxDataStoringAccountIx]).signers([zebecTransactionAccount]).transaction();
+
+        return tx;
+    }
+
+    async execInstantStreamToken(
+        zebecVaultAddress: PublicKey,
+        safeAddress: PublicKey,
+        receiverAddress: PublicKey,
+        zebecTransactionAccount: Keypair,
+        safeDataAccount: PublicKey,
+        senderAddress: PublicKey,
+        withdrawDataAccountAddress: PublicKey,
+        tokenMintAddress: PublicKey,
+        pdaTokenData:PublicKey,
+        destTokenData:PublicKey,
+    ): Promise<Transaction> {
+        const txAccountSize = 1000;
+
+        const zebecCancelStreamAccounts = AccountKeys.instanttransfertoken(
+            zebecVaultAddress,
+            receiverAddress,
+            safeAddress,
+            withdrawDataAccountAddress,
+            tokenMintAddress,
+            pdaTokenData,
+            destTokenData,
+        );
+
+        const cancelTokenIxDataBuffer = this._streamProgram.coder.instruction.encode(
+            ZEBEC_STREAM.INSTANT_TRANSFER_TOKEN, {}
         );
 
         const createTxDataStoringAccountIx = await this._multisigProgram.account.transaction.createInstruction(

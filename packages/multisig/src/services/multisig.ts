@@ -1192,12 +1192,15 @@ export class ZebecTokenTreasury extends ZebecMultisig {
     const [feeVaultAddress] = await this._findFeeVaultAddress(this.feeReceiverAddress)
     const [feeVaultDataAddress] = await this._findFeeVaultDataAccount(this.feeReceiverAddress)
     const [withdrawDataAccount] = await this._findTokenWithdrawEscrowAccount(safeAddress, tokenMintAddress)
+    const safe_details = await this._fetchTresholdData(safeDataAccount)
+    const owners = safe_details.owners
     const streamDataAccount = Keypair.generate()
     const zebecTransactionAccount = Keypair.generate()
 
     const amountInLamports = await getTokenAmountInLamports(amount, tokenMintAddress, this.multisigProgram)
 
     const anchorTx = await this.transactionBuilder.execStreamInitToken(
+      owners,
       safeAddress,
       safeDataAccount,
       zebecTransactionAccount,
@@ -1373,11 +1376,14 @@ export class ZebecTokenTreasury extends ZebecMultisig {
     const receiverAddress = new PublicKey(receiver)
     const streamDataAccountAddress = new PublicKey(stream_data_account)
     const safeDataAccount = new PublicKey(safe_data_account)
+    const safe_details = await this._fetchTresholdData(safeDataAccount)
+    const owners = safe_details.owners
     const senderAddress = new PublicKey(sender)
 
     const zebecTransactionAccount = Keypair.generate()
 
     const anchorTx = await this.transactionBuilder.execStreamPauseToken(
+      owners,
       safeAddress,
       receiverAddress,
       streamDataAccountAddress,
@@ -1703,6 +1709,8 @@ export class ZebecTokenTreasury extends ZebecMultisig {
     const tokenMintAddress = new PublicKey(token_mint_address)
     const streamDataAccountAddress = new PublicKey(stream_data_account)
     const safeDataAccount = new PublicKey(safe_data_account)
+    const safe_details = await this._fetchTresholdData(safeDataAccount)
+    const owners = safe_details.owners
     const senderAddress = new PublicKey(sender)
     const [zebecVaultAddress] = await this._findZebecVaultAccount(safeAddress)
     const [withdrawDataAccountAddress] = await this._findTokenWithdrawEscrowAccount(safeAddress, tokenMintAddress)
@@ -1714,6 +1722,7 @@ export class ZebecTokenTreasury extends ZebecMultisig {
     const zebecTransactionAccount = Keypair.generate()
 
     const anchorTx = await this.transactionBuilder.execStreamCancelToken(
+      owners,
       zebecVaultAddress,
       safeAddress,
       receiverAddress,
@@ -1896,6 +1905,8 @@ async instanttransfer(data: any): Promise<any> {
   const receiverAddress = new PublicKey(receiver)
   const tokenMintAddress = new PublicKey(token_mint_address)
   const safeDataAccount = new PublicKey(safe_data_account)
+  const safe_details = await this._fetchTresholdData(safeDataAccount)
+  const owners = safe_details.owners
   const senderAddress = new PublicKey(sender)
   const [zebecVaultAddress] = await this._findZebecVaultAccount(safeAddress)
   const [withdrawDataAccountAddress] = await this._findTokenWithdrawEscrowAccount(safeAddress, tokenMintAddress)
@@ -1905,6 +1916,7 @@ async instanttransfer(data: any): Promise<any> {
   const zebecTransactionAccount = Keypair.generate()
 
   const anchorTx = await this.transactionBuilder.execInstantStreamToken(
+    owners,
     zebecVaultAddress,
     safeAddress,
     receiverAddress,
@@ -2066,6 +2078,11 @@ async execInstanttransfer(data: any): Promise<any> {
     }
   }
 }
+}
+
+async fetchStreamData(stream_data_account: PublicKey): Promise<any> {
+  const response = await this.streamProgram.account.stream.fetch(stream_data_account)
+  return response
 }
 
   async withdraw(): Promise<any> {}

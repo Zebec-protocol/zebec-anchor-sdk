@@ -443,7 +443,8 @@ export class ZebecNativeStream extends ZebecStream implements IZebecStream {
                 message: `stream started. ${amount} SOL`,
                 data: {
                     transactionHash: signature,
-                    pda: escrowAccountKeypair.publicKey.toString()
+                    pda: escrowAccountKeypair.publicKey.toString(),
+                    withdrawescrow: withdrawEscrowAccountAddress.toString(),
                 }
             }
         } catch (err) {
@@ -673,6 +674,17 @@ export class ZebecNativeStream extends ZebecStream implements IZebecStream {
             }
         }
     }
+
+    async fetchStreamData(escrow: PublicKey): Promise<any> {
+        const response = await this.program.account.stream.fetch(escrow)
+        return response
+      }
+
+    async fetchStreamingAmount(withdrawDataAccount:PublicKey): Promise<any> {
+        const response = await this.program.account.streaming.fetch(withdrawDataAccount)
+        return response
+    }
+
 }
 
 export class ZebecTokenStream extends ZebecStream implements IZebecStream {
@@ -971,5 +983,9 @@ export class ZebecTokenStream extends ZebecStream implements IZebecStream {
                 data: null
             }
         }
+    }
+    async fetchStreamingAmount(withdrawDataAccount:PublicKey): Promise<any> {
+        const response = await this.program.account.streaming.fetch(withdrawDataAccount)
+        return response
     }
 }

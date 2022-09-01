@@ -9,6 +9,7 @@ export type MZebecResponse = {
 export type MStreamResponse = {
     transactionHash: TransactionSignature;
     pda?: PublicKey | string;
+    withdrawescrow?: PublicKey | string;
 }
 
 export type MInstructionsAndSigners = {

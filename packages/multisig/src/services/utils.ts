@@ -1,4 +1,4 @@
-import { Connection, ParsedAccountData, SYSVAR_CLOCK_PUBKEY, TransactionSignature, ConfirmOptions, LAMPORTS_PER_SOL, PublicKey, Transaction } from "@solana/web3.js";
+import { Connection, ParsedAccountData, SYSVAR_CLOCK_PUBKEY, TransactionSignature, ConfirmOptions, LAMPORTS_PER_SOL, PublicKey, Transaction, AccountMeta } from "@solana/web3.js";
 import { AnchorProvider, Program, Wallet } from "@project-serum/anchor";
 import { ZEBEC_MULTISIG_PROGRAM_IDL } from "../idl";
 
@@ -176,3 +176,31 @@ export class ConsoleLog {
         console.log(message);
     }
 }
+
+export const getTxSize = (
+    accounts: Array<AccountMeta>,
+    owners: Array<PublicKey>,
+    isDataVector: boolean,
+    data_size:number,
+  ) => {
+    const vec_discriminator = 8;
+    const discriminator = 8;
+    const pubkey_size = 32;
+    const account_size = vec_discriminator + accounts.length * (32 + 1 + 1);
+    let datasize = discriminator + data_size;
+    if (isDataVector) {
+      datasize = data_size + vec_discriminator;
+    }
+    const num_owner = owners.length ;
+    const sig_vec_size = vec_discriminator + num_owner * 1;
+    const txSize =
+      discriminator +
+      pubkey_size + //multisig program id
+      pubkey_size + // program id
+      account_size + //account vector
+      datasize + //size of data
+      sig_vec_size + //signed vector
+      1 + //did execute bool
+      4; //Owner set sequence number.
+    return txSize;
+  };

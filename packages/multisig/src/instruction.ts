@@ -2,6 +2,7 @@ import { BN, Program, web3 } from "@project-serum/anchor";
 import { ASSOCIATED_PROGRAM_ID, TOKEN_PROGRAM_ID } from "@project-serum/anchor/dist/cjs/utils/token";
 import { AccountMeta, Keypair, PublicKey, SystemProgram, SYSVAR_RENT_PUBKEY, Transaction } from "@solana/web3.js";
 import { ZEBEC_STREAM } from "./config";
+import { getTxSize } from "./services";
 import { AccountKeys } from "./services/accounts";
 
 // Test code Mappings
@@ -394,6 +395,7 @@ export class ZebecTransactionBuilder {
     }
 
     async execStreamInitToken(
+        owners: PublicKey[],
         safeAddress: PublicKey,
         safeDataAccount: PublicKey,
         zebecTransactionAccount: Keypair,
@@ -416,12 +418,9 @@ export class ZebecTransactionBuilder {
         const canCancel = true;
         const canUpdate = true;
 
-        const txAccountSize = 1000;
-        const streamEscrowAccountDataSize = 8+8+8+8+8+32+32+8+8+32+200;
-
         const zebecInitStreamAccounts = AccountKeys.inittoken(
             streamDataAccountAddress.publicKey,
-            withdrawDataAccount,
+            withdrawDataAccount,    
             feeReceiverAddress,
             feeVaultDataAddress,
             feeVaultAddress,
@@ -429,6 +428,12 @@ export class ZebecTransactionBuilder {
             receiverAddress,
             tokenMintAddress
         );
+
+        const streamEscrowAccountDataSize = 8+8+8+8+8+32+32+8+8+32+200;
+
+        const txAccountSize = getTxSize(zebecInitStreamAccounts,owners,true,streamEscrowAccountDataSize);
+
+        console.log(txAccountSize);
 
         console.log(zebecInitStreamAccounts, "hhhh")
 
@@ -473,6 +478,7 @@ export class ZebecTransactionBuilder {
     }
 
     async execStreamPauseToken(
+        owners: PublicKey[],
         safeAddress: PublicKey,
         receiverAddress: PublicKey,
         streamDataAccountAddress: PublicKey,
@@ -480,13 +486,17 @@ export class ZebecTransactionBuilder {
         safeDataAccount: PublicKey,
         senderAddress: PublicKey
     ): Promise<Transaction> {
-        const txAccountSize = 1000;
-
+    
         const zebecPauseStreamAccounts = AccountKeys.pausetoken(
             safeAddress,
             receiverAddress,
             streamDataAccountAddress
         );
+
+        const streamEscrowAccountDataSize = 8+8+8+8+8+32+32+8+8+32+200;
+
+        const txAccountSize = getTxSize(zebecPauseStreamAccounts,owners,true,streamEscrowAccountDataSize);
+        console.log(txAccountSize);
 
         const pauseTokenIxDataBuffer = this._streamProgram.coder.instruction.encode(
             ZEBEC_STREAM.PAUSE_RESUME_STREAM_TOKEN, {}
@@ -511,6 +521,7 @@ export class ZebecTransactionBuilder {
     }
 
     async execStreamResumeToken(
+        owners: PublicKey[],
         safeAddress: PublicKey,
         receiverAddress: PublicKey,
         streamDataAccountAddress: PublicKey,
@@ -518,13 +529,17 @@ export class ZebecTransactionBuilder {
         safeDataAccount: PublicKey,
         senderAddress: PublicKey
     ): Promise<Transaction> {
-        const txAccountSize = 1000;
 
         const zebecPauseStreamAccounts = AccountKeys.resumetoken(
             safeAddress,
             receiverAddress,
             streamDataAccountAddress
         );
+
+        const streamEscrowAccountDataSize = 8+8+8+8+8+32+32+8+8+32+200;
+
+        const txAccountSize = getTxSize(zebecPauseStreamAccounts,owners,true,streamEscrowAccountDataSize);
+        console.log(txAccountSize);
 
         const resumeTokenIxDataBuffer = this._streamProgram.coder.instruction.encode(
             ZEBEC_STREAM.PAUSE_RESUME_STREAM_TOKEN, {}
@@ -549,6 +564,7 @@ export class ZebecTransactionBuilder {
     }
 
     async execStreamCancelToken(
+        owners: PublicKey[],
         zebecVaultAddress: PublicKey,
         safeAddress: PublicKey,
         receiverAddress: PublicKey,
@@ -565,7 +581,6 @@ export class ZebecTransactionBuilder {
         destTokenData:PublicKey,
         feeTokenData:PublicKey,
     ): Promise<Transaction> {
-        const txAccountSize = 1000;
 
         const zebecCancelStreamAccounts = AccountKeys.canceltoken(
             zebecVaultAddress,
@@ -581,6 +596,11 @@ export class ZebecTransactionBuilder {
             destTokenData,
             feeTokenData,
         );
+
+        const streamEscrowAccountDataSize = 8+8+8+8+8+32+32+8+8+32+200;
+
+        const txAccountSize = getTxSize(zebecCancelStreamAccounts,owners,true,streamEscrowAccountDataSize);
+        console.log(txAccountSize);
 
         const cancelTokenIxDataBuffer = this._streamProgram.coder.instruction.encode(
             ZEBEC_STREAM.CANCEL_STREAM_TOKEN, {}
@@ -605,6 +625,7 @@ export class ZebecTransactionBuilder {
     }
 
     async execInstantStreamToken(
+        owners: PublicKey[],
         zebecVaultAddress: PublicKey,
         safeAddress: PublicKey,
         receiverAddress: PublicKey,
@@ -616,9 +637,8 @@ export class ZebecTransactionBuilder {
         pdaTokenData:PublicKey,
         destTokenData:PublicKey,
     ): Promise<Transaction> {
-        const txAccountSize = 1000;
 
-        const zebecCancelStreamAccounts = AccountKeys.instanttransfertoken(
+        const zebecInstantStreamAccounts = AccountKeys.instanttransfertoken(
             zebecVaultAddress,
             receiverAddress,
             safeAddress,
@@ -627,6 +647,11 @@ export class ZebecTransactionBuilder {
             pdaTokenData,
             destTokenData,
         );
+
+        const streamEscrowAccountDataSize = 8+8+8+8+8+32+32+8+8+32+200;
+
+        const txAccountSize = getTxSize(zebecInstantStreamAccounts,owners,true,streamEscrowAccountDataSize);
+        console.log(txAccountSize);
 
         const cancelTokenIxDataBuffer = this._streamProgram.coder.instruction.encode(
             ZEBEC_STREAM.INSTANT_TRANSFER_TOKEN, {}
@@ -639,7 +664,7 @@ export class ZebecTransactionBuilder {
 
         const tx = await this._multisigProgram.methods.createTransaction(
             this._streamProgram.programId,
-            zebecCancelStreamAccounts,
+            zebecInstantStreamAccounts,
             cancelTokenIxDataBuffer
         ).accounts({
             multisig: safeDataAccount,

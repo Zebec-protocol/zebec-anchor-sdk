@@ -33,6 +33,26 @@ export class AccountKeys {
             { pubkey: SystemProgram.programId, isSigner: false, isWritable: false }
         ]
     }
+
+    static depositToken(
+        zebecVaultAddress: PublicKey,
+        safeAddress: PublicKey,
+        tokenMintAddress: PublicKey,
+        zebecVaultAssociatedTokenAddress: PublicKey,
+        pdaTokenData: PublicKey,
+    ): AccountMeta[] {
+        return [
+            { pubkey: zebecVaultAddress, isSigner: false, isWritable: true },
+            { pubkey: safeAddress, isSigner: true, isWritable: true },
+            { pubkey: SystemProgram.programId, isSigner: false, isWritable: false },
+            { pubkey: TOKEN_PROGRAM_ID, isSigner: false, isWritable: false },
+            { pubkey: ASSOCIATED_PROGRAM_ID, isSigner: false, isWritable: false },
+            { pubkey: SYSVAR_RENT_PUBKEY, isSigner: false, isWritable: false },
+            { pubkey: tokenMintAddress, isSigner: false, isWritable: false},
+            { pubkey: zebecVaultAssociatedTokenAddress, isSigner: false, isWritable: false },
+            { pubkey: pdaTokenData, isSigner: false, isWritable: true},
+        ]
+    }
     
     static init(
         streamDataAccountAddress: PublicKey,

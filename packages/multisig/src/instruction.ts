@@ -155,6 +155,51 @@ export class ZebecTransactionBuilder {
         return tx;
     }
 
+    async execDepositToVault(
+        zebecVaultAddress: PublicKey,
+        safeAddress: PublicKey,
+        safeDataAccount: PublicKey,
+        zebecTransactionAccount: Keypair,
+        senderAddress: PublicKey,
+        amount: number,
+    ): Promise<Transaction> {
+
+        const amountBN = new BN(amount);
+
+        const txAccountSize = 1000;
+
+        const zebecDepositAccounts = AccountKeys.deposit(
+            zebecVaultAddress,
+            safeAddress,
+        );
+
+        const pauseSolIxDataBuffer = this._streamProgram.coder.instruction.encode(
+            ZEBEC_STREAM.DEPOSIT_SOL, {
+                amount: amountBN,
+            }
+        );
+
+        const createTxDataStoringAccountIx = await this._multisigProgram.account.transaction.createInstruction(
+            zebecTransactionAccount,
+            txAccountSize
+        );
+
+        const tx = await this._multisigProgram.methods.createTransaction(
+            this._streamProgram.programId,
+            zebecDepositAccounts,
+            pauseSolIxDataBuffer
+        ).accounts({
+            multisig: safeDataAccount,
+            transaction: zebecTransactionAccount.publicKey,
+            proposer: senderAddress
+        }).preInstructions([createTxDataStoringAccountIx]).signers([zebecTransactionAccount]).transaction();
+
+        return tx;
+
+    }
+
+
+
     async execInitStream(
         safeAddress: PublicKey,
         safeDataAccount: PublicKey,

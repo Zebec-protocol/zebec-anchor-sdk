@@ -8,7 +8,6 @@ import { IBaseStream, IZebecStream } from "../interface";
 import { ZebecTransactionBuilder } from '../instruction';
 import { OPERATE, OPERATE_DATA, PREFIX, PREFIX_TOKEN, SPL_ASSOCIATED_TOKEN_ACCOUNT_PROGRAM_ID, ZEBEC_PROGRAM_ID } from "../config/constants";
 import { MDepositWithdrawFromZebecVault, MInitStream, MPauseResumeWithdrawCancel, MZebecResponse } from "../models";
-import { TypeDef } from '@project-serum/anchor/dist/cjs/program/namespace/types';
 
 // window.Buffer = window.Buffer || require("buffer").Buffer; 
 
@@ -93,18 +92,6 @@ class ZebecStream implements IBaseStream {
         );
         this.console.info(`associated token address: ${associatedTokenAddress}`);
         return [associatedTokenAddress, nonce]
-    }
-
-    async _findStreamingAmountSol(walletAddress: PublicKey): Promise<any> {
-        const [withdrawEscrow,] = await this._findSolWithdrawEscrowAccount(walletAddress);
-        const streamingAmount = await this.program.account.streamedAmt.fetch(withdrawEscrow)
-        return streamingAmount
-    }
-
-    async _findStreamingAmountToken(walletAddress: PublicKey, tokenMintAddress:PublicKey): Promise<any> {
-        const [withdrawEscrow,] = await this._findTokenWithdrawEscrowAccount(walletAddress, tokenMintAddress);
-        const streamingAmount = await this.program.account.tokenWithdraw.fetch(withdrawEscrow)
-        return streamingAmount
     }
 
     async _makeTxn(tx: Transaction, escrow: Keypair = null): Promise<Transaction> {
@@ -693,10 +680,8 @@ export class ZebecNativeStream extends ZebecStream implements IZebecStream {
         return response
       }
 
-      async fetchStreamingAmount(data:any): Promise<any> {
-        const { sender } = data;
-        const senderAddress = new PublicKey(sender);
-        const response = await this._findStreamingAmountSol(senderAddress);
+    async fetchStreamingAmount(withdrawDataAccount:PublicKey): Promise<any> {
+        const response = await this.program.account.streaming.fetch(withdrawDataAccount)
         return response
     }
 
@@ -999,11 +984,8 @@ export class ZebecTokenStream extends ZebecStream implements IZebecStream {
             }
         }
     }
-    async fetchStreamingAmount(data:any): Promise<any> {
-        const { sender, token_mint_address} = data;
-        const senderAddress = new PublicKey(sender);
-        const tokenMintAddress = new PublicKey(token_mint_address);
-        const response = await this._findStreamingAmountToken(senderAddress,tokenMintAddress);
+    async fetchStreamingAmount(withdrawDataAccount:PublicKey): Promise<any> {
+        const response = await this.program.account.streaming.fetch(withdrawDataAccount)
         return response
     }
 }

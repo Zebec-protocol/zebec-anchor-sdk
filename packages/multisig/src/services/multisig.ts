@@ -216,7 +216,7 @@ export class ZebecMultisig {
     const amountInLamports = getAmountInLamports(amount)
 
     console.log('senderAddress', senderAddress.toString())
-    console.log('zebecVaultAddress', zebecVaultAddress.toString())
+    console.log('zebecVaultAddress masterpda', zebecVaultAddress.toString())
     console.log('zebecSafeAddress', zebecSafeAddress.toString())
     console.log('withdrawEscrowDataAccountAddress', withdrawEscrowDataAccountAddress.toString())
 
@@ -307,6 +307,174 @@ export class ZebecNativeTreasury extends ZebecMultisig {
     super(anchorProvider, feeReceiver, logger)
     this.consolelog.info('zebec native treasury object initialized!')
   }
+
+  async deposit(data: any): Promise<any> {
+    const { safe_address, safe_data_account, sender, amount } = data
+
+    const senderAddress = new PublicKey(sender);
+    const safeAddress = new PublicKey(safe_address)
+    const [zebecVaultAddress] = await this._findZebecVaultAccount(safeAddress)
+    const safeDataAccount = new PublicKey(safe_data_account)
+
+
+    const zebecTransactionAccount = Keypair.generate()
+
+    const amountInLamports = getAmountInLamports(amount)
+    
+    const anchorTx = await this.transactionBuilder.execDepositToVault(
+      zebecVaultAddress,
+      safeAddress,
+      safeDataAccount,
+      zebecTransactionAccount,
+      senderAddress,
+      amountInLamports
+    )
+
+    const tx = await this._makeTxn(anchorTx, [zebecTransactionAccount])
+    const signedRawTx = await this.anchorProvider.wallet.signTransaction(tx)
+    this.consolelog.info('transaction after signing: ', signedRawTx)
+
+    try {
+      const signature = await sendTx(signedRawTx, this.anchorProvider)
+      this.consolelog.info(`transaction success, TXID: ${signature}`)
+      return {
+        status: 'success',
+        message: 'Deposited !',
+        data: {
+          transactionHash: signature,
+          transaction_account: zebecTransactionAccount.publicKey.toString()
+        }
+      }
+    } catch (err) {
+      console.log(err)
+      return {
+        status: 'error',
+        message: parseErrorMessage(err.message),
+        data: null
+      }
+    }
+  }
+
+  async execDespoit(data: any): Promise<any> {
+    const {safe_address, safe_data_account, transaction_account, signer } = data
+
+    console.log(data)
+
+    const safeAddress = new PublicKey(safe_address)
+    const [zebecVaultAddress] = await this._findZebecVaultAccount(safeAddress)
+    const [feeVaultDataAddress] = await this._findFeeVaultDataAccount(this.feeReceiverAddress)
+    const safeDataAccountAddress = new PublicKey(safe_data_account)
+    const depositAccountAddress = new PublicKey(transaction_account)
+    // how to automate this transaction, trigger this transaction
+    // what happens to withdrawData (Since ownerA might start transaction) and has withdrawData accoridingly
+    // what if ownerB exec this function
+    const [withdrawDataAccountAddress] = await this._findSolWithdrawEscrowAccount(safeAddress)
+    const safe_details = await this._fetchTresholdData(safeDataAccountAddress)
+    const transaction_details = await this.fetchMultiSigStreamData(depositAccountAddress)
+    console.log('safe_details', safe_details)
+    const ownerarray = safe_details.owners
+    const signaturesarray = transaction_details.signers
+    console.log('signaturesarray', signaturesarray)
+    console.log('ownerarray', ownerarray)
+    const obj = {}
+    ownerarray.forEach((element, index) => {
+      obj[element] = signaturesarray[index]
+    })
+    const signcheck = obj[signer]
+    console.log('result', signcheck)
+    console.log('transactions', transaction_details)
+    console.log('withdraw sol data', withdrawDataAccountAddress.toString())
+    console.log('feeVaultDataAddress sol data', feeVaultDataAddress.toString())
+
+    const initAccounts = AccountKeys.deposit(zebecVaultAddress, safeAddress)
+
+    const threshholdCount = safe_details.threshold.toString() // minimum signers required to execute transaction
+
+    console.log('threshholdCount', threshholdCount)
+
+    const count = signaturesarray.filter((value) => value === true).length
+    console.log('count', count)
+
+    if(Number(count +1) === Number(threshholdCount)) {
+      console.log('approve');
+
+
+      const anchorTx = await this.transactionBuilder.execApproveTransaction(
+        safeDataAccountAddress,
+        depositAccountAddress,
+        signer
+      )
+
+    const remainingAccounts = AccountKeys.remainingAccounts(initAccounts, safeAddress)
+
+    const anchorExecTx = await this.transactionBuilder.execTransaction(
+      safeAddress,
+      safeDataAccountAddress,
+      depositAccountAddress,
+      remainingAccounts
+    )
+
+    anchorTx.add(anchorExecTx);
+
+    console.log('anchor transaction', anchorTx)
+
+    const tx = await this._makeTxn(anchorTx)
+    const signedRawTx = await this.anchorProvider.wallet.signTransaction(tx)
+    this.consolelog.info('transaction after signing: ', signedRawTx)
+
+    try {
+      const signature = await sendTx(signedRawTx, this.anchorProvider)
+      this.consolelog.info(`transaction success, TXID: ${signature}`)
+      return {
+        status: 'success',
+        message: 'Deposit transaction executed!!',
+        data: {
+          transactionHash: signature
+        }
+      }
+    } catch (err) {
+      console.log(err)
+      return {
+        status: 'error',
+        message: parseErrorMessage(err.message),
+        data: null
+      }
+    }
+  } else {
+    console.log('Approve transaction');
+
+    const anchorTx = await this.transactionBuilder.execApproveTransaction(
+      safeDataAccountAddress,
+      depositAccountAddress,
+      signer
+    )
+
+    console.log('anchor transaction', anchorTx)
+
+    const tx = await this._makeTxn(anchorTx)
+    const signedRawTx = await this.anchorProvider.wallet.signTransaction(tx)
+    this.consolelog.info('transaction after signing: ', signedRawTx)
+
+    try {
+      const signature = await sendTx(signedRawTx, this.anchorProvider)
+      this.consolelog.info(`transaction success, TXID: ${signature}`)
+      return {
+        status: 'success',
+        message: 'Deposit transaction Approved!!',
+        data: {
+          transactionHash: signature
+        }
+      }
+    } catch (err) {
+      console.log(err)
+      return {
+        status: 'error',
+        message: parseErrorMessage(err.message),
+        data: null
+      }
+    }
+  }
+}
 
   async init(data: any): Promise<any> {
     const { safe_address, safe_data_account, sender, receiver, start_time, end_time, amount } = data
@@ -1913,6 +2081,7 @@ async instanttransfer(data: any): Promise<any> {
   const pdaTokenData = await this._getAccociatedTokenAddress(zebecVaultAddress, tokenMintAddress)
   console.log('pdaTokenData , Transaction create', pdaTokenData.toString());
   const destTokenData = await this._getAccociatedTokenAddress(receiverAddress, tokenMintAddress)
+  console.log('destTokenData , Transaction create', destTokenData.toString());
   const zebecTransactionAccount = Keypair.generate()
 
   const anchorTx = await this.transactionBuilder.execInstantStreamToken(
@@ -1983,6 +2152,7 @@ async execInstanttransfer(data: any): Promise<any> {
   console.log('result', signcheck)
   console.log('transactions', transaction_details)
   console.log('safe address', safeAddress.toString())
+  console.log('Multisig vitra ko zbc vault', zebecVaultAddress.toString())
   const pdaTokenData = await this._getAccociatedTokenAddress(zebecVaultAddress, tokenMintAddress)
   console.log('pdaTokenData , Transaction create', pdaTokenData.toString());
   const destTokenData = await this._getAccociatedTokenAddress(receiverAddress, tokenMintAddress)

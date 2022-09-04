@@ -22,6 +22,17 @@ export class AccountKeys {
 
         return remainingAccounts
     }
+
+    static deposit(
+        zebecVaultAddress: PublicKey,
+        safeAddress: PublicKey,
+    ): AccountMeta[] {
+        return [
+            { pubkey: zebecVaultAddress, isSigner: false, isWritable: true },
+            { pubkey: safeAddress, isSigner: true, isWritable: true },
+            { pubkey: SystemProgram.programId, isSigner: false, isWritable: false }
+        ]
+    }
     
     static init(
         streamDataAccountAddress: PublicKey,

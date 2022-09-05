@@ -417,6 +417,9 @@ export class ZebecNativeStream extends ZebecStream implements IZebecStream {
 
         const amountInLamports = getAmountInLamports(amount);
 
+        console.log('fee vault address',feeVaultAddress.toBase58());
+        console.log('fee vault data address',feeVaultDataAddress.toBase58());
+
         const anchorTx = await this.transactionBuilder.execStreamInitSol(
             senderAddress,
             receiverAddress,

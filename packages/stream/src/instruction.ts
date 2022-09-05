@@ -193,8 +193,12 @@ export class ZebecTransactionBuilder {
         endTime: number,
         amount: number,
     ): Promise<Transaction> {
-        
 
+
+        console.log('feevaultdataaddress',feeVaultDataAddress.toString());
+        console.log('feevaultaddress',feeVaultAddress.toString());
+        
+        
         const dataSize = 8+8+8+8+8+32+32+8+8+32+500;
         
         const createAccountIx = await this._program.account.stream.createInstruction(
@@ -216,9 +220,9 @@ export class ZebecTransactionBuilder {
             feeOwner: feeReceiverAddress,
             feeVaultData: feeVaultDataAddress,
             feeVault: feeVaultAddress,
-            systemProgram: SystemProgram.programId,
             sender: senderAddress,
-            receiver: receiverAddress
+            receiver: receiverAddress,
+            systemProgram: SystemProgram.programId,
         }).preInstructions([createAccountIx]).signers([escrowAccountKeypair]).transaction();
 
         return tx;
@@ -320,6 +324,9 @@ export class ZebecTransactionBuilder {
         amount: number
     ): Promise<Transaction> {
 
+        console.log('feevaultdataaddress',feeVaultDataAddress.toString());
+        console.log('feevaultaddress',feeVaultAddress.toString());
+
         const dataSize = 8+8+8+8+8+8+32+32+8+8+200;
 
         const createAccountIx = await this._program.account.stream.createInstruction(
@@ -375,7 +382,7 @@ export class ZebecTransactionBuilder {
             destAccount: receiverAddress,
             sourceAccount: senderAddress,
             feeOwner: feeReceiverAddress,
-            vaultData: feeVaultDataAddress,
+            feeVaultData: feeVaultDataAddress,
             feeVault: feevaultAddress,
             zebecVault: zebecVaultAddress,
             dataAccount: escrowAccountAddress,

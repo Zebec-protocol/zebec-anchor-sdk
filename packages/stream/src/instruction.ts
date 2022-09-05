@@ -145,9 +145,9 @@ export class ZebecTransactionBuilder {
 
         const tx = await this._program.methods.nativeWithdrawal(amountBN).accounts({
             zebecVault: zebecVaultAddress,
+            sender: senderAddress,
             withdrawData: withdrawEscrowDataAccountAddress,
             systemProgram: SystemProgram.programId,
-            sender: senderAddress
         }).transaction();
 
         return tx;
@@ -379,12 +379,12 @@ export class ZebecTransactionBuilder {
     ): Promise<Transaction> {
 
         const tx = await this._program.methods.withdrawTokenStream().accounts({
+            zebecVault: zebecVaultAddress,
             destAccount: receiverAddress,
             sourceAccount: senderAddress,
             feeOwner: feeReceiverAddress,
             feeVaultData: feeVaultDataAddress,
             feeVault: feevaultAddress,
-            zebecVault: zebecVaultAddress,
             dataAccount: escrowAccountAddress,
             withdrawData: withdrawEscrowDataAccountAddress,
             systemProgram: SystemProgram.programId,

@@ -214,7 +214,7 @@ export class ZebecTransactionBuilder {
             dataAccount: escrowAccountKeypair.publicKey,
             withdrawData: withdrawEscrowDataAccountAddress,
             feeOwner: feeReceiverAddress,
-            vaultData: feeVaultDataAddress,
+            feeVaultData: feeVaultDataAddress,
             feeVault: feeVaultAddress,
             systemProgram: SystemProgram.programId,
             sender: senderAddress,
@@ -242,7 +242,7 @@ export class ZebecTransactionBuilder {
             dataAccount: escrowAccountAddress,
             withdrawData: withdrawEscrowDataAccountAddress,
             feeOwner: feeReceiverAddress,
-            vaultData: feeVaultDataAddress,
+            feeVaultData: feeVaultDataAddress,
             feeVault: feeVaultAddress,
             systemProgram: SystemProgram.programId
         }).transaction();
@@ -268,7 +268,7 @@ export class ZebecTransactionBuilder {
             dataAccount: escrowDataAccountAddress,
             withdrawData: withdrawEscrowDataAccountAddress,
             feeOwner: feeReceiverAddress,
-            vaultData: feeVaultDataAddress,
+            feeVaultData: feeVaultDataAddress,
             feeVault: feeVaultAddress,
             systemProgram: SystemProgram.programId
         }).transaction();
@@ -343,7 +343,7 @@ export class ZebecTransactionBuilder {
             dataAccount: escrowAccountKeypair.publicKey,
             withdrawData: withdrawEscrowDataAccountAddress,
             feeOwner: feeReceiverAddress,
-            vaultData: feeVaultDataAddress,
+            feeVaultData: feeVaultDataAddress,
             feeVault: feeVaultAddress,
             sourceAccount: senderAddress,
             destAccount: receiverAddress,
@@ -412,7 +412,7 @@ export class ZebecTransactionBuilder {
             destAccount: receiverAddress,
             sourceAccount: senderAddress,
             feeOwner: feeReceiverAddress,
-            vaultData: feeVaultDataAddress,
+            feeVaultData: feeVaultDataAddress,
             feeVault: feeVaultAddress,
             zebecVault: zebecVaultAddress,
             dataAccount: escrowAccountAddress,

@@ -43,9 +43,9 @@ export class ZebecTransactionBuilder {
         const tx = await this._program.methods.createFeeAccount(
             calculatedFeePercentage
         ).accounts({
-            owner: feeReceiverAddress,
+            feeOwner: feeReceiverAddress,
             feeVault: feeVaultAddress,
-            vaultData: feeVaultDataAddress,
+            feeVaultData: feeVaultDataAddress,
             systemProgram: SystemProgram.programId,
             rent: SYSVAR_RENT_PUBKEY
         }).transaction();
@@ -61,7 +61,7 @@ export class ZebecTransactionBuilder {
 
         const tx = await this._program.methods.withdrawFeesSol().accounts({
             feeOwner: feeReceiverAddress,
-            vaultData: feeVaultDataAddress,
+            feeVaultData: feeVaultDataAddress,
             feeVault: feeVaultAddress,
             systemProgram: SystemProgram.programId,
             rent: SYSVAR_RENT_PUBKEY
@@ -81,7 +81,7 @@ export class ZebecTransactionBuilder {
 
         const tx = await this._program.methods.withdrawFeesToken().accounts({
             feeOwner: feeReceiverAddress,
-            vaultData: feeVaultDataAddress,
+            feeVaultData: feeVaultDataAddress,
             feeVault: feeVaultAddress,
             systemProgram: SystemProgram.programId,
             tokenProgram: TOKEN_PROGRAM_ID,

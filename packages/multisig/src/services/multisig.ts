@@ -1359,8 +1359,8 @@ export class ZebecTokenTreasury extends ZebecMultisig {
     const [zebecVaultAddress] = await this._findZebecVaultAccount(safeAddress)
     const safeDataAccount = new PublicKey(safe_data_account)
     const pdaTokenData = await this._getAccociatedTokenAddress(zebecVaultAddress, tokenMintAddress)
-    const [zebecVaultAssociatedTokenAddress] = await this._findAssociatedTokenAddress(
-      safeAddress,
+    const zebecVaultAssociatedTokenAddress = await this._getAccociatedTokenAddress(
+      zebecVaultAddress,
       tokenMintAddress
     )
 

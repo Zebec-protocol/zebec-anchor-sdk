@@ -12,7 +12,7 @@ export enum SC_CONSTANT {
 //samundra pid --> b6ZPysThkApNx2YDiGsPUiYPE7Ub1kTRdCWp7gBkzbr
 
 export enum ZEBEC_PROGRAM_ID {
-    MULTISIG = "5BU6x2H7WXeyaP75D7daNJQAipZfVUr5FM9zdhzajK6p",
+    MULTISIG = "b6ZPysThkApNx2YDiGsPUiYPE7Ub1kTRdCWp7gBkzbr",
     STREAM = "Gvg5iMmgu8zs4rn5zJ6YGGnzsu6WqZJawKUndbqneXia"
 }
 

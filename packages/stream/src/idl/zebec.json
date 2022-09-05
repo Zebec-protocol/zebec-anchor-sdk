@@ -11,17 +11,22 @@
           "isSigner": false
         },
         {
-          "name": "vaultData",
+          "name": "feeVaultData",
           "isMut": true,
           "isSigner": false
         },
         {
-          "name": "owner",
+          "name": "feeOwner",
           "isMut": true,
           "isSigner": true
         },
         {
           "name": "systemProgram",
+          "isMut": false,
+          "isSigner": false
+        },
+        {
+          "name": "rent",
           "isMut": false,
           "isSigner": false
         }
@@ -42,7 +47,7 @@
           "isSigner": true
         },
         {
-          "name": "vaultData",
+          "name": "feeVaultData",
           "isMut": false,
           "isSigner": false
         },
@@ -98,7 +103,7 @@
           "isSigner": true
         },
         {
-          "name": "vaultData",
+          "name": "feeVaultData",
           "isMut": false,
           "isSigner": false
         },
@@ -165,7 +170,7 @@
           "isSigner": false
         },
         {
-          "name": "vaultData",
+          "name": "feeVaultData",
           "isMut": false,
           "isSigner": false
         },
@@ -291,7 +296,7 @@
           "isSigner": false
         },
         {
-          "name": "vaultData",
+          "name": "feeVaultData",
           "isMut": false,
           "isSigner": false
         },
@@ -363,7 +368,7 @@
           "isSigner": false
         },
         {
-          "name": "vaultData",
+          "name": "feeVaultData",
           "isMut": false,
           "isSigner": false
         },
@@ -431,6 +436,32 @@
         },
         {
           "name": "withdrawData",
+          "isMut": true,
+          "isSigner": false
+        },
+        {
+          "name": "systemProgram",
+          "isMut": false,
+          "isSigner": false
+        }
+      ],
+      "args": [
+        {
+          "name": "amount",
+          "type": "u64"
+        }
+      ]
+    },
+    {
+      "name": "sendSolDirectly",
+      "accounts": [
+        {
+          "name": "sender",
+          "isMut": true,
+          "isSigner": true
+        },
+        {
+          "name": "receiver",
           "isMut": true,
           "isSigner": false
         },
@@ -522,7 +553,7 @@
           "isSigner": false
         },
         {
-          "name": "vaultData",
+          "name": "feeVaultData",
           "isMut": false,
           "isSigner": false
         },
@@ -653,7 +684,7 @@
           "isSigner": false
         },
         {
-          "name": "vaultData",
+          "name": "feeVaultData",
           "isMut": false,
           "isSigner": false
         },
@@ -760,7 +791,7 @@
           "isSigner": false
         },
         {
-          "name": "vaultData",
+          "name": "feeVaultData",
           "isMut": false,
           "isSigner": false
         },
@@ -948,20 +979,76 @@
           "type": "u64"
         }
       ]
+    },
+    {
+      "name": "sendTokenDirectly",
+      "accounts": [
+        {
+          "name": "sourceAccount",
+          "isMut": true,
+          "isSigner": true
+        },
+        {
+          "name": "destAccount",
+          "isMut": true,
+          "isSigner": false
+        },
+        {
+          "name": "systemProgram",
+          "isMut": false,
+          "isSigner": false
+        },
+        {
+          "name": "tokenProgram",
+          "isMut": false,
+          "isSigner": false
+        },
+        {
+          "name": "associatedTokenProgram",
+          "isMut": false,
+          "isSigner": false
+        },
+        {
+          "name": "rent",
+          "isMut": false,
+          "isSigner": false
+        },
+        {
+          "name": "mint",
+          "isMut": false,
+          "isSigner": false
+        },
+        {
+          "name": "sourceAccountTokenAccount",
+          "isMut": true,
+          "isSigner": false
+        },
+        {
+          "name": "destTokenAccount",
+          "isMut": true,
+          "isSigner": false
+        }
+      ],
+      "args": [
+        {
+          "name": "amount",
+          "type": "u64"
+        }
+      ]
     }
   ],
   "accounts": [
     {
-      "name": "Vault",
+      "name": "FeeVaultData",
       "type": {
         "kind": "struct",
         "fields": [
           {
-            "name": "vaultAddress",
+            "name": "feeVaultAddress",
             "type": "publicKey"
           },
           {
-            "name": "owner",
+            "name": "feeOwner",
             "type": "publicKey"
           },
           {
@@ -1032,7 +1119,7 @@
       }
     },
     {
-      "name": "StreamedAmt",
+      "name": "SolWithdaw",
       "type": {
         "kind": "struct",
         "fields": [
@@ -1235,6 +1322,14 @@
       "code": 6022,
       "name": "UpdateNotAllowed",
       "msg": "UpdateNotAllowed"
+    },
+    {
+      "code": 6023,
+      "name": "OutOfBound",
+      "msg": "OutOfBound"
     }
-  ]
+  ],
+  "metadata": {
+    "address": "Gvg5iMmgu8zs4rn5zJ6YGGnzsu6WqZJawKUndbqneXia"
+  }
 }

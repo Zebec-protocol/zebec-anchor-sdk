@@ -91,9 +91,9 @@ export class ZebecTransactionBuilder {
         const tx = await this._streamProgram.methods.createFeeAccount(
             calculatedFeePercentage
         ).accounts({
-            owner: feeReceiverAddress,
+            feeOwner: feeReceiverAddress,
             feeVault: feeVaultAddress,
-            vaultData: feeVaultDataAddress,
+            feeVaultData: feeVaultDataAddress,
             systemProgram: SystemProgram.programId,
             rent: SYSVAR_RENT_PUBKEY
         }).transaction();

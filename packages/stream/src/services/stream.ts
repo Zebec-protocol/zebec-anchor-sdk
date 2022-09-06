@@ -417,9 +417,6 @@ export class ZebecNativeStream extends ZebecStream implements IZebecStream {
 
         const amountInLamports = getAmountInLamports(amount);
 
-        console.log('fee vault address',feeVaultAddress.toBase58());
-        console.log('fee vault data address',feeVaultDataAddress.toBase58());
-
         const anchorTx = await this.transactionBuilder.execStreamInitSol(
             senderAddress,
             receiverAddress,
@@ -684,7 +681,7 @@ export class ZebecNativeStream extends ZebecStream implements IZebecStream {
       }
 
     async fetchStreamingAmount(withdrawDataAccount:PublicKey): Promise<any> {
-        const response = await this.program.account.streaming.fetch(withdrawDataAccount)
+        const response = await this.program.account.solWithdraw.fetch(withdrawDataAccount)
         return response
     }
 
@@ -987,8 +984,14 @@ export class ZebecTokenStream extends ZebecStream implements IZebecStream {
             }
         }
     }
+
+    async fetchStreamData(escrow: PublicKey): Promise<any> {
+        const response = await this.program.account.streamToken.fetch(escrow)
+        return response
+      }
+
     async fetchStreamingAmount(withdrawDataAccount:PublicKey): Promise<any> {
-        const response = await this.program.account.streaming.fetch(withdrawDataAccount)
+        const response = await this.program.account.tokenWithdraw.fetch(withdrawDataAccount)
         return response
     }
 }

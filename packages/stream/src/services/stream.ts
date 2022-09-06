@@ -94,6 +94,18 @@ class ZebecStream implements IBaseStream {
         return [associatedTokenAddress, nonce]
     }
 
+    async _findStreamingAmountSol(walletAddress: PublicKey): Promise<any> {
+        const [withdrawEscrow,] = await this._findSolWithdrawEscrowAccount(walletAddress);
+        const streamingAmount = await this.program.account.solWithdaw.fetch(withdrawEscrow)
+        return streamingAmount
+    }
+
+    async _findStreamingAmountToken(walletAddress: PublicKey, tokenMintAddress:PublicKey): Promise<any> {
+        const [withdrawEscrow,] = await this._findTokenWithdrawEscrowAccount(walletAddress, tokenMintAddress);
+        const streamingAmount = await this.program.account.tokenWithdraw.fetch(withdrawEscrow)
+        return streamingAmount
+    }
+
     async _makeTxn(tx: Transaction, escrow: Keypair = null): Promise<Transaction> {
         this.console.info("---- adding fee payer, blockhash & signing tx ----")
         const latestBlockhash = await this.anchorProvider.connection.getLatestBlockhash(
@@ -680,8 +692,10 @@ export class ZebecNativeStream extends ZebecStream implements IZebecStream {
         return response
       }
 
-    async fetchStreamingAmount(withdrawDataAccount:PublicKey): Promise<any> {
-        const response = await this.program.account.solWithdraw.fetch(withdrawDataAccount)
+      async fetchStreamingAmount(data:any): Promise<any> {
+        const { sender } = data;
+        const senderAddress = new PublicKey(sender);
+        const response = await this._findStreamingAmountSol(senderAddress);
         return response
     }
 
@@ -990,8 +1004,11 @@ export class ZebecTokenStream extends ZebecStream implements IZebecStream {
         return response
       }
 
-    async fetchStreamingAmount(withdrawDataAccount:PublicKey): Promise<any> {
-        const response = await this.program.account.tokenWithdraw.fetch(withdrawDataAccount)
+      async fetchStreamingAmount(data:any): Promise<any> {
+        const { sender, token_mint_address} = data;
+        const senderAddress = new PublicKey(sender);
+        const tokenMintAddress = new PublicKey(token_mint_address);
+        const response = await this._findStreamingAmountToken(senderAddress,tokenMintAddress);
         return response
     }
 }

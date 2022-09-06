@@ -486,6 +486,103 @@ export class ZebecTransactionBuilder {
         return tx;
     }
 
+
+    async execTransfer(
+        senderAddress: PublicKey,
+        receiverAddress: PublicKey,
+        zebecTransactionAccount: Keypair,
+        safeDataAccount: PublicKey,
+        safeAddress: PublicKey,
+        amount: number,
+    ): Promise<Transaction> {
+
+        const txAccountSize = 1000;
+        const amountBN = new BN(amount);
+
+        const zebecInstantTransferAccounts = AccountKeys.transferfromsafe(
+            safeAddress,
+            receiverAddress
+        );
+
+        const transferSolIxDataBuffer = this._streamProgram.coder.instruction.encode(
+            ZEBEC_STREAM.DIRECT_TRANSFER_SOL, {
+                amount: amountBN
+            }
+        );
+
+        const createTxDataStoringAccountIx = await this._multisigProgram.account.transaction.createInstruction(
+            zebecTransactionAccount,
+            txAccountSize
+        );
+
+        const tx = await this._multisigProgram.methods.createTransaction(
+            this._streamProgram.programId,
+            zebecInstantTransferAccounts,
+            transferSolIxDataBuffer
+        ).accounts({
+            multisig: safeDataAccount,
+            transaction: zebecTransactionAccount.publicKey,
+            proposer: senderAddress
+        }).preInstructions([createTxDataStoringAccountIx]).signers([zebecTransactionAccount]).transaction();
+
+        return tx;
+    }
+
+    async execTransferToken(
+        safeAddress: PublicKey,
+        safeDataAccount: PublicKey,
+        zebecTransactionAccount: Keypair,
+        senderAddress: PublicKey,
+        receiverAddress: PublicKey,
+        destTokenAddress: PublicKey,
+        sourceTokenAddress: PublicKey,
+        tokenMintAddress: PublicKey,
+        amount: number
+    ): Promise<Transaction> {
+
+        const txAccountSize = 1000;
+        const amountBN = new BN(amount);
+        
+
+        const zebecInstantTransferAccounts = AccountKeys.transfertokenfromsafe(
+            safeAddress,
+            receiverAddress,
+            tokenMintAddress,
+            destTokenAddress,
+            sourceTokenAddress
+        );
+
+
+
+        const transferTokenIxDataBuffer = this._streamProgram.coder.instruction.encode(
+            ZEBEC_STREAM.DIRECT_TRANSFER_TOKEN,
+            {
+                amount: amountBN
+            }
+        );
+
+        const createTxDataStoringAccountIx = await this._multisigProgram.account.transaction.createInstruction(
+            zebecTransactionAccount,
+            txAccountSize
+        );
+
+
+        const tx = await this._multisigProgram.methods.createTransaction(
+            this._streamProgram.programId,
+            zebecInstantTransferAccounts,
+            transferTokenIxDataBuffer
+        ).accounts({
+            multisig: safeDataAccount,
+            transaction: zebecTransactionAccount.publicKey,
+            proposer: senderAddress
+        }).preInstructions([
+           createTxDataStoringAccountIx
+        ]).signers([zebecTransactionAccount]).transaction();
+
+        return tx;
+
+    }
+
     async execStreamInitToken(
         owners: PublicKey[],
         safeAddress: PublicKey,

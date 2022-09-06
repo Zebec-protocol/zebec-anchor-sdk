@@ -13,7 +13,7 @@ export enum SC_CONSTANT {
 
 export enum ZEBEC_PROGRAM_ID {
     MULTISIG = "b6ZPysThkApNx2YDiGsPUiYPE7Ub1kTRdCWp7gBkzbr",
-    STREAM = "Gvg5iMmgu8zs4rn5zJ6YGGnzsu6WqZJawKUndbqneXia"
+    STREAM = "DMFbM74dfiii1eHdutvjUFwuP8zdMrycGRfrMwKCtB5w"
 }
 
 export enum ZEBEC_STREAM {
@@ -24,13 +24,15 @@ export enum ZEBEC_STREAM {
     UPDATE_STREAM_SOL = "nativeStreamUpdate",
     CANCEL_STREAM_SOL = "cancelStream",
     INSTANT_TRANSFER_SOL = "instantNativeTransfer",
+    DIRECT_TRANSFER_SOL = "sendSolDirectly",
 
     DEPOSIT_TOKEN = "depositToken",
     INIT_STREAM_TOKEN = "tokenStream",
     PAUSE_RESUME_STREAM_TOKEN = "pauseResumeTokenStream",
     UPDATE_STREAM_TOKEN = "tokenStreamUpdate",
     CANCEL_STREAM_TOKEN = "cancelTokenStream",
-    INSTANT_TRANSFER_TOKEN = "instantTokenTransfer"
+    INSTANT_TRANSFER_TOKEN = "instantTokenTransfer",
+    DIRECT_TRANSFER_TOKEN = "sendTokenDirectly"
 }
 
 // EDIT IT LATER

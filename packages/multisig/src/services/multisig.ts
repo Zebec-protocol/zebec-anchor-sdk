@@ -1172,7 +1172,7 @@ export class ZebecNativeTreasury extends ZebecMultisig {
   }
 }
 
-async instanttransfer(data: any): Promise<any> {
+async instantTransfer(data: any): Promise<any> {
   const { safe_address, receiver, safe_data_account, sender } = data
 
   const safeAddress = new PublicKey(safe_address)
@@ -1218,7 +1218,7 @@ async instanttransfer(data: any): Promise<any> {
   }
 }
 
-async execInstanttransfer(data: any): Promise<any> {
+async execInstantTransfer(data: any): Promise<any> {
   const { safe_address, safe_data_account, transaction_account, receiver, signer } = data
   console.log(data)
   const safeAddress = new PublicKey(safe_address)
@@ -1321,6 +1321,158 @@ async execInstanttransfer(data: any): Promise<any> {
     return {
       status: 'success',
       message: 'Instant transfer transaction Aprroved!!',
+      data: {
+        transactionHash: signature
+      }
+    }
+  } catch (err) {
+    console.log(err)
+    return {
+      status: 'error',
+      message: parseErrorMessage(err.message),
+      data: null
+    }
+  }
+}
+}
+
+async transferFromSafe(data: any): Promise<any> {
+  const { sender, safe_address, receiver, safe_data_account, amount } = data
+  const senderAddress = new PublicKey(sender)
+  const safeAddress = new PublicKey(safe_address)
+  const receiverAddress = new PublicKey(receiver)
+  const safeDataAccount = new PublicKey(safe_data_account)
+  const zebecTransactionAccount = Keypair.generate()
+
+  const amountInLamports = getAmountInLamports(amount)
+
+  const anchorTx = await this.transactionBuilder.execTransfer(
+    senderAddress,
+    receiverAddress,
+    zebecTransactionAccount,
+    safeDataAccount,
+    safeAddress,
+    amountInLamports
+  )
+
+  const tx = await this._makeTxn(anchorTx, [zebecTransactionAccount])
+  const signedRawTx = await this.anchorProvider.wallet.signTransaction(tx)
+  this.consolelog.info('transaction after signing: ', signedRawTx)
+
+  try {
+    const signature = await sendTx(signedRawTx, this.anchorProvider)
+    this.consolelog.info(`transaction success, TXID: ${signature}`)
+    return {
+      status: 'success',
+      message: 'Funds transfered to receipient !',
+      data: {
+        transactionHash: signature,
+        transaction_account: zebecTransactionAccount.publicKey.toString()
+      }
+    }
+  } catch (err) {
+    console.log(err)
+    return {
+      status: 'error',
+      message: parseErrorMessage(err.message),
+      data: null
+    }
+  }
+}
+
+async execTransferFromSafe(data: any): Promise<any> {
+  const { safe_address, safe_data_account, transaction_account, receiver, signer } = data
+  console.log(data)
+  const safeAddress = new PublicKey(safe_address)
+  const receiverAddress = new PublicKey(receiver)
+  const safeDataAccountAddress = new PublicKey(safe_data_account)
+  const TransferFromSafeAccountAddress = new PublicKey(transaction_account)
+  // how to automate this transaction, trigger this transaction
+  // what happens to withdrawData (Since ownerA might start transaction) and has withdrawData accoridingly
+  // what if ownerB exec this function
+  const safe_details = await this._fetchTresholdData(safeDataAccountAddress)
+  const transaction_details = await this.fetchMultiSigStreamData(TransferFromSafeAccountAddress)
+  console.log('safe_details', safe_details)
+  const ownerarray = safe_details.owners
+  const signaturesarray = transaction_details.signers
+  console.log('signaturesarray', signaturesarray)
+  console.log('ownerarray', ownerarray)
+  const obj = {}
+  ownerarray.forEach((element, index) => {
+    obj[element] = signaturesarray[index]
+  })
+  
+  const initAccounts = AccountKeys.transferfromsafe(
+    safeAddress,
+    receiverAddress,
+  )
+
+  const threshholdCount = safe_details.threshold.toString() // minimum signers required to execute transaction
+
+  console.log('threshholdCount', threshholdCount)
+
+  const count = signaturesarray.filter((value) => value === true).length
+  console.log('count', count)
+
+  if (Number(count + 1) === Number(threshholdCount)) {
+  const anchorTx = await this.transactionBuilder.execApproveTransaction(
+    safeDataAccountAddress,
+    TransferFromSafeAccountAddress,
+    signer
+  )
+
+  const remainingAccounts = AccountKeys.remainingAccounts(initAccounts, safeAddress)
+
+  const anchorExecTx = await this.transactionBuilder.execTransaction(
+    safeAddress,
+    safeDataAccountAddress,
+    TransferFromSafeAccountAddress,
+    remainingAccounts
+  )
+
+  anchorTx.add(anchorExecTx);
+
+  console.log('anchor transaction', anchorTx)
+
+  const tx = await this._makeTxn(anchorTx)
+  const signedRawTx = await this.anchorProvider.wallet.signTransaction(tx)
+  this.consolelog.info('transaction after signing: ', signedRawTx)
+
+  try {
+    const signature = await sendTx(signedRawTx, this.anchorProvider)
+    this.consolelog.info(`transaction success, TXID: ${signature}`)
+    return {
+      status: 'success',
+      message: 'Funds transfer to receipient executed!!',
+      data: {
+        transactionHash: signature
+      }
+    }
+  } catch (err) {
+    console.log(err)
+    return {
+      status: 'error',
+      message: parseErrorMessage(err.message),
+      data: null
+    }
+  }
+}else{
+  console.log('Approve Transaction');
+  const anchorTx = await this.transactionBuilder.execApproveTransaction(
+    safeDataAccountAddress,
+    TransferFromSafeAccountAddress,
+    signer
+  )
+  const tx = await this._makeTxn(anchorTx)
+  const signedRawTx = await this.anchorProvider.wallet.signTransaction(tx)
+  this.consolelog.info('transaction after signing: ', signedRawTx)
+
+  try {
+    const signature = await sendTx(signedRawTx, this.anchorProvider)
+    this.consolelog.info(`transaction success, TXID: ${signature}`)
+    return {
+      status: 'success',
+      message: 'Funds transfer transaction approved!!',
       data: {
         transactionHash: signature
       }
@@ -2420,6 +2572,171 @@ async execInstanttransfer(data: any): Promise<any> {
     return {
       status: 'success',
       message: 'Instant transfer transaction Aprroved!!',
+      data: {
+        transactionHash: signature
+      }
+    }
+  } catch (err) {
+    console.log(err)
+    return {
+      status: 'error',
+      message: parseErrorMessage(err.message),
+      data: null
+    }
+  }
+}
+}
+
+async transferTokenFromSafe(data: any): Promise<any> {
+  const { sender, safe_address, receiver, safe_data_account, amount, token_mint_address } = data
+  const senderAddress = new PublicKey(sender)
+  const safeAddress = new PublicKey(safe_address)
+  const receiverAddress = new PublicKey(receiver)
+  const tokenMintAddress = new PublicKey(token_mint_address)
+  const safeDataAccount = new PublicKey(safe_data_account)
+  const destTokenAddress = await this._getAccociatedTokenAddress(receiverAddress, tokenMintAddress)
+  const sourceTokenAddress = await this._getAccociatedTokenAddress(safeAddress, tokenMintAddress)
+
+  const zebecTransactionAccount = Keypair.generate()
+
+  const amountInLamports = getAmountInLamports(amount)
+
+  const anchorTx = await this.transactionBuilder.execTransferToken(
+    safeAddress,
+    safeDataAccount,
+    zebecTransactionAccount,
+    senderAddress,
+    receiverAddress,
+    destTokenAddress,
+    sourceTokenAddress,
+    tokenMintAddress,
+    amountInLamports
+  )
+
+  const tx = await this._makeTxn(anchorTx, [zebecTransactionAccount])
+  const signedRawTx = await this.anchorProvider.wallet.signTransaction(tx)
+  this.consolelog.info('transaction after signing: ', signedRawTx)
+
+  try {
+    const signature = await sendTx(signedRawTx, this.anchorProvider)
+    this.consolelog.info(`transaction success, TXID: ${signature}`)
+    return {
+      status: 'success',
+      message: 'Funds transfered to receipient !',
+      data: {
+        transactionHash: signature,
+        transaction_account: zebecTransactionAccount.publicKey.toString()
+      }
+    }
+  } catch (err) {
+    console.log(err)
+    return {
+      status: 'error',
+      message: parseErrorMessage(err.message),
+      data: null
+    }
+  }
+}
+
+async execTransferTokenFromSafe(data: any): Promise<any> {
+  const { safe_address, safe_data_account, token_mint_address, transaction_account, receiver, signer } = data
+  console.log(data)
+  const safeAddress = new PublicKey(safe_address)
+  const tokenMintAddress = new PublicKey(token_mint_address)
+  const receiverAddress = new PublicKey(receiver)
+  const destTokenAddress = await this._getAccociatedTokenAddress(receiverAddress, tokenMintAddress)
+  const sourceTokenAddress = await this._getAccociatedTokenAddress(safeAddress, tokenMintAddress)
+  const safeDataAccountAddress = new PublicKey(safe_data_account)
+  const TransferFromSafeAccountAddress = new PublicKey(transaction_account)
+  // how to automate this transaction, trigger this transaction
+  // what happens to withdrawData (Since ownerA might start transaction) and has withdrawData accoridingly
+  // what if ownerB exec this function
+  const safe_details = await this._fetchTresholdData(safeDataAccountAddress)
+  const transaction_details = await this.fetchMultiSigStreamData(TransferFromSafeAccountAddress)
+  console.log('safe_details', safe_details)
+  const ownerarray = safe_details.owners
+  const signaturesarray = transaction_details.signers
+  console.log('signaturesarray', signaturesarray)
+  console.log('ownerarray', ownerarray)
+  const obj = {}
+  ownerarray.forEach((element, index) => {
+    obj[element] = signaturesarray[index]
+  })
+  
+  const initAccounts = AccountKeys.transfertokenfromsafe(
+    safeAddress,
+    receiverAddress,
+    tokenMintAddress,
+    destTokenAddress,
+    sourceTokenAddress
+  )
+
+  const threshholdCount = safe_details.threshold.toString() // minimum signers required to execute transaction
+
+  console.log('threshholdCount', threshholdCount)
+
+  const count = signaturesarray.filter((value) => value === true).length
+  console.log('count', count)
+
+  if (Number(count + 1) === Number(threshholdCount)) {
+  const anchorTx = await this.transactionBuilder.execApproveTransaction(
+    safeDataAccountAddress,
+    TransferFromSafeAccountAddress,
+    signer
+  )
+
+  const remainingAccounts = AccountKeys.remainingAccounts(initAccounts, safeAddress)
+
+  const anchorExecTx = await this.transactionBuilder.execTransaction(
+    safeAddress,
+    safeDataAccountAddress,
+    TransferFromSafeAccountAddress,
+    remainingAccounts
+  )
+
+  anchorTx.add(anchorExecTx);
+
+  console.log('anchor transaction', anchorTx)
+
+  const tx = await this._makeTxn(anchorTx)
+  const signedRawTx = await this.anchorProvider.wallet.signTransaction(tx)
+  this.consolelog.info('transaction after signing: ', signedRawTx)
+
+  try {
+    const signature = await sendTx(signedRawTx, this.anchorProvider)
+    this.consolelog.info(`transaction success, TXID: ${signature}`)
+    return {
+      status: 'success',
+      message: 'Funds transfer to receipient executed!!',
+      data: {
+        transactionHash: signature
+      }
+    }
+  } catch (err) {
+    console.log(err)
+    return {
+      status: 'error',
+      message: parseErrorMessage(err.message),
+      data: null
+    }
+  }
+}else{
+  console.log('Approve Transaction');
+  const anchorTx = await this.transactionBuilder.execApproveTransaction(
+    safeDataAccountAddress,
+    TransferFromSafeAccountAddress,
+    signer
+  )
+  const tx = await this._makeTxn(anchorTx)
+  const signedRawTx = await this.anchorProvider.wallet.signTransaction(tx)
+  this.consolelog.info('transaction after signing: ', signedRawTx)
+
+  try {
+    const signature = await sendTx(signedRawTx, this.anchorProvider)
+    this.consolelog.info(`transaction success, TXID: ${signature}`)
+    return {
+      status: 'success',
+      message: 'Funds transfer transaction approved!!',
       data: {
         transactionHash: signature
       }

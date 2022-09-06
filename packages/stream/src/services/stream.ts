@@ -68,11 +68,12 @@ class ZebecStream implements IBaseStream {
     }
 
     async _findSolWithdrawEscrowAccount(walletAddress: PublicKey): Promise<[PublicKey, number]> {
+        this.console.info(`finding solwithdraw address of :`,walletAddress.toString());
         const [withdrawEscrowAccountAddress, nonce] =  await PublicKey.findProgramAddress(
             [Buffer.from(PREFIX), walletAddress.toBuffer()],
             this.programId
         );
-        this.console.info(`withdraw-sol escrow account address: ${withdrawEscrowAccountAddress.toString()}`);
+        this.console.info(`withdraw-sol escrow account addresss: ${withdrawEscrowAccountAddress.toString()}`);
         return [withdrawEscrowAccountAddress, nonce]
     }
 

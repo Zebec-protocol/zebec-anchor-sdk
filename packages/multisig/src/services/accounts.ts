@@ -156,6 +156,39 @@ export class AccountKeys {
 
     }
 
+    static transferfromsafe(
+        safeAddress: PublicKey,
+        receiverAddress: PublicKey,
+    ): AccountMeta[] {
+        return [
+            { pubkey: safeAddress, isSigner: true, isWritable: true },
+            { pubkey: receiverAddress, isSigner: false, isWritable: true }, 
+            { pubkey: SystemProgram.programId, isSigner: false, isWritable: false } 
+        ]
+
+    }
+
+    static transfertokenfromsafe(
+        safeAddress: PublicKey,
+        receiverAddress: PublicKey,
+        tokenMintAddress: PublicKey,
+        destTokenAddress: PublicKey,
+        sourceTokenAddress: PublicKey,
+    ): AccountMeta[] {
+        return [
+            { pubkey: safeAddress, isSigner: true, isWritable: true },
+            { pubkey: receiverAddress, isSigner: false, isWritable: true }, 
+            { pubkey: SystemProgram.programId, isSigner: false, isWritable: false },
+            { pubkey: TOKEN_PROGRAM_ID, isSigner: false, isWritable: false },
+            { pubkey: ASSOCIATED_PROGRAM_ID, isSigner: false, isWritable: false },
+            { pubkey: SYSVAR_RENT_PUBKEY, isSigner: false, isWritable: false },
+            { pubkey: tokenMintAddress, isSigner: false, isWritable: false},
+            { pubkey: sourceTokenAddress, isSigner: false, isWritable: true},
+            { pubkey: destTokenAddress, isSigner: false, isWritable: true},
+        ]
+
+    }
+
     static withdraw(
         zebecVaultAddress: PublicKey,
         safeAddress: PublicKey,

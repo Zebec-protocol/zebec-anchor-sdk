@@ -9,7 +9,6 @@ export class AccountKeys {
         const remainingAccounts = accounts.map(
             (acc: AccountMeta) => {
                 if (acc.pubkey.equals(safeAddress)) {
-                    console.log("safee address signer changed", acc.pubkey.toBase58())
                     return { ...acc, isSigner: false }
                 }
                 return acc;
@@ -109,16 +108,6 @@ export class AccountKeys {
         feeVaultDataAddress: PublicKey,
         feeVaultAddress: PublicKey
     ): AccountMeta[] {
-        console.log([
-            zebecVaultAddress.toString(),
-            safeAddress.toString(),
-            receiverAddress.toString(),
-            streamDataAccountAddress.toString(),
-            withdrawDataAccountAddress.toString(),
-            feeReceiverAddress.toString(),
-            feeVaultDataAddress.toString(),
-            feeVaultAddress.toString(),
-        ])
         return [
             { pubkey: zebecVaultAddress, isSigner: false, isWritable: true },
             { pubkey: safeAddress, isSigner: true, isWritable: true },
@@ -140,12 +129,6 @@ export class AccountKeys {
         receiverAddress: PublicKey,
         withdrawDataAccountAddress: PublicKey,
     ): AccountMeta[] {
-        console.log([
-            zebecVaultAddress.toString(),
-            safeAddress.toString(),
-            receiverAddress.toString(),
-            withdrawDataAccountAddress.toString(),
-        ])
         return [
             { pubkey: zebecVaultAddress, isSigner: false, isWritable: true },
             { pubkey: safeAddress, isSigner: true, isWritable: true },
@@ -294,12 +277,6 @@ export class AccountKeys {
         pdaTokenData: PublicKey,
         destTokenData: PublicKey,
     ): AccountMeta[] {
-        console.log([
-            zebecVaultAddress.toString(),
-            safeAddress.toString(),
-            receiverAddress.toString(),
-            withdrawDataAccountAddress.toString(),
-        ])
         return [
             { pubkey: zebecVaultAddress, isSigner: false, isWritable: false },
             { pubkey: receiverAddress, isSigner: false, isWritable: true },

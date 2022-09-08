@@ -1378,7 +1378,7 @@ export class ZebecTokenTreasury extends ZebecMultisig {
 
     const zebecTransactionAccount = Keypair.generate()
 
-    const amountInLamports = getAmountInLamports(amount)
+    const amountInLamports = await getTokenAmountInLamports(amount,tokenMintAddress,this.multisigProgram)
 
     const anchorTx = await this.transactionBuilder.execDepositTokenToVault(
       owners,
@@ -2349,7 +2349,7 @@ export class ZebecTokenTreasury extends ZebecMultisig {
 
     const zebecTransactionAccount = Keypair.generate()
 
-    const amountInLamports = getAmountInLamports(amount)
+    const amountInLamports = await getTokenAmountInLamports(amount,tokenMintAddress,this.multisigProgram)
 
     const anchorTx = await this.transactionBuilder.execTransferToken(
       owners,

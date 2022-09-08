@@ -1,6 +1,6 @@
 import { Buffer } from 'buffer';
 import { Keypair, PublicKey, Transaction } from "@solana/web3.js";
-import { AnchorProvider, Idl, Program } from "@project-serum/anchor";
+import { AnchorProvider, Idl, Program, BN } from "@project-serum/anchor";
 import { TOKEN_PROGRAM_ID } from "@project-serum/anchor/dist/cjs/utils/token";
 import { ZEBEC_PROGRAM_IDL } from "../idl";
 import { ConsoleLog, getAmountInLamports, getTokenAmountInLamports, parseErrorMessage, sendTx } from './utils';
@@ -96,14 +96,24 @@ class ZebecStream implements IBaseStream {
 
     async _findStreamingAmountSol(walletAddress: PublicKey): Promise<any> {
         const [withdrawEscrow,] = await this._findSolWithdrawEscrowAccount(walletAddress);
-        const streamingAmount = await this.program.account.solWithdaw.fetch(withdrawEscrow)
-        return streamingAmount
+        try{
+            const streamingAmount = await this.program.account.solWithdaw.fetch(withdrawEscrow)
+            return streamingAmount;
+        }
+        catch(e) {
+            return null;
+        }
     }
 
     async _findStreamingAmountToken(walletAddress: PublicKey, tokenMintAddress:PublicKey): Promise<any> {
         const [withdrawEscrow,] = await this._findTokenWithdrawEscrowAccount(walletAddress, tokenMintAddress);
-        const streamingAmount = await this.program.account.tokenWithdraw.fetch(withdrawEscrow)
-        return streamingAmount
+        try{
+            const streamingAmount = await this.program.account.tokenWithdraw.fetch(withdrawEscrow)
+            return streamingAmount;
+        }
+        catch(e) {
+            return null;
+        }
     }
 
     async _makeTxn(tx: Transaction, escrow: Keypair = null): Promise<Transaction> {
@@ -696,7 +706,13 @@ export class ZebecNativeStream extends ZebecStream implements IZebecStream {
         const { sender } = data;
         const senderAddress = new PublicKey(sender);
         const response = await this._findStreamingAmountSol(senderAddress);
-        return response
+        const nostreamingAmount = {'amount':new BN(0)}
+        if(!response) {
+          return nostreamingAmount;
+        }
+        else {
+          return response;
+        }
     }
 
 }
@@ -1009,6 +1025,12 @@ export class ZebecTokenStream extends ZebecStream implements IZebecStream {
         const senderAddress = new PublicKey(sender);
         const tokenMintAddress = new PublicKey(token_mint_address);
         const response = await this._findStreamingAmountToken(senderAddress,tokenMintAddress);
-        return response
+        const nostreamingAmount = {'amount':new BN(0)}
+        if(!response) {
+          return nostreamingAmount;
+        }
+        else {
+          return response;
+        }
     }
 }

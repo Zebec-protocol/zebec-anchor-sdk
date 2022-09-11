@@ -315,6 +315,58 @@ export class ZebecTransactionBuilder {
     return tx
   }
 
+  async execUpdateStream(
+    owners: PublicKey[],
+    safeAddress: PublicKey,
+    safeDataAccount: PublicKey,
+    zebecTransactionAccount: Keypair,
+    streamDataAccountAddress: PublicKey,
+    withdrawDataAccountAddress: PublicKey,
+    senderAddress: PublicKey,
+    receiverAddress: PublicKey,
+    startTime: number,
+    endTime: number,
+    amount: number
+  ): Promise<Transaction> {
+    const startTimeBN = new BN(startTime)
+    const endTimeBN = new BN(endTime)
+    const amountBN = new BN(amount)
+
+    const zebecInitStreamAccounts = AccountKeys.updateinit(
+      streamDataAccountAddress,
+      withdrawDataAccountAddress,
+      safeAddress,
+      receiverAddress
+    )
+
+    const txAccountSize = getTxSize(zebecInitStreamAccounts, owners, false, 8 * 3)
+
+
+    const streamSolIxUpdateDataBuffer = this._streamProgram.coder.instruction.encode(ZEBEC_STREAM.UPDATE_STREAM_SOL, {
+      startTime: startTimeBN,
+      endTime: endTimeBN,
+      amount: amountBN,
+    })
+
+    const createTxDataStoringAccountIx = await this._multisigProgram.account.transaction.createInstruction(
+      zebecTransactionAccount,
+      txAccountSize
+    )
+
+    const tx = await this._multisigProgram.methods
+      .createTransaction(this._streamProgram.programId, zebecInitStreamAccounts, streamSolIxUpdateDataBuffer)
+      .accounts({
+        multisig: safeDataAccount,
+        transaction: zebecTransactionAccount.publicKey,
+        proposer: senderAddress
+      })
+      .preInstructions([createTxDataStoringAccountIx])
+      .signers([zebecTransactionAccount])
+      .transaction()
+
+    return tx
+  }
+
   async execPauseStream(
     owners : PublicKey[],
     safeAddress: PublicKey,
@@ -552,6 +604,59 @@ export class ZebecTransactionBuilder {
         proposer: senderAddress
       })
       .preInstructions([createTxDataStoringAccountIx])
+      .signers([zebecTransactionAccount])
+      .transaction()
+
+    return tx
+  }
+
+  async execUpdateStreamToken(
+    owners: PublicKey[],
+    safeAddress: PublicKey,
+    safeDataAccount: PublicKey,
+    zebecTransactionAccount: Keypair,
+    streamDataAccountAddress: PublicKey,
+    withdrawDataAccount: PublicKey,
+    senderAddress: PublicKey,
+    receiverAddress: PublicKey,
+    tokenMintAddress: PublicKey,
+    startTime: number,
+    endTime: number,
+    amount: number
+  ): Promise<Transaction> {
+    const startTimeBN = new BN(startTime)
+    const endTimeBN = new BN(endTime)
+    const amountBN = new BN(amount)
+
+    const zebecUpdateInitStreamAccounts = AccountKeys.updateinittoken(
+      streamDataAccountAddress,
+      withdrawDataAccount,
+      safeAddress,
+      receiverAddress,
+      tokenMintAddress
+    )
+
+    const txAccountSize = getTxSize(zebecUpdateInitStreamAccounts, owners, true, 8 * 3)
+
+    const updateStreamTokenIxDataBuffer = this._streamProgram.coder.instruction.encode(ZEBEC_STREAM.UPDATE_STREAM_TOKEN, {
+      startTime: startTimeBN,
+      endTime: endTimeBN,
+      amount: amountBN,
+    })
+
+    const createUpdateTxDataStoringAccountIx = await this._multisigProgram.account.transaction.createInstruction(
+      zebecTransactionAccount,
+      txAccountSize
+    )
+
+    const tx = await this._multisigProgram.methods
+      .createTransaction(this._streamProgram.programId, zebecUpdateInitStreamAccounts, updateStreamTokenIxDataBuffer)
+      .accounts({
+        multisig: safeDataAccount,
+        transaction: zebecTransactionAccount.publicKey,
+        proposer: senderAddress
+      })
+      .preInstructions([createUpdateTxDataStoringAccountIx])
       .signers([zebecTransactionAccount])
       .transaction()
 

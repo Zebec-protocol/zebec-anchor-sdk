@@ -610,6 +610,165 @@ export class ZebecNativeTreasury extends ZebecMultisig {
     }
   }
 
+  async updateStream(data: any): Promise<any> {
+
+    const { safe_address, safe_data_account, sender, receiver, start_time, end_time, amount, stream_data_account } = data
+    this.consolelog.info('multisig init stream: ', data)
+    const senderAddress = new PublicKey(sender)
+    const receiverAddress = new PublicKey(receiver)
+    const safeAddress = new PublicKey(safe_address)
+    const safeDataAccount = new PublicKey(safe_data_account)
+    const safe_details = await this._fetchTresholdData(safeDataAccount)
+    const owners = safe_details.owners
+    const [withdrawDataAccount] = await this._findSolWithdrawEscrowAccount(safeAddress)
+    const streamDataAccount = new PublicKey(stream_data_account)
+    const zebecTransactionAccount = Keypair.generate()
+
+    const amountInLamports = getAmountInLamports(amount)
+
+    const anchorTx = await this.transactionBuilder.execUpdateStream(
+      owners,
+      safeAddress,
+      safeDataAccount,
+      zebecTransactionAccount,
+      streamDataAccount,
+      withdrawDataAccount,
+      senderAddress,
+      receiverAddress,
+      start_time,
+      end_time,
+      amountInLamports
+    )
+
+    const tx = await this._makeTxn(anchorTx, [zebecTransactionAccount])
+    const signedRawTx = await this.anchorProvider.wallet.signTransaction(tx)
+    this.consolelog.info('transaction after signing: ', signedRawTx)
+
+    try {
+      const signature = await sendTx(signedRawTx, this.anchorProvider)
+      this.consolelog.info(`transaction success, TXID: ${signature}`)
+      return {
+        status: 'success',
+        message: 'stream data updated!',
+        data: {
+          transactionHash: signature,
+          transaction_account: zebecTransactionAccount.publicKey.toString(),
+          safe_data_account: safeDataAccount.toString()
+        }
+      }
+    } catch (err) {
+      return {
+        status: 'error',
+        message: parseErrorMessage(err.message),
+        data: null
+      }
+    }
+  }
+
+  async execUpdateStream(data: any): Promise<any> {
+    
+    const { stream_data_account, safe_address, safe_data_account, transaction_account, receiver, signer } = data
+    const receiverAddress = new PublicKey(receiver)
+    const streamDataAccountAddress = new PublicKey(stream_data_account)
+    const safeAddress = new PublicKey(safe_address)
+    const safeDataAccountAddress = new PublicKey(safe_data_account)
+    const initTransactionAccountAddress = new PublicKey(transaction_account)
+    // how to automate this transaction, trigger this transaction
+    // what happens to withdrawData (Since ownerA might start transaction) and has withdrawData accoridingly
+    // what if ownerB exec this function
+    const [withdrawDataAccountAddress] = await this._findSolWithdrawEscrowAccount(safeAddress)
+    const safe_details = await this._fetchTresholdData(safeDataAccountAddress)
+    const transaction_details = await this.fetchMultiSigStreamData(initTransactionAccountAddress)
+
+    const ownerarray = safe_details.owners
+    const signaturesarray = transaction_details.signers
+
+    const obj = {}
+    ownerarray.forEach((element, index) => {
+      obj[element] = signaturesarray[index]
+    })
+
+    const updateInitAccounts = AccountKeys.updateinit(
+      streamDataAccountAddress,
+      withdrawDataAccountAddress,
+      safeAddress,
+      receiverAddress
+    )
+
+    const threshholdCount = safe_details.threshold.toString() // minimum signers required to execute transaction
+
+    const count = signaturesarray.filter((value) => value === true).length
+
+    if (Number(count + 1) === Number(threshholdCount)) {
+      const anchorTx = await this.transactionBuilder.execApproveTransaction(
+        safeDataAccountAddress,
+        initTransactionAccountAddress,
+        signer
+      )
+
+      const remainingAccounts = AccountKeys.remainingAccounts(updateInitAccounts, safeAddress)
+
+      const anchorExecTx = await this.transactionBuilder.execTransaction(
+        safeAddress,
+        safeDataAccountAddress,
+        initTransactionAccountAddress,
+        remainingAccounts
+      )
+
+      anchorTx.add(anchorExecTx)
+
+      const tx = await this._makeTxn(anchorTx)
+      const signedRawTx = await this.anchorProvider.wallet.signTransaction(tx)
+      this.consolelog.info('transaction after signing: ', signedRawTx)
+
+      try {
+        const signature = await sendTx(signedRawTx, this.anchorProvider)
+        this.consolelog.info(`transaction success, TXID: ${signature}`)
+        return {
+          status: 'success',
+          message: 'update stream transaction created!!',
+          data: {
+            transactionHash: signature
+          }
+        }
+      } catch (err) {
+        return {
+          status: 'error',
+          message: parseErrorMessage(err.message),
+          data: null
+        }
+      }
+    } else {
+      const anchorTx = await this.transactionBuilder.execApproveTransaction(
+        safeDataAccountAddress,
+        initTransactionAccountAddress,
+        signer
+      )
+
+      const tx = await this._makeTxn(anchorTx)
+      const signedRawTx = await this.anchorProvider.wallet.signTransaction(tx)
+      this.consolelog.info('transaction after signing: ', signedRawTx)
+
+      try {
+        const signature = await sendTx(signedRawTx, this.anchorProvider)
+        this.consolelog.info(`transaction success, TXID: ${signature}`)
+        return {
+          status: 'success',
+          message: 'update stream transaction executed!!',
+          data: {
+            transactionHash: signature
+          }
+        }
+      } catch (err) {
+        return {
+          status: 'error',
+          message: parseErrorMessage(err.message),
+          data: null
+        }
+      }
+    }
+  }
+
   async pause(data: any): Promise<any> {
     const { safe_address, receiver, stream_data_account, safe_data_account, sender } = data
     const senderAddress = new PublicKey(sender)
@@ -1683,6 +1842,166 @@ export class ZebecTokenTreasury extends ZebecMultisig {
         return {
           status: 'success',
           message: 'Stream transaction Aprroved!!',
+          data: {
+            transactionHash: signature
+          }
+        }
+      } catch (err) {
+        return {
+          status: 'error',
+          message: parseErrorMessage(err.message),
+          data: null
+        }
+      }
+    }
+  }
+
+  async updateStream(data: any): Promise<any> {
+
+    const { safe_address, safe_data_account, sender, receiver, start_time, end_time, amount, token_mint_address, stream_data_account } = data
+    const senderAddress = new PublicKey(sender)
+    const receiverAddress = new PublicKey(receiver)
+    const safeAddress = new PublicKey(safe_address)
+    const safeDataAccount = new PublicKey(safe_data_account)
+    const tokenMintAddress = new PublicKey(token_mint_address)
+    const [withdrawDataAccount] = await this._findTokenWithdrawEscrowAccount(safeAddress, tokenMintAddress)
+    const safe_details = await this._fetchTresholdData(safeDataAccount)
+    const owners = safe_details.owners
+    const streamDataAccount = new PublicKey(stream_data_account)
+    const zebecTransactionAccount = Keypair.generate()
+
+    const amountInLamports = await getTokenAmountInLamports(amount, tokenMintAddress, this.multisigProgram)
+
+    const anchorTx = await this.transactionBuilder.execUpdateStreamToken(
+      owners,
+      safeAddress,
+      safeDataAccount,
+      zebecTransactionAccount,
+      streamDataAccount,
+      withdrawDataAccount,
+      senderAddress,
+      receiverAddress,
+      tokenMintAddress,
+      start_time,
+      end_time,
+      amountInLamports
+    )
+
+    const tx = await this._makeTxn(anchorTx, [zebecTransactionAccount])
+    const signedRawTx = await this.anchorProvider.wallet.signTransaction(tx)
+    this.consolelog.info('transaction after signing: ', signedRawTx)
+
+    try {
+      const signature = await sendTx(signedRawTx, this.anchorProvider)
+      this.consolelog.info(`transaction success, TXID: ${signature}`)
+      return {
+        status: 'success',
+        message: 'stream update initiated!',
+        data: {
+          transactionHash: signature,
+          transaction_account: zebecTransactionAccount.publicKey.toString(),
+          safe_data_account: safeDataAccount.toString()
+        }
+      }
+    } catch (err) {
+      return {
+        status: 'error',
+        message: parseErrorMessage(err.message),
+        data: null
+      }
+    }
+  }
+
+  async execUpdateStream(data: any): Promise<any> {
+    const {stream_data_account, safe_address, safe_data_account, transaction_account, receiver, token_mint_address, signer} = data
+    const receiverAddress = new PublicKey(receiver)
+    const streamDataAccountAddress = new PublicKey(stream_data_account)
+    const tokenMintAddress = new PublicKey(token_mint_address)
+    const safeAddress = new PublicKey(safe_address)
+    const safeDataAccountAddress = new PublicKey(safe_data_account)
+    const initTransactionAccountAddress = new PublicKey(transaction_account)
+    // how to automate this transaction, trigger this transaction
+    // what happens to withdrawData (Since ownerA might start transaction) and has withdrawData accoridingly
+    // what if ownerB exec this function
+    const [withdrawDataAccountAddress] = await this._findTokenWithdrawEscrowAccount(safeAddress, tokenMintAddress)
+    const safe_details = await this._fetchTresholdData(safeDataAccountAddress)
+    const transaction_details = await this.fetchMultiSigStreamData(initTransactionAccountAddress)
+
+    const ownerarray = safe_details.owners
+    const signaturesarray = transaction_details.signers
+
+    const obj = {}
+    ownerarray.forEach((element, index) => {
+      obj[element] = signaturesarray[index]
+    })
+
+    const initAccounts = AccountKeys.updateinittoken(
+      streamDataAccountAddress,
+      withdrawDataAccountAddress,
+      safeAddress,
+      receiverAddress,
+      tokenMintAddress
+    )
+
+    const threshholdCount = safe_details.threshold.toString() // minimum signers required to execute transaction
+
+    const count = signaturesarray.filter((value) => value === true).length
+
+    if (Number(count + 1) === Number(threshholdCount)) {
+      const anchorTx = await this.transactionBuilder.execApproveTransaction(
+        safeDataAccountAddress,
+        initTransactionAccountAddress,
+        signer
+      )
+
+      const remainingAccounts = AccountKeys.remainingAccounts(initAccounts, safeAddress)
+
+      const anchorExecTx = await this.transactionBuilder.execTransaction(
+        safeAddress,
+        safeDataAccountAddress,
+        initTransactionAccountAddress,
+        remainingAccounts
+      )
+
+      anchorTx.add(anchorExecTx)
+
+      const tx = await this._makeTxn(anchorTx)
+      const signedRawTx = await this.anchorProvider.wallet.signTransaction(tx)
+      this.consolelog.info('transaction after signing: ', signedRawTx)
+
+      try {
+        const signature = await sendTx(signedRawTx, this.anchorProvider)
+        this.consolelog.info(`transaction success, TXID: ${signature}`)
+        return {
+          status: 'success',
+          message: 'stream token update transaction executed!!',
+          data: {
+            transactionHash: signature
+          }
+        }
+      } catch (err) {
+        return {
+          status: 'error',
+          message: parseErrorMessage(err.message),
+          data: null
+        }
+      }
+    } else {
+      const anchorTx = await this.transactionBuilder.execApproveTransaction(
+        safeDataAccountAddress,
+        initTransactionAccountAddress,
+        signer
+      )
+      const tx = await this._makeTxn(anchorTx)
+      const signedRawTx = await this.anchorProvider.wallet.signTransaction(tx)
+      this.consolelog.info('transaction after signing: ', signedRawTx)
+
+      try {
+        const signature = await sendTx(signedRawTx, this.anchorProvider)
+        this.consolelog.info(`transaction success, TXID: ${signature}`)
+        return {
+          status: 'success',
+          message: 'Stream transaction update Aprroved!!',
           data: {
             transactionHash: signature
           }

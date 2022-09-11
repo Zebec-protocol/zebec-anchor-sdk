@@ -237,6 +237,32 @@ export class ZebecTransactionBuilder {
     return tx
   }
 
+  async execStreamUpdateSol(
+    escrowAccountPublicKey: PublicKey,
+    withdrawEscrowDataAccountAddress: PublicKey,
+    senderAddress: PublicKey,
+    receiverAddress: PublicKey,
+    startTime: number,
+    endTime: number,
+    amount: number
+  ): Promise<Transaction> {
+    
+    const startTimeBN = new BN(startTime)
+    const endTimeBN = new BN(endTime)
+    const amountBN = new BN(amount)
+
+    const tx = this._program.methods
+      .nativeStream(startTimeBN, endTimeBN, amountBN)
+      .accounts({
+        dataAccount: escrowAccountPublicKey,
+        withdrawData: withdrawEscrowDataAccountAddress,
+        systemProgram: SystemProgram.programId,
+        sender: senderAddress,
+        receiver: receiverAddress,
+      }).transaction()
+    return tx
+  }
+
   async execStreamWithdrawSol(
     senderAddress: PublicKey,
     receiverAddress: PublicKey,
@@ -367,6 +393,35 @@ export class ZebecTransactionBuilder {
       })
       .preInstructions([createAccountIx])
       .signers([escrowAccountKeypair])
+      .transaction()
+
+    return tx
+  }
+
+  async execUpdateStreamInitToken(
+    escrowAccountPublicKey: PublicKey,
+    withdrawEscrowDataAccountAddress: PublicKey,
+    senderAddress: PublicKey,
+    receiverAddress: PublicKey,
+    tokenMintAddress: PublicKey,
+    startTime: number,
+    endTime: number,
+    amount: number
+  ): Promise<Transaction> {
+    
+    const startTimeBN = new BN(startTime)
+    const endTimeBN = new BN(endTime)
+    const amountBN = new BN(amount)
+
+    const tx = await this._program.methods
+      .tokenStreamUpdate(startTimeBN, endTimeBN, amountBN)
+      .accounts({
+        dataAccount: escrowAccountPublicKey,
+        withdrawData: withdrawEscrowDataAccountAddress,
+        sourceAccount: senderAddress,
+        destAccount: receiverAddress,
+        mint: tokenMintAddress,
+      })
       .transaction()
 
     return tx

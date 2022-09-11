@@ -7,7 +7,7 @@ import { ConsoleLog, getAmountInLamports, getTokenAmountInLamports, parseErrorMe
 import { IBaseStream, IZebecStream } from "../interface";
 import { ZebecTransactionBuilder } from '../instruction';
 import { OPERATE, OPERATE_DATA, PREFIX, PREFIX_TOKEN, SPL_ASSOCIATED_TOKEN_ACCOUNT_PROGRAM_ID, ZEBEC_PROGRAM_ID } from "../config/constants";
-import { MDepositWithdrawFromZebecVault, MInitStream, MPauseResumeWithdrawCancel, MZebecResponse } from "../models";
+import { MDepositWithdrawFromZebecVault, MInitStream, MPauseResumeWithdrawCancel, MZebecResponse, MUpdateStream } from "../models";
 
 // window.Buffer = window.Buffer || require("buffer").Buffer; 
 
@@ -478,6 +478,53 @@ export class ZebecNativeStream extends ZebecStream implements IZebecStream {
         }
     }
 
+    async updateStream(data: MUpdateStream): Promise<MZebecResponse> {
+
+        const { sender, receiver, start_time, end_time, amount, escrow } = data;
+        this.console.info(`sending ${amount} SOL to ${receiver}`);
+
+        const senderAddress = new PublicKey(sender);
+        const receiverAddress = new PublicKey(receiver);
+        const [withdrawEscrowAccountAddress, ] = await this._findSolWithdrawEscrowAccount(senderAddress);
+        const escrowAccountPublicKey = new PublicKey(escrow);
+
+        const amountInLamports = getAmountInLamports(amount);
+
+        const anchorTx = await this.transactionBuilder.execStreamUpdateSol(
+            escrowAccountPublicKey,
+            withdrawEscrowAccountAddress,
+            senderAddress,
+            receiverAddress,
+            start_time,
+            end_time,
+            amountInLamports
+        );
+
+        const tx = await this._makeTxn(anchorTx);
+        
+        const signedRawTx = await this.anchorProvider.wallet.signTransaction(tx);
+        this.console.info("transaction after signing: ", signedRawTx);
+
+        try {
+            const signature = await sendTx(signedRawTx, this.anchorProvider);
+            this.console.info(`transaction success, TXID: ${signature}`);
+            return {
+                status: "success",
+                message: `stream updated. ${amount} SOL`,
+                data: {
+                    transactionHash: signature,
+                    withdrawescrow: withdrawEscrowAccountAddress.toString(),
+                }
+            }
+        } catch (err) {
+            return {
+                status: "error",
+                message: parseErrorMessage(err.message),
+                data: null
+            }
+        }
+    }
+
     async pause(data: MPauseResumeWithdrawCancel): Promise<MZebecResponse> {
         
         const { sender, receiver, escrow } = data;
@@ -769,6 +816,53 @@ export class ZebecTokenStream extends ZebecStream implements IZebecStream {
                 data: {
                     transactionHash: signature,
                     pda: escrowAccountKeypair.publicKey.toString()
+                }
+            }
+        } catch (err) {
+            return {
+                status: "error",
+                message: parseErrorMessage(err.message),
+                data: null
+            }
+        }
+    }
+
+    async updateStream(data: MUpdateStream): Promise<MZebecResponse> {
+        const { sender, receiver, token_mint_address, start_time, end_time, amount, escrow } = data;
+        this.console.info(`init token stream data: }`, data);
+        
+        const senderAddress = new PublicKey(sender);
+        const receiverAddress = new PublicKey(receiver);
+        const tokenMintAddress = new PublicKey(token_mint_address);
+        const [withdrawEscrowAccountAddress,] = await this._findTokenWithdrawEscrowAccount(senderAddress, tokenMintAddress);
+
+        const escrowAccountPublicKey = new PublicKey(escrow);
+
+        const amountInLamports = await getTokenAmountInLamports(amount, tokenMintAddress, this.program);
+
+        const anchorTx = await this.transactionBuilder.execUpdateStreamInitToken(
+            escrowAccountPublicKey,
+            withdrawEscrowAccountAddress,
+            senderAddress,
+            receiverAddress,
+            tokenMintAddress,
+            start_time,
+            end_time,
+            amountInLamports
+        );
+        const tx = await this._makeTxn(anchorTx);
+        const signedRawTx = await this.anchorProvider.wallet.signTransaction(tx);
+        this.console.info("transaction after signing: ", signedRawTx);
+
+        
+        try {
+            const signature = await sendTx(signedRawTx, this.anchorProvider);
+            this.console.info(`transaction success, TXID: ${signature}`);
+            return {
+                status: "success",
+                message: `token stream updated.`,
+                data: {
+                    transactionHash: signature,
                 }
             }
         } catch (err) {

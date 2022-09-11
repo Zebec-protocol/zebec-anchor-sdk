@@ -74,6 +74,21 @@ export class AccountKeys {
         ]
     }
 
+    static updateinit(
+        streamDataAccountAddress: PublicKey,
+        withdrawDataAccountAddress: PublicKey,
+        safeAddress: PublicKey,
+        receiverAddress: PublicKey,
+    ): AccountMeta[] {
+        return [
+            { pubkey: streamDataAccountAddress, isSigner: false, isWritable: true },
+            { pubkey: withdrawDataAccountAddress, isSigner: false, isWritable: true },
+            { pubkey: safeAddress, isSigner: true, isWritable: true },
+            { pubkey: receiverAddress, isSigner: false, isWritable: false },
+            { pubkey: SystemProgram.programId, isSigner: false, isWritable: false }
+        ]
+    }
+
     static pause(
         safeAddress: PublicKey,
         receiverAddress: PublicKey,
@@ -207,6 +222,22 @@ export class AccountKeys {
             { pubkey: TOKEN_PROGRAM_ID, isSigner: false, isWritable: false },
             {pubkey: tokenMintAddress, isSigner: false, isWritable: false},
             {pubkey: SYSVAR_RENT_PUBKEY , isSigner: false, isWritable: false}
+        ]
+    }
+
+    static updateinittoken(
+        streamDataAccountAddress: PublicKey,
+        withdrawDataAccountAddress: PublicKey,
+        safeAddress: PublicKey,
+        receiverAddress: PublicKey,
+        tokenMintAddress: PublicKey,
+    ): AccountMeta[] {
+        return [
+            { pubkey: streamDataAccountAddress, isSigner: false, isWritable: true },
+            { pubkey: withdrawDataAccountAddress, isSigner: false, isWritable: true },
+            { pubkey: safeAddress, isSigner: true, isWritable: true },
+            { pubkey: receiverAddress, isSigner: false, isWritable: false },
+            { pubkey: tokenMintAddress, isSigner: false, isWritable: false },
         ]
     }
 

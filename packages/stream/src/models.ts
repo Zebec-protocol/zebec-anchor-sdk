@@ -34,6 +34,17 @@ export type MInitStream = {
     withdraw_limit?: number;
 }
 
+export type MUpdateStream = {
+    sender: string;
+    receiver: string;
+    escrow: string;
+    start_time: number;
+    end_time: number;
+    amount: number;
+    token_mint_address?: string;
+    withdraw_limit?: number;
+}
+
 export type MPauseResumeWithdrawCancel = {
     sender: string;
     receiver: string;

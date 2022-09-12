@@ -1513,6 +1513,51 @@ export class ZebecNativeTreasury extends ZebecMultisig {
     }
   }
 
+  async withdraw(data: any): Promise<any> {
+
+    const { safe_address, receiver, escrow } = data;
+
+    const senderAddress = new PublicKey(safe_address);
+    const receiverAddress = new PublicKey(receiver);
+    const escrowAccountAddress = new PublicKey(escrow);
+
+    const [zebecVaultAddress,] = await this._findZebecVaultAccount(senderAddress);
+    const [feeVaultAddress,] = await this._findFeeVaultAddress(this.feeReceiverAddress);
+    const [feeVaultDataAddress,] = await this._findFeeVaultDataAccount(this.feeReceiverAddress);
+    const [withdrawEscrowAccountAddress,] = await this._findSolWithdrawEscrowAccount(senderAddress);
+
+    const anchorTx = await this.transactionBuilder.execStreamWithdrawSol(
+        senderAddress,
+        receiverAddress,
+        zebecVaultAddress,
+        escrowAccountAddress,
+        withdrawEscrowAccountAddress,
+        this.feeReceiverAddress,
+        feeVaultAddress,
+        feeVaultDataAddress
+    );
+    const tx = await this._makeTxn(anchorTx);
+    const signedRawTx = await this.anchorProvider.wallet.signTransaction(tx);
+    
+    try {
+        const signature = await sendTx(signedRawTx, this.anchorProvider);
+        
+        return {
+            status: "success",
+            message: `withdraw completed`,
+            data: {
+                transactionHash: signature
+            }
+        }
+    } catch (err) {
+        return {
+            status: "error",
+            message: parseErrorMessage(err.message),
+            data: null
+        }
+    }
+}
+
   async fetchStreamData(stream_data_account: PublicKey): Promise<any> {
     const response = await this.streamProgram.account.stream.fetch(stream_data_account)
     return response
@@ -2815,10 +2860,63 @@ export class ZebecTokenTreasury extends ZebecMultisig {
     }
   }
 
+  async withdraw(data: any): Promise<any> {
+
+    const { safe_address, receiver, token_mint_address, escrow } = data;
+
+    const senderAddress = new PublicKey(safe_address);
+    const receiverAddress = new PublicKey(receiver);
+    const tokenMintAddress = new PublicKey(token_mint_address);
+    const escrowAccountAddress = new PublicKey(escrow);
+
+    const [zebecVaultAddress,] = await this._findZebecVaultAccount(senderAddress);
+    const [withdrawEscrowAccountAddress, ] = await this._findTokenWithdrawEscrowAccount(senderAddress, tokenMintAddress);
+    const [feeVaultAddress,] = await this._findFeeVaultAddress(this.feeReceiverAddress);
+    const [feeVaultDataAddress,] = await this._findFeeVaultDataAccount(this.feeReceiverAddress);
+    
+    const [zebecVaultAssociatedAccountAddress,] = await this._findAssociatedTokenAddress(zebecVaultAddress, tokenMintAddress);
+    const [receiverAssociatedTokenAddress,] = await this._findAssociatedTokenAddress(receiverAddress, tokenMintAddress);
+    const [feeVaultAssociatedTokenAddress,] = await this._findAssociatedTokenAddress(feeVaultAddress, tokenMintAddress);
+
+    const anchorTx = await this.transactionBuilder.execStreamWithdrawToken(
+        receiverAddress,
+        senderAddress,
+        this.feeReceiverAddress,
+        feeVaultDataAddress,
+        feeVaultAddress,
+        zebecVaultAddress,
+        escrowAccountAddress,
+        withdrawEscrowAccountAddress,
+        tokenMintAddress,
+        zebecVaultAssociatedAccountAddress,
+        receiverAssociatedTokenAddress,
+        feeVaultAssociatedTokenAddress 
+    );
+    const tx = await this._makeTxn(anchorTx);
+    const signedRawTx = await this.anchorProvider.wallet.signTransaction(tx);
+    
+
+    try {
+        const signature = await sendTx(signedRawTx, this.anchorProvider);
+     
+        return {
+            status: "success",
+            message: `withdraw successful`,
+            data: {
+                transactionHash: signature,
+            }
+        }
+    } catch (err) {
+        return {
+            status: "error",
+            message: parseErrorMessage(err.message),
+            data: null
+        }
+    }
+}
+
   async fetchStreamData(stream_data_account: PublicKey): Promise<any> {
     const response = await this.streamProgram.account.stream.fetch(stream_data_account)
     return response
   }
-
-  async withdraw(): Promise<any> {}
 }

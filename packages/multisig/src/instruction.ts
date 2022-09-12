@@ -483,6 +483,34 @@ export class ZebecTransactionBuilder {
     return tx
   }
 
+  async execStreamWithdrawSol(
+    senderAddress: PublicKey,
+    receiverAddress: PublicKey,
+    zebecVaultAddress: PublicKey,
+    escrowAccountAddress: PublicKey,
+    withdrawEscrowDataAccountAddress: PublicKey,
+    feeReceiverAddress: PublicKey,
+    feeVaultAddress: PublicKey,
+    feeVaultDataAddress: PublicKey
+  ): Promise<Transaction> {
+    const tx = await this._streamProgram.methods
+      .withdrawStream()
+      .accounts({
+        zebecVault: zebecVaultAddress,
+        sender: senderAddress,
+        receiver: receiverAddress,
+        dataAccount: escrowAccountAddress,
+        withdrawData: withdrawEscrowDataAccountAddress,
+        feeOwner: feeReceiverAddress,
+        feeVaultData: feeVaultDataAddress,
+        feeVault: feeVaultAddress,
+        systemProgram: SystemProgram.programId
+      })
+      .transaction()
+
+    return tx
+  }
+
   async execInstantStream(
     owners : PublicKey[],
     zebecVaultAddress: PublicKey,
@@ -862,6 +890,45 @@ export class ZebecTransactionBuilder {
       })
       .preInstructions([createTxDataStoringAccountIx])
       .signers([zebecTransactionAccount])
+      .transaction()
+
+    return tx
+  }
+
+  async execStreamWithdrawToken(
+    receiverAddress: PublicKey,
+    senderAddress: PublicKey,
+    feeReceiverAddress: PublicKey,
+    feeVaultDataAddress: PublicKey,
+    feevaultAddress: PublicKey,
+    zebecVaultAddress: PublicKey,
+    escrowAccountAddress: PublicKey,
+    withdrawEscrowDataAccountAddress: PublicKey,
+    tokenMintAddress: PublicKey,
+    zebecVaultAssociatedAccountAddress: PublicKey,
+    receiverAssociatedTokenAddress: PublicKey,
+    feeVaultAssociatedTokenAddress: PublicKey
+  ): Promise<Transaction> {
+    const tx = await this._streamProgram.methods
+      .withdrawTokenStream()
+      .accounts({
+        zebecVault: zebecVaultAddress,
+        destAccount: receiverAddress,
+        sourceAccount: senderAddress,
+        feeOwner: feeReceiverAddress,
+        feeVaultData: feeVaultDataAddress,
+        feeVault: feevaultAddress,
+        dataAccount: escrowAccountAddress,
+        withdrawData: withdrawEscrowDataAccountAddress,
+        systemProgram: SystemProgram.programId,
+        tokenProgram: TOKEN_PROGRAM_ID,
+        associatedTokenProgram: ASSOCIATED_PROGRAM_ID,
+        rent: SYSVAR_RENT_PUBKEY,
+        mint: tokenMintAddress,
+        pdaAccountTokenAccount: zebecVaultAssociatedAccountAddress,
+        destTokenAccount: receiverAssociatedTokenAddress,
+        feeReceiverTokenAccount: feeVaultAssociatedTokenAddress
+      })
       .transaction()
 
     return tx

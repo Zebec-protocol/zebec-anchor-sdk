@@ -139,6 +139,8 @@ export class ZebecMultisig {
 
     const [multisigSigner, multisigSafeNonce] = await this._findSafeAddress(multisigDataAccount.publicKey)
 
+    const [zebecVaultAddress] = await this._findZebecVaultAccount( multisigSigner)
+
     const anchorTx = await this.transactionBuilder.execCreateSafe(
       multisigDataAccount,
       multisigSafeNonce,
@@ -160,7 +162,8 @@ export class ZebecMultisig {
         data: {
           transactionHash: signature,
           safe_address: multisigSigner.toBase58(),
-          safe_data_account: multisigDataAccount.publicKey.toBase58()
+          safe_data_account: multisigDataAccount.publicKey.toBase58(),
+          safe_vault_address: zebecVaultAddress.toBase58(),
         }
       }
     } catch (err) {

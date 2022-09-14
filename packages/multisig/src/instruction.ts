@@ -519,7 +519,8 @@ export class ZebecTransactionBuilder {
     zebecTransactionAccount: Keypair,
     safeDataAccount: PublicKey,
     senderAddress: PublicKey,
-    withdrawDataAccountAddress: PublicKey
+    withdrawDataAccountAddress: PublicKey,
+    amountInLamports: number,
   ): Promise<Transaction> {
     
     const zebecCancelStreamAccounts = AccountKeys.instanttransfer(
@@ -529,9 +530,13 @@ export class ZebecTransactionBuilder {
       withdrawDataAccountAddress
     )
 
+    const amountBN = new BN(amountInLamports)
+
     const txAccountSize = getTxSize(zebecCancelStreamAccounts,owners,false,8)
 
-    const instantStreamSolIxDataBuffer = this._streamProgram.coder.instruction.encode(ZEBEC_STREAM.INSTANT_TRANSFER_SOL, {})
+    const instantStreamSolIxDataBuffer = this._streamProgram.coder.instruction.encode(ZEBEC_STREAM.INSTANT_TRANSFER_SOL, {
+      amount: amountBN
+    })
 
     const createTxDataStoringAccountIx = await this._multisigProgram.account.transaction.createInstruction(
       zebecTransactionAccount,
@@ -945,7 +950,8 @@ export class ZebecTransactionBuilder {
     withdrawDataAccountAddress: PublicKey,
     tokenMintAddress: PublicKey,
     pdaTokenData: PublicKey,
-    destTokenData: PublicKey
+    destTokenData: PublicKey,
+    amountInLamports: number
   ): Promise<Transaction> {
     const zebecInstantStreamAccounts = AccountKeys.instanttransfertoken(
       zebecVaultAddress,
@@ -957,11 +963,15 @@ export class ZebecTransactionBuilder {
       destTokenData
     )
 
-    const txAccountSize = getTxSize(zebecInstantStreamAccounts, owners, false, 0)
+    const txAccountSize = getTxSize(zebecInstantStreamAccounts, owners, false, 8)
+
+    const amountBN = new BN(amountInLamports)
 
     const instantTransferTokenIxDataBuffer = this._streamProgram.coder.instruction.encode(
       ZEBEC_STREAM.INSTANT_TRANSFER_TOKEN,
-      {}
+      {
+        amount: amountBN
+      }
     )
 
     const createTxDataStoringAccountIx = await this._multisigProgram.account.transaction.createInstruction(

@@ -1222,7 +1222,7 @@ export class ZebecNativeTreasury extends ZebecMultisig {
   }
 
   async instantTransfer(data: any): Promise<any> {
-    const { safe_address, receiver, safe_data_account, sender } = data
+    const { safe_address, receiver, safe_data_account, sender, amount } = data
     const senderAddress = new PublicKey(sender)
     const safeAddress = new PublicKey(safe_address)
     const receiverAddress = new PublicKey(receiver)
@@ -1233,6 +1233,8 @@ export class ZebecNativeTreasury extends ZebecMultisig {
     const [withdrawDataAccountAddress] = await this._findSolWithdrawEscrowAccount(safeAddress)
     const zebecTransactionAccount = Keypair.generate()
 
+    const amountInLamports = await getAmountInLamports(amount)
+
     const anchorTx = await this.transactionBuilder.execInstantStream(
       owners,
       zebecVaultAddress,
@@ -1241,7 +1243,8 @@ export class ZebecNativeTreasury extends ZebecMultisig {
       zebecTransactionAccount,
       safeDataAccount,
       senderAddress,
-      withdrawDataAccountAddress
+      withdrawDataAccountAddress,
+      amountInLamports
     )
 
     const tx = await this._makeTxn(anchorTx, [zebecTransactionAccount])
@@ -2533,7 +2536,7 @@ export class ZebecTokenTreasury extends ZebecMultisig {
 
   async instanttransfer(data: any): Promise<any> {
 
-    const { safe_address, receiver, safe_data_account, sender, token_mint_address } = data
+    const { safe_address, receiver, safe_data_account, sender, token_mint_address, amount } = data
     const safeAddress = new PublicKey(safe_address)
     const receiverAddress = new PublicKey(receiver)
     const tokenMintAddress = new PublicKey(token_mint_address)
@@ -2549,6 +2552,8 @@ export class ZebecTokenTreasury extends ZebecMultisig {
 
     const zebecTransactionAccount = Keypair.generate()
 
+    const amountInLamports = await getTokenAmountInLamports(amount, tokenMintAddress, this.multisigProgram)
+
     const anchorTx = await this.transactionBuilder.execInstantStreamToken(
       owners,
       zebecVaultAddress,
@@ -2560,7 +2565,8 @@ export class ZebecTokenTreasury extends ZebecMultisig {
       withdrawDataAccountAddress,
       tokenMintAddress,
       pdaTokenData,
-      destTokenData
+      destTokenData,
+      amountInLamports
     )
 
     const tx = await this._makeTxn(anchorTx, [zebecTransactionAccount])

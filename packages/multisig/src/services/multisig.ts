@@ -1581,7 +1581,7 @@ export class ZebecTokenTreasury extends ZebecMultisig {
     const safe_details = await this._fetchTresholdData(safeDataAccount)
     const owners = safe_details.owners
     const pdaTokenData = await this._getAccociatedTokenAddress(zebecVaultAddress, tokenMintAddress)
-    const zebecVaultAssociatedTokenAddress = await this._getAccociatedTokenAddress(zebecVaultAddress, tokenMintAddress)
+    const zebecVaultAssociatedTokenAddress = await this._getAccociatedTokenAddress(safeAddress, tokenMintAddress)
 
     const zebecTransactionAccount = Keypair.generate()
 
@@ -1636,10 +1636,7 @@ export class ZebecTokenTreasury extends ZebecMultisig {
     // what happens to withdrawData (Since ownerA might start transaction) and has withdrawData accoridingly
     // what if ownerB exec this function
     const pdaTokenData = await this._getAccociatedTokenAddress(zebecVaultAddress, tokenMintAddress)
-    const [zebecVaultAssociatedTokenAddress] = await this._findAssociatedTokenAddress(
-      zebecVaultAddress,
-      tokenMintAddress
-    )
+    const zebecVaultAssociatedTokenAddress = await this._getAccociatedTokenAddress(safeAddress, tokenMintAddress)
     const safe_details = await this._fetchTresholdData(safeDataAccountAddress)
     const transaction_details = await this.fetchMultiSigStreamData(depositAccountAddress)
 

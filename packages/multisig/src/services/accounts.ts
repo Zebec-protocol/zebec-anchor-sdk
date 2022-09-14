@@ -48,7 +48,7 @@ export class AccountKeys {
             { pubkey: ASSOCIATED_PROGRAM_ID, isSigner: false, isWritable: false },
             { pubkey: SYSVAR_RENT_PUBKEY, isSigner: false, isWritable: false },
             { pubkey: tokenMintAddress, isSigner: false, isWritable: false},
-            { pubkey: zebecVaultAssociatedTokenAddress, isSigner: false, isWritable: false },
+            { pubkey: zebecVaultAssociatedTokenAddress, isSigner: false, isWritable: true },
             { pubkey: pdaTokenData, isSigner: false, isWritable: true},
         ]
     }

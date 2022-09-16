@@ -4,7 +4,7 @@ export enum SC_CONSTANT {
     OPERATE = "NewVaultOption",
     OPERATE_DATA = "NewVaultOptionData",
     PREFIX_TOKEN = "withdraw_token",
-    SPL_ASSOCIATED_TOKEN_ACCOUNT_PROGRAM_ID = "ATokenGPvbdGVxr1b2hvZbsiqW5xWH25efTNsLJA8knL"
+    SPL_ASSOCIATED_TOKEN_ACCOUNT_PROGRAM_ID = "ATokenGPvbdGVxr1b2hvZbsiqW5xWH25efTNsLJA8knL",
 }
 
 // ajay pid --> 5BU6x2H7WXeyaP75D7daNJQAipZfVUr5FM9zdhzajK6p
@@ -39,3 +39,6 @@ export enum ZEBEC_STREAM {
 export enum TRANSACTION_ACCOUNT_SIZE {
     INIT = 1000
 }
+
+export const STREAM_SIZE = 8 + 8 + 8 + 8 + 8 + 8 + 32 + 32 + 8 + 8 + 32 + 8+ 8 + 1 + 1;
+export const STREAM_TOKEN_SIZE = 8 + 8 + 8 + 8 + 8 + 8 + 32 + 32 + 32 + 8 + 8 + 32 +8+ 8 + 1 + 1;

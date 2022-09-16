@@ -168,6 +168,45 @@ class ZebecStream implements IBaseStream {
 
     }
 
+    async updateFeeVault(data: any): Promise<MZebecResponse> {
+        const { fee_percentage } = data;
+
+        const [feeVaultAddress,] = await this._findFeeVaultAddress(this.feeReceiverAddress);
+        const [feeVaultDataAddress,] = await this._findFeeVaultDataAccount(this.feeReceiverAddress);
+
+        this.console.info(`creating fee vault for with ${fee_percentage}%`);
+        
+        const anchorTx = await this.transactionBuilder.execUpdteFeeVault(
+            this.feeReceiverAddress,
+            feeVaultAddress,
+            feeVaultDataAddress,
+            fee_percentage
+        );
+
+        const tx = await this._makeTxn(anchorTx);
+        const signedRawTx = await this.anchorProvider.wallet.signTransaction(tx);
+        this.console.info("transaction after signing: ", signedRawTx);
+
+        try {
+            const signature = await sendTx(signedRawTx, this.anchorProvider);
+            this.console.info(`transaction success, TXID: ${signature}`);
+            return {
+                "status": "success",
+                "message": "Fee vault updated",
+                "data": {
+                    transactionHash: signature
+                }
+            }
+        } catch (err) {
+            return {
+                status: "error",
+                message: parseErrorMessage(err.message),
+                data: null
+            }
+        }
+
+    }
+
     async collectSolFees(): Promise<MZebecResponse> {
 
         const [feeVaultAddress,] = await this._findFeeVaultAddress(this.feeReceiverAddress);

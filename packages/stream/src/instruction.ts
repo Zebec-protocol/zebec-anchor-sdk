@@ -1,7 +1,7 @@
 import { BN, Program } from '@project-serum/anchor'
 import { ASSOCIATED_PROGRAM_ID, TOKEN_PROGRAM_ID } from '@project-serum/anchor/dist/cjs/utils/token'
 import { Keypair, PublicKey, SystemProgram, SYSVAR_RENT_PUBKEY, Transaction } from '@solana/web3.js'
-import { SPL_ASSOCIATED_TOKEN_ACCOUNT_PROGRAM_ID } from './config'
+import { SPL_ASSOCIATED_TOKEN_ACCOUNT_PROGRAM_ID, STREAM_SIZE, STREAM_TOKEN_SIZE } from './config'
 
 /**
  * ## Zebec Transaction Builder
@@ -28,6 +28,31 @@ export class ZebecTransactionBuilder {
   }
 
   async execFeeVault(
+    feeReceiverAddress: PublicKey,
+    feeVaultAddress: PublicKey,
+    feeVaultDataAddress: PublicKey,
+    feePercentage: number
+  ): Promise<Transaction> {
+    // calculate Fee percentage here.
+    // Fee Percentage must have atmost 2 digits after decimal.
+    // Eg. 0.25% is acceptable but 0.255% is not ?????? DISCUSS IT WITH THE TEAM, TODO
+    const calculatedFeePercentage = new BN(feePercentage * 100)
+
+    const tx = await this._program.methods
+      .createFeeAccount(calculatedFeePercentage)
+      .accounts({
+        feeOwner: feeReceiverAddress,
+        feeVault: feeVaultAddress,
+        feeVaultData: feeVaultDataAddress,
+        systemProgram: SystemProgram.programId,
+        rent: SYSVAR_RENT_PUBKEY
+      })
+      .transaction()
+
+    return tx
+  }
+
+  async execUpdteFeeVault(
     feeReceiverAddress: PublicKey,
     feeVaultAddress: PublicKey,
     feeVaultDataAddress: PublicKey,
@@ -207,7 +232,7 @@ export class ZebecTransactionBuilder {
     endTime: number,
     amount: number
   ): Promise<Transaction> {
-    const dataSize = 8 + 8 + 8 + 8 + 8 + 32 + 32 + 8 + 8 + 32 + 500
+    const dataSize = STREAM_SIZE
 
     const createAccountIx = await this._program.account.stream.createInstruction(escrowAccountKeypair, dataSize)
 
@@ -366,7 +391,8 @@ export class ZebecTransactionBuilder {
     endTime: number,
     amount: number
   ): Promise<Transaction> {
-    const dataSize = 8 + 8 + 8 + 8 + 8 + 8 + 32 + 32 + 8 + 8 + 200
+    
+    const dataSize = STREAM_TOKEN_SIZE
 
     const createAccountIx = await this._program.account.stream.createInstruction(escrowAccountKeypair, dataSize)
 

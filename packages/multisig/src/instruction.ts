@@ -1,7 +1,7 @@
 import { BN, Program } from '@project-serum/anchor'
 import { ASSOCIATED_PROGRAM_ID, TOKEN_PROGRAM_ID } from '@project-serum/anchor/dist/cjs/utils/token'
 import { AccountMeta, Keypair, PublicKey, SystemProgram, SYSVAR_RENT_PUBKEY, Transaction } from '@solana/web3.js'
-import { ZEBEC_STREAM } from './config'
+import { STREAM_SIZE, STREAM_TOKEN_SIZE, ZEBEC_STREAM } from './config'
 import { getTxSize } from './services'
 import { AccountKeys } from './services/accounts'
 
@@ -268,7 +268,7 @@ export class ZebecTransactionBuilder {
     const canCancel = true
     const canUpdate = true
 
-    const streamEscrowAccountDataSize = 8 + 8 + 8 + 8 + 8 + 32 + 32 + 8 + 8 + 32 + 200
+    const streamEscrowAccountDataSize = STREAM_SIZE
 
     const zebecInitStreamAccounts = AccountKeys.init(
       streamDataAccountAddress.publicKey,
@@ -730,7 +730,7 @@ export class ZebecTransactionBuilder {
       tokenMintAddress
     )
 
-    const streamEscrowAccountDataSize = 8 + 8 + 8 + 8 + 8 + 32 + 32 + 8 + 8 + 32 + 200
+    const streamEscrowAccountDataSize = STREAM_TOKEN_SIZE
 
     const txAccountSize = getTxSize(zebecInitStreamAccounts, owners, true, 8 * 3 + 1 * 2)
 

@@ -13,7 +13,7 @@ export enum SC_CONSTANT {
 
 export enum ZEBEC_PROGRAM_ID {
     MULTISIG = "b6ZPysThkApNx2YDiGsPUiYPE7Ub1kTRdCWp7gBkzbr",
-    STREAM = "DMFbM74dfiii1eHdutvjUFwuP8zdMrycGRfrMwKCtB5w"
+    STREAM = "zbcKGdAmXfthXY3rEPBzexVByT2cqRqCZb9NwWdGQ2T"
 }
 
 export enum ZEBEC_STREAM {
@@ -40,5 +40,5 @@ export enum TRANSACTION_ACCOUNT_SIZE {
     INIT = 1000
 }
 
-export const STREAM_SIZE = 8 + 8 + 8 + 8 + 8 + 8 + 32 + 32 + 8 + 8 + 32 + 8+ 8 + 1 + 1;
-export const STREAM_TOKEN_SIZE = 8 + 8 + 8 + 8 + 8 + 8 + 32 + 32 + 32 + 8 + 8 + 32 +8+ 8 + 1 + 1;
+export const STREAM_SIZE = 8 + 8 + 8 + 8 + 8 + 8 + 32 + 32 + 8 + 8 + 8 + 32 + 8+ 8 + 1 + 1;
+export const STREAM_TOKEN_SIZE = 8 + 8 + 8 + 8 + 8 + 8 + 8 + 32 + 32 + 32 + 8 + 8 + 32 +8+ 8 + 1 + 1;

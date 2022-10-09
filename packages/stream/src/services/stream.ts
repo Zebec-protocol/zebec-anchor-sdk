@@ -97,7 +97,7 @@ class ZebecStream implements IBaseStream {
     async _findStreamingAmountSol(walletAddress: PublicKey): Promise<any> {
         const [withdrawEscrow,] = await this._findSolWithdrawEscrowAccount(walletAddress);
         try{
-            const streamingAmount = await this.program.account.solWithdaw.fetch(withdrawEscrow)
+            const streamingAmount = await this.program.account.solWithdraw.fetch(withdrawEscrow)
             return streamingAmount;
         }
         catch(e) {
@@ -168,7 +168,7 @@ class ZebecStream implements IBaseStream {
 
     }
 
-    async updateFeeVault(data: any): Promise<MZebecResponse> {
+    async updateFeePercentage(data: any): Promise<MZebecResponse> {
         const { fee_percentage } = data;
 
         const [feeVaultAddress,] = await this._findFeeVaultAddress(this.feeReceiverAddress);
@@ -176,7 +176,7 @@ class ZebecStream implements IBaseStream {
 
         this.console.info(`creating fee vault for with ${fee_percentage}%`);
         
-        const anchorTx = await this.transactionBuilder.execUpdteFeeVault(
+        const anchorTx = await this.transactionBuilder.execUpdteFeePercentage(
             this.feeReceiverAddress,
             feeVaultAddress,
             feeVaultDataAddress,
@@ -192,7 +192,7 @@ class ZebecStream implements IBaseStream {
             this.console.info(`transaction success, TXID: ${signature}`);
             return {
                 "status": "success",
-                "message": "Fee vault updated",
+                "message": "Fee Percentage updated",
                 "data": {
                     transactionHash: signature
                 }
@@ -915,17 +915,19 @@ export class ZebecTokenStream extends ZebecStream implements IZebecStream {
 
     async pause(data: MPauseResumeWithdrawCancel): Promise<MZebecResponse> {
 
-        const { sender, receiver, escrow } = data;
+        const { sender, receiver, escrow, token_mint_address } = data;
         this.console.info(`pause token stream data: }`, data);
 
         const senderAddress = new PublicKey(sender);
         const receiverAddress = new PublicKey(receiver);
         const escrowAccountAddress = new PublicKey(escrow);
+        const tokenMintAddress = new PublicKey(token_mint_address);
 
         const anchorTx = await this.transactionBuilder.execStreamPauseToken(
             senderAddress,
             receiverAddress,
-            escrowAccountAddress
+            escrowAccountAddress,
+            tokenMintAddress
         );
         const tx = await this._makeTxn(anchorTx);
         const signedRawTx = await this.anchorProvider.wallet.signTransaction(tx);
@@ -952,17 +954,19 @@ export class ZebecTokenStream extends ZebecStream implements IZebecStream {
 
     async resume(data: MPauseResumeWithdrawCancel): Promise<MZebecResponse> {
 
-        const { sender, receiver, escrow } = data;
+        const { sender, receiver, escrow, token_mint_address } = data;
         this.console.info(`resume token stream data: }`, data);
 
         const senderAddress = new PublicKey(sender);
         const receiverAddress = new PublicKey(receiver);
         const escrowAccountAddress = new PublicKey(escrow);
+        const tokenMintAddress = new PublicKey(token_mint_address);
 
         const anchorTx = await this.transactionBuilder.execStreamPauseToken(
             senderAddress,
             receiverAddress,
-            escrowAccountAddress
+            escrowAccountAddress,
+            tokenMintAddress
         );
         const tx = await this._makeTxn(anchorTx);
         const signedRawTx = await this.anchorProvider.wallet.signTransaction(tx);

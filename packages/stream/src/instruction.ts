@@ -52,23 +52,21 @@ export class ZebecTransactionBuilder {
     return tx
   }
 
-  async execUpdteFeeVault(
+  async execUpdteFeePercentage(
     feeReceiverAddress: PublicKey,
     feeVaultAddress: PublicKey,
     feeVaultDataAddress: PublicKey,
     feePercentage: number
   ): Promise<Transaction> {
-    // calculate Fee percentage here.
-    // Fee Percentage must have atmost 2 digits after decimal.
-    // Eg. 0.25% is acceptable but 0.255% is not ?????? DISCUSS IT WITH THE TEAM, TODO
+    
     const calculatedFeePercentage = new BN(feePercentage * 100)
 
     const tx = await this._program.methods
-      .createFeeAccount(calculatedFeePercentage)
+      .updateFees(calculatedFeePercentage)
       .accounts({
-        feeOwner: feeReceiverAddress,
         feeVault: feeVaultAddress,
         feeVaultData: feeVaultDataAddress,
+        feeOwner: feeReceiverAddress,
         systemProgram: SystemProgram.programId,
         rent: SYSVAR_RENT_PUBKEY
       })
@@ -277,7 +275,7 @@ export class ZebecTransactionBuilder {
     const amountBN = new BN(amount)
 
     const tx = this._program.methods
-      .nativeStream(startTimeBN, endTimeBN, amountBN)
+      .nativeStreamUpdate(startTimeBN, endTimeBN, amountBN)
       .accounts({
         dataAccount: escrowAccountPublicKey,
         withdrawData: withdrawEscrowDataAccountAddress,
@@ -534,14 +532,16 @@ export class ZebecTransactionBuilder {
   async execStreamPauseToken(
     senderAddress: PublicKey,
     receiverAddress: PublicKey,
-    escrowAccountAddress: PublicKey
+    escrowAccountAddress: PublicKey,
+    tokenMintAddress: PublicKey
   ): Promise<Transaction> {
     const tx = await this._program.methods
       .pauseResumeTokenStream()
       .accounts({
         sender: senderAddress,
         receiver: receiverAddress,
-        dataAccount: escrowAccountAddress
+        dataAccount: escrowAccountAddress,
+        mint : tokenMintAddress
       })
       .transaction()
 

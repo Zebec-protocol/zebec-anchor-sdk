@@ -126,6 +126,42 @@
       "args": []
     },
     {
+      "name": "updateFees",
+      "accounts": [
+        {
+          "name": "feeVault",
+          "isMut": false,
+          "isSigner": false
+        },
+        {
+          "name": "feeVaultData",
+          "isMut": true,
+          "isSigner": false
+        },
+        {
+          "name": "feeOwner",
+          "isMut": true,
+          "isSigner": true
+        },
+        {
+          "name": "systemProgram",
+          "isMut": false,
+          "isSigner": false
+        },
+        {
+          "name": "rent",
+          "isMut": false,
+          "isSigner": false
+        }
+      ],
+      "args": [
+        {
+          "name": "feePercentage",
+          "type": "u64"
+        }
+      ]
+    },
+    {
       "name": "depositSol",
       "accounts": [
         {
@@ -763,6 +799,11 @@
           "name": "dataAccount",
           "isMut": true,
           "isSigner": false
+        },
+        {
+          "name": "mint",
+          "isMut": false,
+          "isSigner": false
         }
       ],
       "args": []
@@ -1104,6 +1145,10 @@
             "type": "publicKey"
           },
           {
+            "name": "feePercentage",
+            "type": "u64"
+          },
+          {
             "name": "pausedAmt",
             "type": "u64"
           },
@@ -1119,7 +1164,7 @@
       }
     },
     {
-      "name": "SolWithdaw",
+      "name": "SolWithdraw",
       "type": {
         "kind": "struct",
         "fields": [
@@ -1178,6 +1223,10 @@
           {
             "name": "feeOwner",
             "type": "publicKey"
+          },
+          {
+            "name": "feePercentage",
+            "type": "u64"
           },
           {
             "name": "pausedAmt",
@@ -1329,7 +1378,7 @@
       "msg": "OutOfBound"
     }
   ],
-  "metadata": {
-    "address": "DMFbM74dfiii1eHdutvjUFwuP8zdMrycGRfrMwKCtB5w"
+   "metadata": {
+    "address": "zbcKGdAmXfthXY3rEPBzexVByT2cqRqCZb9NwWdGQ2T"
   }
 }

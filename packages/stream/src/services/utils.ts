@@ -1,5 +1,5 @@
 import { Connection, ParsedAccountData, SYSVAR_CLOCK_PUBKEY, TransactionSignature, ConfirmOptions, LAMPORTS_PER_SOL, PublicKey, Transaction } from "@solana/web3.js";
-import { AnchorProvider, Program, Wallet } from "@project-serum/anchor";
+import { AnchorProvider, Program, Wallet, BN } from "@project-serum/anchor";
 import { ZEBEC_PROGRAM_IDL } from "../idl";
 
 
@@ -131,6 +131,12 @@ export const getTokenAmountInLamports = async (amount: number, tokenMintAddress:
     const decimals = tokenMetaData.value?.decimals;
     return amount * Math.pow(10, decimals);
 };
+
+export const getAmountInBN = async(amount: number): Promise<BN> => {
+    const tokenBalanceResponse = amount.toLocaleString("fullwide", {useGrouping: false});
+    const amountBN = await new BN(tokenBalanceResponse);
+    return amountBN;
+}
 
 export const getClusterTime = async(provider: AnchorProvider) => {
     const parsedClock = await provider.connection.getParsedAccountInfo(SYSVAR_CLOCK_PUBKEY)

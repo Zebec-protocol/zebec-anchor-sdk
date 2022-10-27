@@ -2,7 +2,7 @@ import { BN, Program } from '@project-serum/anchor'
 import { ASSOCIATED_PROGRAM_ID, TOKEN_PROGRAM_ID } from '@project-serum/anchor/dist/cjs/utils/token'
 import { AccountMeta, Keypair, PublicKey, SystemProgram, SYSVAR_RENT_PUBKEY, Transaction } from '@solana/web3.js'
 import { STREAM_SIZE, STREAM_TOKEN_SIZE, ZEBEC_STREAM } from './config'
-import { getTxSize } from './services'
+import { getAmountInBN, getTxSize } from './services'
 import { AccountKeys } from './services/accounts'
 
 // Test code Mappings
@@ -110,7 +110,7 @@ export class ZebecTransactionBuilder {
     withdrawEscrowDataAccountAddress: PublicKey,
     amount: number
   ): Promise<Transaction> {
-    const amountBN = new BN(amount)
+    const amountBN = await getAmountInBN(amount);
 
     const tx = await this._streamProgram.methods
       .instantNativeTransfer(amountBN)
@@ -137,7 +137,7 @@ export class ZebecTransactionBuilder {
     amount: number
   ): Promise<Transaction> {
 
-    const amountBN = new BN(amount)
+    const amountBN = await getAmountInBN(amount);
     const tx = await this._streamProgram.methods
       .instantTokenTransfer(amountBN)
       .accounts({
@@ -168,7 +168,7 @@ export class ZebecTransactionBuilder {
     amount: number
   ): Promise<Transaction> {
 
-    const amountBN = new BN(amount)
+    const amountBN = await getAmountInBN(amount);
 
     const zebecDepositAccounts = AccountKeys.deposit(zebecVaultAddress, safeAddress)
 
@@ -210,7 +210,7 @@ export class ZebecTransactionBuilder {
     amount: number
   ): Promise<Transaction> {
 
-    const amountBN = new BN(amount)
+    const amountBN = await getAmountInBN(amount);
 
 
     const zebecDepositAccounts = AccountKeys.depositToken(
@@ -264,7 +264,7 @@ export class ZebecTransactionBuilder {
   ): Promise<Transaction> {
     const startTimeBN = new BN(startTime)
     const endTimeBN = new BN(endTime)
-    const amountBN = new BN(amount)
+    const amountBN = await getAmountInBN(amount);
     const canCancel = true
     const canUpdate = true
 
@@ -330,7 +330,7 @@ export class ZebecTransactionBuilder {
   ): Promise<Transaction> {
     const startTimeBN = new BN(startTime)
     const endTimeBN = new BN(endTime)
-    const amountBN = new BN(amount)
+    const amountBN = await getAmountInBN(amount);
 
     const zebecInitStreamAccounts = AccountKeys.updateinit(
       streamDataAccountAddress,
@@ -571,7 +571,7 @@ export class ZebecTransactionBuilder {
 
     const txAccountSize = getTxSize(zebecInstantTransferAccounts,owners,false,8)
 
-    const amountBN = new BN(amount)
+    const amountBN = await getAmountInBN(amount);
 
     const transferSolIxDataBuffer = this._streamProgram.coder.instruction.encode(ZEBEC_STREAM.DIRECT_TRANSFER_SOL, {
       amount: amountBN
@@ -618,7 +618,7 @@ export class ZebecTransactionBuilder {
     )
 
     const txAccountSize = getTxSize(zebecInstantTransferAccounts,owners,false,8)
-    const amountBN = new BN(amount)
+    const amountBN = await getAmountInBN(amount);
 
     const transferTokenIxDataBuffer = this._streamProgram.coder.instruction.encode(ZEBEC_STREAM.DIRECT_TRANSFER_TOKEN, {
       amount: amountBN
@@ -659,7 +659,7 @@ export class ZebecTransactionBuilder {
   ): Promise<Transaction> {
     const startTimeBN = new BN(startTime)
     const endTimeBN = new BN(endTime)
-    const amountBN = new BN(amount)
+    const amountBN = await getAmountInBN(amount);
 
     const zebecUpdateInitStreamAccounts = AccountKeys.updateinittoken(
       streamDataAccountAddress,
@@ -715,7 +715,7 @@ export class ZebecTransactionBuilder {
   ): Promise<Transaction> {
     const startTimeBN = new BN(startTime)
     const endTimeBN = new BN(endTime)
-    const amountBN = new BN(amount)
+    const amountBN = await getAmountInBN(amount);
     const canCancel = true
     const canUpdate = true
 
@@ -951,7 +951,7 @@ export class ZebecTransactionBuilder {
     tokenMintAddress: PublicKey,
     pdaTokenData: PublicKey,
     destTokenData: PublicKey,
-    amountInLamports: number
+    amount: number
   ): Promise<Transaction> {
     const zebecInstantStreamAccounts = AccountKeys.instanttransfertoken(
       zebecVaultAddress,
@@ -965,7 +965,7 @@ export class ZebecTransactionBuilder {
 
     const txAccountSize = getTxSize(zebecInstantStreamAccounts, owners, false, 8)
 
-    const amountBN = new BN(amountInLamports)
+    const amountBN = await getAmountInBN(amount);
 
     const instantTransferTokenIxDataBuffer = this._streamProgram.coder.instruction.encode(
       ZEBEC_STREAM.INSTANT_TRANSFER_TOKEN,

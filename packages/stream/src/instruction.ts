@@ -2,6 +2,7 @@ import { BN, Program } from '@project-serum/anchor'
 import { ASSOCIATED_PROGRAM_ID, TOKEN_PROGRAM_ID } from '@project-serum/anchor/dist/cjs/utils/token'
 import { Keypair, PublicKey, SystemProgram, SYSVAR_RENT_PUBKEY, Transaction } from '@solana/web3.js'
 import { SPL_ASSOCIATED_TOKEN_ACCOUNT_PROGRAM_ID, STREAM_SIZE, STREAM_TOKEN_SIZE } from './config'
+import { getAmountInBN } from './services'
 
 /**
  * ## Zebec Transaction Builder
@@ -52,21 +53,23 @@ export class ZebecTransactionBuilder {
     return tx
   }
 
-  async execUpdteFeePercentage(
+  async execUpdteFeeVault(
     feeReceiverAddress: PublicKey,
     feeVaultAddress: PublicKey,
     feeVaultDataAddress: PublicKey,
     feePercentage: number
   ): Promise<Transaction> {
-    
+    // calculate Fee percentage here.
+    // Fee Percentage must have atmost 2 digits after decimal.
+    // Eg. 0.25% is acceptable but 0.255% is not ?????? DISCUSS IT WITH THE TEAM, TODO
     const calculatedFeePercentage = new BN(feePercentage * 100)
 
     const tx = await this._program.methods
-      .updateFees(calculatedFeePercentage)
+      .createFeeAccount(calculatedFeePercentage)
       .accounts({
+        feeOwner: feeReceiverAddress,
         feeVault: feeVaultAddress,
         feeVaultData: feeVaultDataAddress,
-        feeOwner: feeReceiverAddress,
         systemProgram: SystemProgram.programId,
         rent: SYSVAR_RENT_PUBKEY
       })
@@ -126,7 +129,7 @@ export class ZebecTransactionBuilder {
     zebecVaultAddress: PublicKey,
     amount: number
   ): Promise<Transaction> {
-    const amountBN = new BN(amount)
+    const amountBN = await getAmountInBN(amount);
     const tx = await this._program.methods
       .depositSol(amountBN)
       .accounts({
@@ -147,7 +150,8 @@ export class ZebecTransactionBuilder {
     zebecVaultAssociatedAccountAddress: PublicKey,
     amount: number
   ): Promise<Transaction> {
-    const amountBN = new BN(amount)
+
+    const amountBN = await getAmountInBN(amount);
 
     const tx = await this._program.methods
       .depositToken(amountBN)
@@ -173,7 +177,7 @@ export class ZebecTransactionBuilder {
     withdrawEscrowDataAccountAddress: PublicKey,
     amount: number
   ): Promise<Transaction> {
-    const amountBN = new BN(amount)
+    const amountBN = await getAmountInBN(amount);
 
     const tx = await this._program.methods
       .nativeWithdrawal(amountBN)
@@ -197,7 +201,7 @@ export class ZebecTransactionBuilder {
     escrowAssociatedTokenAddress: PublicKey,
     amount: number
   ): Promise<Transaction> {
-    const amountBN = new BN(amount)
+    const amountBN = await getAmountInBN(amount);
 
     const tx = await this._program.methods
       .tokenWithdrawal(amountBN)
@@ -236,7 +240,7 @@ export class ZebecTransactionBuilder {
 
     const startTimeBN = new BN(startTime)
     const endTimeBN = new BN(endTime)
-    const amountBN = new BN(amount)
+    const amountBN = await getAmountInBN(amount);
 
     const canCancel = true
     const canUpdate = true
@@ -272,10 +276,10 @@ export class ZebecTransactionBuilder {
     
     const startTimeBN = new BN(startTime)
     const endTimeBN = new BN(endTime)
-    const amountBN = new BN(amount)
+    const amountBN = await getAmountInBN(amount);
 
     const tx = this._program.methods
-      .nativeStreamUpdate(startTimeBN, endTimeBN, amountBN)
+      .nativeStream(startTimeBN, endTimeBN, amountBN)
       .accounts({
         dataAccount: escrowAccountPublicKey,
         withdrawData: withdrawEscrowDataAccountAddress,
@@ -396,7 +400,7 @@ export class ZebecTransactionBuilder {
 
     const startTimeBN = new BN(startTime)
     const endTimeBN = new BN(endTime)
-    const amountBN = new BN(amount)
+    const amountBN = await getAmountInBN(amount);
     const canCancel = true
     const canUpdate = true
 
@@ -435,7 +439,7 @@ export class ZebecTransactionBuilder {
     
     const startTimeBN = new BN(startTime)
     const endTimeBN = new BN(endTime)
-    const amountBN = new BN(amount)
+    const amountBN = await getAmountInBN(amount);
 
     const tx = await this._program.methods
       .tokenStreamUpdate(startTimeBN, endTimeBN, amountBN)
@@ -532,16 +536,14 @@ export class ZebecTransactionBuilder {
   async execStreamPauseToken(
     senderAddress: PublicKey,
     receiverAddress: PublicKey,
-    escrowAccountAddress: PublicKey,
-    tokenMintAddress: PublicKey
+    escrowAccountAddress: PublicKey
   ): Promise<Transaction> {
     const tx = await this._program.methods
       .pauseResumeTokenStream()
       .accounts({
         sender: senderAddress,
         receiver: receiverAddress,
-        dataAccount: escrowAccountAddress,
-        mint : tokenMintAddress
+        dataAccount: escrowAccountAddress
       })
       .transaction()
 
@@ -555,7 +557,7 @@ export class ZebecTransactionBuilder {
     withdrawEscrowDataAccountAddress: PublicKey,
     amount: number
   ): Promise<Transaction> {
-    const amountBN = new BN(amount)
+    const amountBN = await getAmountInBN(amount);
 
     const tx = await this._program.methods
       .instantNativeTransfer(amountBN)
@@ -581,7 +583,7 @@ export class ZebecTransactionBuilder {
     receiverAssociatedTokenAddress: PublicKey,
     amount: number
   ): Promise<Transaction> {
-    const amountBN = new BN(amount)
+    const amountBN = await getAmountInBN(amount);
 
     const tx = await this._program.methods
       .instantTokenTransfer(amountBN)

@@ -152,8 +152,8 @@ class ZebecStream implements IBaseStream {
             const signature = await sendTx(signedRawTx, this.anchorProvider);
             this.console.info(`transaction success, TXID: ${signature}`);
             return {
-                "status": "success",
-                "message": "created fee vault",
+                "status": "Success",
+                "message": "Created fee vault",
                 "data": {
                     transactionHash: signature
                 }
@@ -191,7 +191,7 @@ class ZebecStream implements IBaseStream {
             const signature = await sendTx(signedRawTx, this.anchorProvider);
             this.console.info(`transaction success, TXID: ${signature}`);
             return {
-                "status": "success",
+                "status": "Success",
                 "message": "Fee vault updated",
                 "data": {
                     transactionHash: signature
@@ -226,8 +226,8 @@ class ZebecStream implements IBaseStream {
             const signature = await sendTx(signedRawTx, this.anchorProvider);
             this.console.info(`transaction success, TXID: ${signature}`);
             return {
-                "status": "success",
-                "message": "fee withdraw successful",
+                "status": "Success",
+                "message": "Fee withdrawn",
                 "data": {
                     transactionHash: signature
                 }
@@ -268,8 +268,8 @@ class ZebecStream implements IBaseStream {
             const signature = await sendTx(signedRawTx, this.anchorProvider);
             this.console.info(`transaction success, TXID: ${signature}`);
             return {
-                "status": "success",
-                "message": "fee withdraw successful",
+                "status": "Success",
+                "message": "Fee withdrawn",
                 "data": {
                     transactionHash: signature
                 }
@@ -306,8 +306,8 @@ class ZebecStream implements IBaseStream {
             const signature = await sendTx(signedRawTx, this.anchorProvider);
             this.console.info(`transaction success, TXID: ${signature}`);
             return {
-                status: "success",
-                message: `deposited ${amount} SOL to zebec vault.`,
+                status: "Success",
+                message: `Deposited ${amount} SOL to zebec vault.`,
                 data: {
                     transactionHash: signature
                 }
@@ -346,7 +346,7 @@ class ZebecStream implements IBaseStream {
             const signature = await sendTx(signedRawTx, this.anchorProvider);
             this.console.info(`transaction success, TXID: ${signature}`);
             return {
-                status: "success",
+                status: "Success",
                 message: `${amount} SOL is withdrawn from zebec vault.`,
                 data: {
                     transactionHash: signature
@@ -391,8 +391,8 @@ class ZebecStream implements IBaseStream {
             this.console.info(`transaction success, TXID: ${signature}`);
 
             return {
-                status: "success",
-                message: `${amount} is deposited to zebec vault`,
+                status: "Success",
+                message: `${amount} is deposited to zebec vault.`,
                 data: {
                     transactionHash: signature
                 }
@@ -437,8 +437,8 @@ class ZebecStream implements IBaseStream {
             this.console.info(`transaction success, TXID: ${signature}`);
 
             return {
-                status: "success",
-                message: `${amount} is withdrawn from zebec vault`,
+                status: "Success",
+                message: `${amount} is withdrawn from zebec vault.`,
                 data: {
                     transactionHash: signature
                 }
@@ -499,8 +499,8 @@ export class ZebecNativeStream extends ZebecStream implements IZebecStream {
             const signature = await sendTx(signedRawTx, this.anchorProvider);
             this.console.info(`transaction success, TXID: ${signature}`);
             return {
-                status: "success",
-                message: `stream started. ${amount} SOL`,
+                status: "Success",
+                message: `Stream started for ${amount} SOL`,
                 data: {
                     transactionHash: signature,
                     pda: escrowAccountKeypair.publicKey.toString(),
@@ -515,6 +515,7 @@ export class ZebecNativeStream extends ZebecStream implements IZebecStream {
             }
         }
     }
+
 
     async updateStream(data: MUpdateStream): Promise<MZebecResponse> {
 
@@ -547,8 +548,8 @@ export class ZebecNativeStream extends ZebecStream implements IZebecStream {
             const signature = await sendTx(signedRawTx, this.anchorProvider);
             this.console.info(`transaction success, TXID: ${signature}`);
             return {
-                status: "success",
-                message: `stream updated. ${amount} SOL`,
+                status: "Success",
+                message: `Stream updated for ${amount} SOL`,
                 data: {
                     transactionHash: signature,
                     withdrawescrow: withdrawEscrowAccountAddress.toString(),
@@ -588,8 +589,8 @@ export class ZebecNativeStream extends ZebecStream implements IZebecStream {
             const signature = await sendTx(signedRawTx, this.anchorProvider);
             this.console.info(`transaction success, TXID: ${signature}`);
             return {
-                status: "success",
-                message: `stream paused`,
+                status: "Success",
+                message: `Stream paused`,
                 data: {
                     transactionHash: signature
                 }
@@ -626,8 +627,8 @@ export class ZebecNativeStream extends ZebecStream implements IZebecStream {
             const signature = await sendTx(signedRawTx, this.anchorProvider);
             this.console.info(`transaction success, TXID: ${signature}`);
             return {
-                status: "success",
-                message: `stream resumed`,
+                status: "Success",
+                message: `Stream resumed`,
                 data: {
                     transactionHash: signature
                 }
@@ -674,8 +675,8 @@ export class ZebecNativeStream extends ZebecStream implements IZebecStream {
             const signature = await sendTx(signedRawTx, this.anchorProvider);
             this.console.info(`transaction success, TXID: ${signature}`);
             return {
-                status: "success",
-                message: `stream canceled`,
+                status: "Success",
+                message: `Stream canceled`,
                 data: {
                     transactionHash: signature
                 }
@@ -723,8 +724,8 @@ export class ZebecNativeStream extends ZebecStream implements IZebecStream {
             this.console.info(`transaction success, TXID: ${signature}`);
             
             return {
-                status: "success",
-                message: `withdraw completed`,
+                status: "Success",
+                message: `Withdraw completed`,
                 data: {
                     transactionHash: signature
                 }
@@ -767,8 +768,8 @@ export class ZebecNativeStream extends ZebecStream implements IZebecStream {
             this.console.info(`transaction success, TXID: ${signature}`);
             
             return {
-                status: "success",
-                message: `transfer completed`,
+                status: "Success",
+                message: `Transfer completed`,
                 data: {
                     transactionHash: signature
                 }
@@ -849,8 +850,8 @@ export class ZebecTokenStream extends ZebecStream implements IZebecStream {
             const signature = await sendTx(signedRawTx, this.anchorProvider);
             this.console.info(`transaction success, TXID: ${signature}`);
             return {
-                status: "success",
-                message: `token stream started.`,
+                status: "Success",
+                message: `Token stream started.`,
                 data: {
                     transactionHash: signature,
                     pda: escrowAccountKeypair.publicKey.toString()
@@ -897,8 +898,8 @@ export class ZebecTokenStream extends ZebecStream implements IZebecStream {
             const signature = await sendTx(signedRawTx, this.anchorProvider);
             this.console.info(`transaction success, TXID: ${signature}`);
             return {
-                status: "success",
-                message: `token stream updated.`,
+                status: "Success",
+                message: `Token stream updated.`,
                 data: {
                     transactionHash: signature,
                 }
@@ -934,8 +935,8 @@ export class ZebecTokenStream extends ZebecStream implements IZebecStream {
             const signature = await sendTx(signedRawTx, this.anchorProvider);
             this.console.info(`transaction success, TXID: ${signature}`);
             return {
-                status: "success",
-                message: `token stream paused`,
+                status: "Success",
+                message: `Token stream paused`,
                 data: {
                     transactionHash: signature,
                 }
@@ -971,8 +972,8 @@ export class ZebecTokenStream extends ZebecStream implements IZebecStream {
             const signature = await sendTx(signedRawTx, this.anchorProvider);
             this.console.info(`transaction success, TXID: ${signature}`);
             return {
-                status: "success",
-                message: `token stream resumed`,
+                status: "Success",
+                message: `Token stream resumed`,
                 data: {
                     transactionHash: signature,
                 }
@@ -1027,8 +1028,8 @@ export class ZebecTokenStream extends ZebecStream implements IZebecStream {
             const signature = await sendTx(signedRawTx, this.anchorProvider);
             this.console.info(`transaction success, TXID: ${signature}`);
             return {
-                status: "success",
-                message: `token stream canceled`,
+                status: "Success",
+                message: `Token stream canceled`,
                 data: {
                     transactionHash: signature,
                 }
@@ -1083,8 +1084,8 @@ export class ZebecTokenStream extends ZebecStream implements IZebecStream {
             const signature = await sendTx(signedRawTx, this.anchorProvider);
             this.console.info(`transaction success, TXID: ${signature}`);
             return {
-                status: "success",
-                message: `withdraw successful`,
+                status: "Success",
+                message: `Withdraw successful`,
                 data: {
                     transactionHash: signature,
                 }
@@ -1132,8 +1133,8 @@ export class ZebecTokenStream extends ZebecStream implements IZebecStream {
             const signature = await sendTx(signedRawTx, this.anchorProvider);
             this.console.info(`transaction success, TXID: ${signature}`);
             return {
-                status: "success",
-                message: `token instant transfer successful`,
+                status: "Success",
+                message: `Token instant transfer successful`,
                 data: {
                     transactionHash: signature,
                 }

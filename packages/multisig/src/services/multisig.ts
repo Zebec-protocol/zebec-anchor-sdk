@@ -157,8 +157,8 @@ export class ZebecMultisig {
       this.consolelog.info(`transaction success, TXID: ${signature}`)
 
       return {
-        status: 'success',
-        message: 'created safe',
+        status: 'Success',
+        message: 'Treasury Created',
         data: {
           transactionHash: signature,
           safe_address: multisigSigner.toBase58(),
@@ -194,8 +194,8 @@ export class ZebecMultisig {
       const signature = await sendTx(signedRawTx, this.anchorProvider)
       this.consolelog.info(`transaction success, TXID: ${signature}`)
       return {
-        status: 'success',
-        message: 'created fee vault',
+        status: 'Success',
+        message: 'Created fee vault',
         data: {
           transactionHash: signature
         }
@@ -230,8 +230,8 @@ export class ZebecMultisig {
       const signature = await sendTx(signedRawTx, this.anchorProvider)
       this.consolelog.info(`transaction success, TXID: ${signature}`)
       return {
-        status: 'success',
-        message: 'deposit successful',
+        status: 'Success',
+        message: 'Deposit successful',
         data: {
           transactionHash: signature
         }
@@ -280,8 +280,8 @@ export class ZebecMultisig {
       const signature = await sendTx(signedRawTx, this.anchorProvider)
       this.consolelog.info(`transaction success, TXID: ${signature}`)
       return {
-        status: 'success',
-        message: 'deposit successful',
+        status: 'Success',
+        message: 'Deposit successful',
         data: {
           transactionHash: signature
         }
@@ -332,8 +332,8 @@ export class ZebecNativeTreasury extends ZebecMultisig {
       const signature = await sendTx(signedRawTx, this.anchorProvider)
       this.consolelog.info(`transaction success, TXID: ${signature}`)
       return {
-        status: 'success',
-        message: 'Deposited !',
+        status: 'Success',
+        message: `Deposit transaction initiated for ${amount} SOL to treasury`,
         data: {
           transactionHash: signature,
           transaction_account: zebecTransactionAccount.publicKey.toString()
@@ -399,7 +399,7 @@ export class ZebecNativeTreasury extends ZebecMultisig {
         this.consolelog.info(`transaction success, TXID: ${signature}`)
         return {
           status: 'success',
-          message: 'Deposit transaction executed!!',
+          message: `Deposit transaction approved for ${transaction_details.amount} SOL to treasury`,
           data: {
             transactionHash: signature
           }
@@ -427,7 +427,7 @@ export class ZebecNativeTreasury extends ZebecMultisig {
         this.consolelog.info(`transaction success, TXID: ${signature}`)
         return {
           status: 'success',
-          message: 'Deposit transaction Approved!!',
+          message: `Deposit transaction approved for ${transaction_details.amount} SOL to treasury`,
           data: {
             transactionHash: signature
           }
@@ -485,8 +485,8 @@ export class ZebecNativeTreasury extends ZebecMultisig {
       const signature = await sendTx(signedRawTx, this.anchorProvider)
       this.consolelog.info(`transaction success, TXID: ${signature}`)
       return {
-        status: 'success',
-        message: 'stream initiated!',
+        status: 'Success',
+        message: `Stream initiated for ${amount} SOL`,
         data: {
           transactionHash: signature,
           stream_data_account: streamDataAccount.publicKey.toString(),
@@ -569,8 +569,8 @@ export class ZebecNativeTreasury extends ZebecMultisig {
         const signature = await sendTx(signedRawTx, this.anchorProvider)
         this.consolelog.info(`transaction success, TXID: ${signature}`)
         return {
-          status: 'success',
-          message: 'stream transaction executed!!',
+          status: 'Success',
+          message: `Transaction approved for ${transaction_details.amount} SOL`,
           data: {
             transactionHash: signature
           }
@@ -597,8 +597,8 @@ export class ZebecNativeTreasury extends ZebecMultisig {
         const signature = await sendTx(signedRawTx, this.anchorProvider)
         this.consolelog.info(`transaction success, TXID: ${signature}`)
         return {
-          status: 'success',
-          message: 'stream transaction executed!!',
+          status: 'Success',
+          message: `Transaction approved for ${transaction_details.amount} SOL`,
           data: {
             transactionHash: signature
           }
@@ -651,8 +651,8 @@ export class ZebecNativeTreasury extends ZebecMultisig {
       const signature = await sendTx(signedRawTx, this.anchorProvider)
       this.consolelog.info(`transaction success, TXID: ${signature}`)
       return {
-        status: 'success',
-        message: 'stream data updated!',
+        status: 'Success',
+        message: 'Transaction initiated',
         data: {
           transactionHash: signature,
           transaction_account: zebecTransactionAccount.publicKey.toString(),
@@ -728,8 +728,8 @@ export class ZebecNativeTreasury extends ZebecMultisig {
         const signature = await sendTx(signedRawTx, this.anchorProvider)
         this.consolelog.info(`transaction success, TXID: ${signature}`)
         return {
-          status: 'success',
-          message: 'update stream transaction created!!',
+          status: 'Success',
+          message: 'Transaction approved for update stream',
           data: {
             transactionHash: signature
           }
@@ -756,8 +756,8 @@ export class ZebecNativeTreasury extends ZebecMultisig {
         const signature = await sendTx(signedRawTx, this.anchorProvider)
         this.consolelog.info(`transaction success, TXID: ${signature}`)
         return {
-          status: 'success',
-          message: 'update stream transaction executed!!',
+          status: 'Success',
+          message: 'Transaction approved for update stream',
           data: {
             transactionHash: signature
           }
@@ -801,8 +801,8 @@ export class ZebecNativeTreasury extends ZebecMultisig {
       const signature = await sendTx(signedRawTx, this.anchorProvider)
       this.consolelog.info(`transaction success, TXID: ${signature}`)
       return {
-        status: 'success',
-        message: 'stream paused!',
+        status: 'Success',
+        message: 'Transaction initiated',
         data: {
           transactionHash: signature,
           transaction_account: zebecTransactionAccount.publicKey.toString()
@@ -874,8 +874,8 @@ export class ZebecNativeTreasury extends ZebecMultisig {
         const signature = await sendTx(signedRawTx, this.anchorProvider)
         this.consolelog.info(`transaction success, TXID: ${signature}`)
         return {
-          status: 'success',
-          message: 'Pause transaction executed!!',
+          status: 'Success',
+          message: 'Transaction approved for pause stream',
           data: {
             transactionHash: signature
           }
@@ -903,7 +903,7 @@ export class ZebecNativeTreasury extends ZebecMultisig {
         this.consolelog.info(`transaction success, TXID: ${signature}`)
         return {
           status: 'success',
-          message: 'Pause transaction Approved!!',
+          message: 'Transction approved for pause stream',
           data: {
             transactionHash: signature
           }
@@ -949,8 +949,8 @@ export class ZebecNativeTreasury extends ZebecMultisig {
       const signature = await sendTx(signedRawTx, this.anchorProvider)
       this.consolelog.info(`transaction success, TXID: ${signature}`)
       return {
-        status: 'success',
-        message: 'stream resumed!',
+        status: 'Success',
+        message: 'Transaction initiated',
         data: {
           transactionHash: signature,
           transaction_account: zebecTransactionAccount.publicKey.toString()
@@ -1018,8 +1018,8 @@ export class ZebecNativeTreasury extends ZebecMultisig {
         const signature = await sendTx(signedRawTx, this.anchorProvider)
         this.consolelog.info(`transaction success, TXID: ${signature}`)
         return {
-          status: 'success',
-          message: 'Resume transaction executed!!',
+          status: 'Success',
+          message: 'Transction approved for resume stream',
           data: {
             transactionHash: signature
           }
@@ -1045,8 +1045,8 @@ export class ZebecNativeTreasury extends ZebecMultisig {
         const signature = await sendTx(signedRawTx, this.anchorProvider)
         this.consolelog.info(`transaction success, TXID: ${signature}`)
         return {
-          status: 'success',
-          message: 'Resume transaction Aprroved!!',
+          status: 'Success',
+          message: 'Transaction approved for resume stream',
           data: {
             transactionHash: signature
           }
@@ -1096,8 +1096,8 @@ export class ZebecNativeTreasury extends ZebecMultisig {
       const signature = await sendTx(signedRawTx, this.anchorProvider)
       this.consolelog.info(`transaction success, TXID: ${signature}`)
       return {
-        status: 'success',
-        message: 'stream Cancel!',
+        status: 'Success',
+        message: 'Transaction initiated',
         data: {
           transactionHash: signature,
           transaction_account: zebecTransactionAccount.publicKey.toString()
@@ -1178,8 +1178,8 @@ export class ZebecNativeTreasury extends ZebecMultisig {
         const signature = await sendTx(signedRawTx, this.anchorProvider)
         this.consolelog.info(`transaction success, TXID: ${signature}`)
         return {
-          status: 'success',
-          message: 'Cancel transaction executed!!',
+          status: 'Success',
+          message: 'Transaction approved for cancel stream',
           data: {
             transactionHash: signature
           }
@@ -1205,8 +1205,8 @@ export class ZebecNativeTreasury extends ZebecMultisig {
         const signature = await sendTx(signedRawTx, this.anchorProvider)
         this.consolelog.info(`transaction success, TXID: ${signature}`)
         return {
-          status: 'success',
-          message: 'Cancel transaction Aprroved!!',
+          status: 'Success',
+          message: 'Transaction approved for cancel stream',
           data: {
             transactionHash: signature
           }
@@ -1255,8 +1255,8 @@ export class ZebecNativeTreasury extends ZebecMultisig {
       const signature = await sendTx(signedRawTx, this.anchorProvider)
       this.consolelog.info(`transaction success, TXID: ${signature}`)
       return {
-        status: 'success',
-        message: 'Instant transfer created !',
+        status: 'Success',
+        message: 'Transaction initiated',
         data: {
           transactionHash: signature,
           transaction_account: zebecTransactionAccount.publicKey.toString()
@@ -1331,8 +1331,8 @@ export class ZebecNativeTreasury extends ZebecMultisig {
         const signature = await sendTx(signedRawTx, this.anchorProvider)
         this.consolelog.info(`transaction success, TXID: ${signature}`)
         return {
-          status: 'success',
-          message: 'Instant transfer transaction executed!!',
+          status: 'Success',
+          message: 'Transaction approved for instant transfer',
           data: {
             transactionHash: signature
           }
@@ -1404,8 +1404,8 @@ export class ZebecNativeTreasury extends ZebecMultisig {
       const signature = await sendTx(signedRawTx, this.anchorProvider)
       this.consolelog.info(`transaction success, TXID: ${signature}`)
       return {
-        status: 'success',
-        message: 'Funds transfered to receipient !',
+        status: 'Success',
+        message: 'Transaction initiated',
         data: {
           transactionHash: signature,
           transaction_account: zebecTransactionAccount.publicKey.toString()
@@ -1473,8 +1473,8 @@ export class ZebecNativeTreasury extends ZebecMultisig {
         const signature = await sendTx(signedRawTx, this.anchorProvider)
         this.consolelog.info(`transaction success, TXID: ${signature}`)
         return {
-          status: 'success',
-          message: 'Funds transfer to receipient executed!!',
+          status: 'Success',
+          message: 'Transaction approved',
           data: {
             transactionHash: signature
           }
@@ -1500,8 +1500,8 @@ export class ZebecNativeTreasury extends ZebecMultisig {
         const signature = await sendTx(signedRawTx, this.anchorProvider)
         this.consolelog.info(`transaction success, TXID: ${signature}`)
         return {
-          status: 'success',
-          message: 'Funds transfer transaction approved!!',
+          status: 'Success',
+          message: 'Transaction approved',
           data: {
             transactionHash: signature
           }
@@ -1546,8 +1546,8 @@ export class ZebecNativeTreasury extends ZebecMultisig {
         const signature = await sendTx(signedRawTx, this.anchorProvider);
         
         return {
-            status: "success",
-            message: `withdraw completed`,
+            status: "Success",
+            message: "Withdrawn successfully",
             data: {
                 transactionHash: signature
             }
@@ -1611,8 +1611,8 @@ export class ZebecTokenTreasury extends ZebecMultisig {
       const signature = await sendTx(signedRawTx, this.anchorProvider)
       this.consolelog.info(`transaction success, TXID: ${signature}`)
       return {
-        status: 'success',
-        message: 'Token Deposited !',
+        status: 'Success',
+        message: 'Transaction initiated',
         data: {
           transactionHash: signature,
           transaction_account: zebecTransactionAccount.publicKey.toString()
@@ -1689,8 +1689,8 @@ export class ZebecTokenTreasury extends ZebecMultisig {
         const signature = await sendTx(signedRawTx, this.anchorProvider)
         this.consolelog.info(`transaction success, TXID: ${signature}`)
         return {
-          status: 'success',
-          message: 'Deposit transaction executed!!',
+          status: 'Success',
+          message: 'Transaction aprroved',
           data: {
             transactionHash: signature
           }
@@ -1717,8 +1717,8 @@ export class ZebecTokenTreasury extends ZebecMultisig {
         const signature = await sendTx(signedRawTx, this.anchorProvider)
         this.consolelog.info(`transaction success, TXID: ${signature}`)
         return {
-          status: 'success',
-          message: 'Deposit transaction Approved!!',
+          status: 'Success',
+          message: 'Transaction aprroved',
           data: {
             transactionHash: signature
           }
@@ -1777,8 +1777,8 @@ export class ZebecTokenTreasury extends ZebecMultisig {
       const signature = await sendTx(signedRawTx, this.anchorProvider)
       this.consolelog.info(`transaction success, TXID: ${signature}`)
       return {
-        status: 'success',
-        message: 'stream initiated!',
+        status: 'Success',
+        message: 'Transaction initiated',
         data: {
           transactionHash: signature,
           stream_data_account: streamDataAccount.publicKey.toString(),
@@ -1861,8 +1861,8 @@ export class ZebecTokenTreasury extends ZebecMultisig {
         const signature = await sendTx(signedRawTx, this.anchorProvider)
         this.consolelog.info(`transaction success, TXID: ${signature}`)
         return {
-          status: 'success',
-          message: 'stream token transaction executed!!',
+          status: 'Success',
+          message: 'Transaction apprroved',
           data: {
             transactionHash: signature
           }
@@ -1888,8 +1888,8 @@ export class ZebecTokenTreasury extends ZebecMultisig {
         const signature = await sendTx(signedRawTx, this.anchorProvider)
         this.consolelog.info(`transaction success, TXID: ${signature}`)
         return {
-          status: 'success',
-          message: 'Stream transaction Aprroved!!',
+          status: 'Success',
+          message: 'Transaction apprroved',
           data: {
             transactionHash: signature
           }
@@ -1943,8 +1943,8 @@ export class ZebecTokenTreasury extends ZebecMultisig {
       const signature = await sendTx(signedRawTx, this.anchorProvider)
       this.consolelog.info(`transaction success, TXID: ${signature}`)
       return {
-        status: 'success',
-        message: 'stream update initiated!',
+        status: 'Success',
+        message: 'Transaction apprroved',
         data: {
           transactionHash: signature,
           transaction_account: zebecTransactionAccount.publicKey.toString(),
@@ -2021,8 +2021,8 @@ export class ZebecTokenTreasury extends ZebecMultisig {
         const signature = await sendTx(signedRawTx, this.anchorProvider)
         this.consolelog.info(`transaction success, TXID: ${signature}`)
         return {
-          status: 'success',
-          message: 'stream token update transaction executed!!',
+          status: 'Success',
+          message: 'Transaction apprroved',
           data: {
             transactionHash: signature
           }
@@ -2048,8 +2048,8 @@ export class ZebecTokenTreasury extends ZebecMultisig {
         const signature = await sendTx(signedRawTx, this.anchorProvider)
         this.consolelog.info(`transaction success, TXID: ${signature}`)
         return {
-          status: 'success',
-          message: 'Stream transaction update Aprroved!!',
+          status: 'Success',
+          message: 'Transaction apprroved',
           data: {
             transactionHash: signature
           }
@@ -2095,8 +2095,8 @@ export class ZebecTokenTreasury extends ZebecMultisig {
       const signature = await sendTx(signedRawTx, this.anchorProvider)
       this.consolelog.info(`transaction success, TXID: ${signature}`)
       return {
-        status: 'success',
-        message: 'stream paused!',
+        status: 'Success',
+        message: 'Transaction apprroved',
         data: {
           transactionHash: signature,
           transaction_account: zebecTransactionAccount.publicKey.toString()
@@ -2165,8 +2165,8 @@ export class ZebecTokenTreasury extends ZebecMultisig {
         const signature = await sendTx(signedRawTx, this.anchorProvider)
         this.consolelog.info(`transaction success, TXID: ${signature}`)
         return {
-          status: 'success',
-          message: 'Pause transaction executed!!',
+          status: 'Success',
+          message: 'Transaction apprroved',
           data: {
             transactionHash: signature
           }
@@ -2192,8 +2192,8 @@ export class ZebecTokenTreasury extends ZebecMultisig {
         const signature = await sendTx(signedRawTx, this.anchorProvider)
         this.consolelog.info(`transaction success, TXID: ${signature}`)
         return {
-          status: 'success',
-          message: 'Pause transaction Aprroved!!',
+          status: 'Success',
+          message: 'Transaction apprroved',
           data: {
             transactionHash: signature
           }
@@ -2239,8 +2239,8 @@ export class ZebecTokenTreasury extends ZebecMultisig {
       const signature = await sendTx(signedRawTx, this.anchorProvider)
       this.consolelog.info(`transaction success, TXID: ${signature}`)
       return {
-        status: 'success',
-        message: 'stream Resumed!',
+        status: 'Success',
+        message: 'Transaction initiated',
         data: {
           transactionHash: signature,
           transaction_account: zebecTransactionAccount.publicKey.toString()
@@ -2309,8 +2309,8 @@ export class ZebecTokenTreasury extends ZebecMultisig {
         const signature = await sendTx(signedRawTx, this.anchorProvider)
         this.consolelog.info(`transaction success, TXID: ${signature}`)
         return {
-          status: 'success',
-          message: 'Resume transaction executed!!',
+          status: 'Success',
+          message: 'Transaction apprroved',
           data: {
             transactionHash: signature
           }
@@ -2336,8 +2336,8 @@ export class ZebecTokenTreasury extends ZebecMultisig {
         const signature = await sendTx(signedRawTx, this.anchorProvider)
         this.consolelog.info(`transaction success, TXID: ${signature}`)
         return {
-          status: 'success',
-          message: 'Resume transaction Aprroved!!',
+          status: 'Success',
+          message: 'Transaction apprroved',
           data: {
             transactionHash: signature
           }
@@ -2399,8 +2399,8 @@ export class ZebecTokenTreasury extends ZebecMultisig {
       const signature = await sendTx(signedRawTx, this.anchorProvider)
       this.consolelog.info(`transaction success, TXID: ${signature}`)
       return {
-        status: 'success',
-        message: 'stream Cancel!',
+        status: 'Success',
+        message: 'Transaction initiated',
         data: {
           transactionHash: signature,
           transaction_account: zebecTransactionAccount.publicKey.toString()
@@ -2491,8 +2491,8 @@ export class ZebecTokenTreasury extends ZebecMultisig {
         const signature = await sendTx(signedRawTx, this.anchorProvider)
         this.consolelog.info(`transaction success, TXID: ${signature}`)
         return {
-          status: 'success',
-          message: 'Cancel transaction executed!!',
+          status: 'Success',
+          message: 'Transaction approved',
           data: {
             transactionHash: signature
           }
@@ -2518,8 +2518,8 @@ export class ZebecTokenTreasury extends ZebecMultisig {
         const signature = await sendTx(signedRawTx, this.anchorProvider)
         this.consolelog.info(`transaction success, TXID: ${signature}`)
         return {
-          status: 'success',
-          message: 'Cancel transaction Aprroved!!',
+          status: 'Success',
+          message: 'Transaction approved',
           data: {
             transactionHash: signature
           }
@@ -2577,8 +2577,8 @@ export class ZebecTokenTreasury extends ZebecMultisig {
       const signature = await sendTx(signedRawTx, this.anchorProvider)
       this.consolelog.info(`transaction success, TXID: ${signature}`)
       return {
-        status: 'success',
-        message: 'Instant transfer success!',
+        status: 'Success',
+        message: 'Transaction initiated',
         data: {
           transactionHash: signature,
           transaction_account: zebecTransactionAccount.publicKey.toString()
@@ -2661,8 +2661,8 @@ export class ZebecTokenTreasury extends ZebecMultisig {
         const signature = await sendTx(signedRawTx, this.anchorProvider)
         this.consolelog.info(`transaction success, TXID: ${signature}`)
         return {
-          status: 'success',
-          message: 'Instant transfer transaction executed!!',
+          status: 'Success',
+          message: 'Transaction approved',
           data: {
             transactionHash: signature
           }
@@ -2688,8 +2688,8 @@ export class ZebecTokenTreasury extends ZebecMultisig {
         const signature = await sendTx(signedRawTx, this.anchorProvider)
         this.consolelog.info(`transaction success, TXID: ${signature}`)
         return {
-          status: 'success',
-          message: 'Instant transfer transaction Aprroved!!',
+          status: 'Success',
+          message: 'Transaction approved',
           data: {
             transactionHash: signature
           }
@@ -2742,8 +2742,8 @@ export class ZebecTokenTreasury extends ZebecMultisig {
       const signature = await sendTx(signedRawTx, this.anchorProvider)
       this.consolelog.info(`transaction success, TXID: ${signature}`)
       return {
-        status: 'success',
-        message: 'Funds transfered to receipient !',
+        status: 'Success',
+        message: 'Transaction initiated',
         data: {
           transactionHash: signature,
           transaction_account: zebecTransactionAccount.publicKey.toString()
@@ -2820,8 +2820,8 @@ export class ZebecTokenTreasury extends ZebecMultisig {
         const signature = await sendTx(signedRawTx, this.anchorProvider)
         this.consolelog.info(`transaction success, TXID: ${signature}`)
         return {
-          status: 'success',
-          message: 'Funds transfer to receipient executed!!',
+          status: 'Success',
+          message: 'Transaction approved',
           data: {
             transactionHash: signature
           }
@@ -2847,8 +2847,8 @@ export class ZebecTokenTreasury extends ZebecMultisig {
         const signature = await sendTx(signedRawTx, this.anchorProvider)
         this.consolelog.info(`transaction success, TXID: ${signature}`)
         return {
-          status: 'success',
-          message: 'Funds transfer transaction approved!!',
+          status: 'Success',
+          message: 'Transaction approved',
           data: {
             transactionHash: signature
           }
@@ -2903,8 +2903,8 @@ export class ZebecTokenTreasury extends ZebecMultisig {
         const signature = await sendTx(signedRawTx, this.anchorProvider);
      
         return {
-            status: "success",
-            message: `withdraw successful`,
+            status: "Success",
+            message: `Withdraw successful`,
             data: {
                 transactionHash: signature,
             }

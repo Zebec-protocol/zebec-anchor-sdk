@@ -536,14 +536,16 @@ export class ZebecTransactionBuilder {
   async execStreamPauseToken(
     senderAddress: PublicKey,
     receiverAddress: PublicKey,
-    escrowAccountAddress: PublicKey
+    escrowAccountAddress: PublicKey,
+    tokenMintAddress: PublicKey
   ): Promise<Transaction> {
     const tx = await this._program.methods
       .pauseResumeTokenStream()
       .accounts({
         sender: senderAddress,
         receiver: receiverAddress,
-        dataAccount: escrowAccountAddress
+        dataAccount: escrowAccountAddress,
+        mint: tokenMintAddress
       })
       .transaction()
 

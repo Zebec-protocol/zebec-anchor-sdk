@@ -773,10 +773,11 @@ export class ZebecTransactionBuilder {
     streamDataAccountAddress: PublicKey,
     zebecTransactionAccount: Keypair,
     safeDataAccount: PublicKey,
-    senderAddress: PublicKey
+    senderAddress: PublicKey,
+    tokenMintAddress: PublicKey
   ): Promise<Transaction> {
 
-    const zebecPauseStreamAccounts = AccountKeys.pausetoken(safeAddress, receiverAddress, streamDataAccountAddress)
+    const zebecPauseStreamAccounts = AccountKeys.pausetoken(safeAddress, receiverAddress, streamDataAccountAddress, tokenMintAddress)
 
     const txAccountSize = getTxSize(zebecPauseStreamAccounts, owners, false, 0)
 
@@ -811,10 +812,11 @@ export class ZebecTransactionBuilder {
     streamDataAccountAddress: PublicKey,
     zebecTransactionAccount: Keypair,
     safeDataAccount: PublicKey,
-    senderAddress: PublicKey
+    senderAddress: PublicKey,
+    tokenMintAddress: PublicKey
   ): Promise<Transaction> {
 
-    const zebecResumeStreamAccounts = AccountKeys.resumetoken(safeAddress, receiverAddress, streamDataAccountAddress)
+    const zebecResumeStreamAccounts = AccountKeys.resumetoken(safeAddress, receiverAddress, streamDataAccountAddress, tokenMintAddress)
 
 
     const txAccountSize = getTxSize(zebecResumeStreamAccounts, owners, false, 0)

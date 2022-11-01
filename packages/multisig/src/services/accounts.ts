@@ -245,11 +245,13 @@ export class AccountKeys {
         safeAddress: PublicKey,
         receiverAddress: PublicKey,
         streamDataAccount: PublicKey,
+        tokenMintAddress: PublicKey,
     ) : AccountMeta[] {
         return [
             { pubkey: safeAddress, isSigner: true, isWritable: true },
             { pubkey: receiverAddress, isSigner: false, isWritable: false },
-            { pubkey: streamDataAccount, isSigner: false, isWritable: true }
+            { pubkey: streamDataAccount, isSigner: false, isWritable: true },
+            { pubkey: tokenMintAddress, isSigner: false, isWritable: false },
         ]
     }
 
@@ -257,11 +259,13 @@ export class AccountKeys {
         safeAddress: PublicKey,
         receiverAddress: PublicKey,
         streamDataAccount: PublicKey,
+        tokenMintAddress: PublicKey,
     ) : AccountMeta[] {
         return [
             { pubkey: safeAddress, isSigner: true, isWritable: true },
             { pubkey: receiverAddress, isSigner: false, isWritable: false },
-            { pubkey: streamDataAccount, isSigner: false, isWritable: true }
+            { pubkey: streamDataAccount, isSigner: false, isWritable: true },
+            { pubkey: tokenMintAddress, isSigner: false, isWritable: false },
         ]
     }
 

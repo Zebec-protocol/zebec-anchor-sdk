@@ -822,14 +822,12 @@ export class ZebecNativeTreasury extends ZebecMultisig {
 
     const receiverAddress = new PublicKey(receiver)
     const streamDataAccountAddress = new PublicKey(stream_data_account)
-    const [feeVaultDataAddress] = await this._findFeeVaultDataAccount(this.feeReceiverAddress)
     const safeAddress = new PublicKey(safe_address)
     const safeDataAccountAddress = new PublicKey(safe_data_account)
     const pauseTransactionAccountAddress = new PublicKey(transaction_account)
     // how to automate this transaction, trigger this transaction
     // what happens to withdrawData (Since ownerA might start transaction) and has withdrawData accoridingly
     // what if ownerB exec this function
-    const [withdrawDataAccountAddress] = await this._findSolWithdrawEscrowAccount(safeAddress)
     const safe_details = await this._fetchTresholdData(safeDataAccountAddress)
     const transaction_details = await this.fetchMultiSigStreamData(pauseTransactionAccountAddress)
 
@@ -2066,7 +2064,7 @@ export class ZebecTokenTreasury extends ZebecMultisig {
 
   async pause(data: any): Promise<any> {
 
-    const { safe_address, receiver, stream_data_account, safe_data_account, sender } = data
+    const { safe_address, receiver, stream_data_account, safe_data_account, sender, token_mint_address } = data
     const safeAddress = new PublicKey(safe_address)
     const receiverAddress = new PublicKey(receiver)
     const streamDataAccountAddress = new PublicKey(stream_data_account)
@@ -2074,6 +2072,7 @@ export class ZebecTokenTreasury extends ZebecMultisig {
     const safe_details = await this._fetchTresholdData(safeDataAccount)
     const owners = safe_details.owners
     const senderAddress = new PublicKey(sender)
+    const tokenMintAddress = new PublicKey(token_mint_address)
 
     const zebecTransactionAccount = Keypair.generate()
 
@@ -2084,7 +2083,8 @@ export class ZebecTokenTreasury extends ZebecMultisig {
       streamDataAccountAddress,
       zebecTransactionAccount,
       safeDataAccount,
-      senderAddress
+      senderAddress,
+      tokenMintAddress
     )
 
     const tx = await this._makeTxn(anchorTx, [zebecTransactionAccount])
@@ -2133,7 +2133,7 @@ export class ZebecTokenTreasury extends ZebecMultisig {
       obj[element] = signaturesarray[index]
     })
 
-    const initAccounts = AccountKeys.pausetoken(safeAddress, receiverAddress, streamDataAccountAddress)
+    const initAccounts = AccountKeys.pausetoken(safeAddress, receiverAddress, streamDataAccountAddress, tokenMintAddress)
 
     const threshholdCount = safe_details.threshold.toString() // minimum signers required to execute transaction
 
@@ -2210,7 +2210,7 @@ export class ZebecTokenTreasury extends ZebecMultisig {
 
   async resume(data: any): Promise<any> {
 
-    const { safe_address, receiver, stream_data_account, safe_data_account, sender } = data
+    const { safe_address, receiver, stream_data_account, safe_data_account, sender, token_mint_address } = data
     const safeAddress = new PublicKey(safe_address)
     const receiverAddress = new PublicKey(receiver)
     const streamDataAccountAddress = new PublicKey(stream_data_account)
@@ -2218,17 +2218,19 @@ export class ZebecTokenTreasury extends ZebecMultisig {
     const safe_details = await this._fetchTresholdData(safeDataAccount)
     const owners = safe_details.owners
     const senderAddress = new PublicKey(sender)
+    const tokenMintAddress = new PublicKey(token_mint_address)
 
     const zebecTransactionAccount = Keypair.generate()
 
-    const anchorTx = await this.transactionBuilder.execResumeStream(
+    const anchorTx = await this.transactionBuilder.execStreamResumeToken(
       owners,
       safeAddress,
       receiverAddress,
       streamDataAccountAddress,
       zebecTransactionAccount,
       safeDataAccount,
-      senderAddress
+      senderAddress,
+      tokenMintAddress
     )
 
     const tx = await this._makeTxn(anchorTx, [zebecTransactionAccount])
@@ -2277,7 +2279,7 @@ export class ZebecTokenTreasury extends ZebecMultisig {
       obj[element] = signaturesarray[index]
     })
 
-    const initAccounts = AccountKeys.resumetoken(safeAddress, receiverAddress, streamDataAccountAddress)
+    const initAccounts = AccountKeys.resumetoken(safeAddress, receiverAddress, streamDataAccountAddress, tokenMintAddress)
 
     const threshholdCount = safe_details.threshold.toString() // minimum signers required to execute transaction
 

@@ -97,7 +97,7 @@ class ZebecStream implements IBaseStream {
     async _findStreamingAmountSol(walletAddress: PublicKey): Promise<any> {
         const [withdrawEscrow,] = await this._findSolWithdrawEscrowAccount(walletAddress);
         try{
-            const streamingAmount = await this.program.account.solWithdaw.fetch(withdrawEscrow)
+            const streamingAmount = await this.program.account.solWithdraw.fetch(withdrawEscrow)
             return streamingAmount;
         }
         catch(e) {

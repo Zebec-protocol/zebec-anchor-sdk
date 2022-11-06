@@ -573,11 +573,13 @@ export class ZebecNativeStream extends ZebecStream implements IZebecStream {
         const senderAddress = new PublicKey(sender);
         const receiverAddress = new PublicKey(receiver);
         const escrowAccountAddress = new PublicKey(escrow);
+        const [withdrawEscrowAccountAddress, ] = await this._findSolWithdrawEscrowAccount(senderAddress);
 
         const anchorTx = await this.transactionBuilder.execStreamPauseSol(
             senderAddress,
             receiverAddress,
-            escrowAccountAddress
+            escrowAccountAddress,
+            withdrawEscrowAccountAddress
         );
 
         const tx = await this._makeTxn(anchorTx);
@@ -612,11 +614,13 @@ export class ZebecNativeStream extends ZebecStream implements IZebecStream {
         const senderAddress = new PublicKey(sender);
         const receiverAddress = new PublicKey(receiver);
         const escrowAccountAddress = new PublicKey(escrow);
+        const [withdrawEscrowAccountAddress, ] = await this._findSolWithdrawEscrowAccount(senderAddress);
         
         const anchorTx = await this.transactionBuilder.execStreamResumeSol(
             senderAddress,
             receiverAddress,
-            escrowAccountAddress
+            escrowAccountAddress,
+            withdrawEscrowAccountAddress
         );
 
         const tx = await this._makeTxn(anchorTx);
@@ -922,12 +926,14 @@ export class ZebecTokenStream extends ZebecStream implements IZebecStream {
         const receiverAddress = new PublicKey(receiver);
         const escrowAccountAddress = new PublicKey(escrow);
         const tokenMintAddress = new PublicKey(token_mint_address);
+        const [withdrawEscrowAccountAddress,] = await this._findTokenWithdrawEscrowAccount(senderAddress, tokenMintAddress);
 
         const anchorTx = await this.transactionBuilder.execStreamPauseToken(
             senderAddress,
             receiverAddress,
             escrowAccountAddress,
-            tokenMintAddress
+            tokenMintAddress,
+            withdrawEscrowAccountAddress
         );
         const tx = await this._makeTxn(anchorTx);
         const signedRawTx = await this.anchorProvider.wallet.signTransaction(tx);
@@ -961,12 +967,14 @@ export class ZebecTokenStream extends ZebecStream implements IZebecStream {
         const receiverAddress = new PublicKey(receiver);
         const escrowAccountAddress = new PublicKey(escrow);
         const tokenMintAddress = new PublicKey(data.token_mint_address);
+        const [withdrawEscrowAccountAddress,] = await this._findTokenWithdrawEscrowAccount(senderAddress, tokenMintAddress);
 
         const anchorTx = await this.transactionBuilder.execStreamPauseToken(
             senderAddress,
             receiverAddress,
             escrowAccountAddress,
-            tokenMintAddress
+            tokenMintAddress,
+            withdrawEscrowAccountAddress
         );
         const tx = await this._makeTxn(anchorTx);
         const signedRawTx = await this.anchorProvider.wallet.signTransaction(tx);

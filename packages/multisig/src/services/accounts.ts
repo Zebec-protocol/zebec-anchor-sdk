@@ -92,24 +92,28 @@ export class AccountKeys {
     static pause(
         safeAddress: PublicKey,
         receiverAddress: PublicKey,
-        streamDataAccount: PublicKey
+        streamDataAccount: PublicKey,
+        withdrawDataAccountAddress : PublicKey
     ): AccountMeta[] {
         return [
             { pubkey: safeAddress, isSigner: true, isWritable: false },
             { pubkey: receiverAddress, isSigner: false, isWritable: false },
-            { pubkey: streamDataAccount, isSigner: false, isWritable: true }
+            { pubkey: streamDataAccount, isSigner: false, isWritable: true },
+            { pubkey: withdrawDataAccountAddress, isSigner: false, isWritable: true }
         ]
     }
 
     static resume(
         safeAddress: PublicKey,
         receiverAddress: PublicKey,
-        streamDataAccount: PublicKey
+        streamDataAccount: PublicKey,
+        withdrawDataAccountAddress : PublicKey
     ): AccountMeta[] {
         return [
             { pubkey: safeAddress, isSigner: true, isWritable: false },
             { pubkey: receiverAddress, isSigner: false, isWritable: false },
-            { pubkey: streamDataAccount, isSigner: false, isWritable: true }
+            { pubkey: streamDataAccount, isSigner: false, isWritable: true },
+            { pubkey: withdrawDataAccountAddress, isSigner: false, isWritable: true }
         ]
     }
 
@@ -246,12 +250,14 @@ export class AccountKeys {
         receiverAddress: PublicKey,
         streamDataAccount: PublicKey,
         tokenMintAddress: PublicKey,
+        withdrawDataAccount: PublicKey,
     ) : AccountMeta[] {
         return [
             { pubkey: safeAddress, isSigner: true, isWritable: true },
             { pubkey: receiverAddress, isSigner: false, isWritable: false },
             { pubkey: streamDataAccount, isSigner: false, isWritable: true },
             { pubkey: tokenMintAddress, isSigner: false, isWritable: false },
+            { pubkey: withdrawDataAccount, isSigner: false, isWritable: true },
         ]
     }
 
@@ -260,12 +266,14 @@ export class AccountKeys {
         receiverAddress: PublicKey,
         streamDataAccount: PublicKey,
         tokenMintAddress: PublicKey,
+        withdrawDataAccount: PublicKey,
     ) : AccountMeta[] {
         return [
             { pubkey: safeAddress, isSigner: true, isWritable: true },
             { pubkey: receiverAddress, isSigner: false, isWritable: false },
             { pubkey: streamDataAccount, isSigner: false, isWritable: true },
             { pubkey: tokenMintAddress, isSigner: false, isWritable: false },
+            { pubkey: withdrawDataAccount, isSigner: false, isWritable: true },
         ]
     }
 

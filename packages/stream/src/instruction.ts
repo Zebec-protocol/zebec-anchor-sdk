@@ -349,14 +349,16 @@ export class ZebecTransactionBuilder {
   async execStreamPauseSol(
     senderAddress: PublicKey,
     receiverAddress: PublicKey,
-    escrowAccountAddress: PublicKey
+    escrowAccountAddress: PublicKey,
+    withdrawEscrowDataAccountAddress: PublicKey,
   ): Promise<Transaction> {
     const tx = await this._program.methods
       .pauseStream()
       .accounts({
         sender: senderAddress,
         receiver: receiverAddress,
-        dataAccount: escrowAccountAddress
+        dataAccount: escrowAccountAddress,
+        withdrawData: withdrawEscrowDataAccountAddress,
       })
       .transaction()
 
@@ -366,14 +368,16 @@ export class ZebecTransactionBuilder {
   async execStreamResumeSol(
     senderAddress: PublicKey,
     receiverAddress: PublicKey,
-    escrowAccountAddress: PublicKey
+    escrowAccountAddress: PublicKey,
+    withdrawEscrowDataAccountAddress: PublicKey,
   ): Promise<Transaction> {
     const tx = await this._program.methods
       .pauseStream()
       .accounts({
         sender: senderAddress,
         receiver: receiverAddress,
-        dataAccount: escrowAccountAddress
+        dataAccount: escrowAccountAddress,
+        withdrawData: withdrawEscrowDataAccountAddress,
       })
       .transaction()
 
@@ -537,7 +541,8 @@ export class ZebecTransactionBuilder {
     senderAddress: PublicKey,
     receiverAddress: PublicKey,
     escrowAccountAddress: PublicKey,
-    tokenMintAddress: PublicKey
+    tokenMintAddress: PublicKey,
+    withdrawEscrowDataAccountAddress: PublicKey
   ): Promise<Transaction> {
     const tx = await this._program.methods
       .pauseResumeTokenStream()
@@ -545,7 +550,8 @@ export class ZebecTransactionBuilder {
         sender: senderAddress,
         receiver: receiverAddress,
         dataAccount: escrowAccountAddress,
-        mint: tokenMintAddress
+        mint: tokenMintAddress,
+        withdrawData: withdrawEscrowDataAccountAddress
       })
       .transaction()
 

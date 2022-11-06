@@ -366,6 +366,11 @@
           "name": "dataAccount",
           "isMut": true,
           "isSigner": false
+        },
+        {
+          "name": "withdrawData",
+          "isMut": true,
+          "isSigner": false
         }
       ],
       "args": []
@@ -803,6 +808,11 @@
         {
           "name": "mint",
           "isMut": false,
+          "isSigner": false
+        },
+        {
+          "name": "withdrawData",
+          "isMut": true,
           "isSigner": false
         }
       ],
@@ -1340,7 +1350,7 @@
     {
       "code": 6016,
       "name": "CancelNotAllowed",
-      "msg": "cannot cancel this transaction"
+      "msg": "Cannot cancel this transaction"
     },
     {
       "code": 6017,
@@ -1378,7 +1388,7 @@
       "msg": "OutOfBound"
     }
   ],
-   "metadata": {
-    "address": "zbcKGdAmXfthXY3rEPBzexVByT2cqRqCZb9NwWdGQ2T"
+  "metadata": {
+    "address": "3QR2HYqZPPn4P6Xh2eaujTnQUQRenFeRR8e3by6DZoa1"
   }
 }

@@ -374,10 +374,11 @@ export class ZebecTransactionBuilder {
     streamDataAccountAddress: PublicKey,
     zebecTransactionAccount: Keypair,
     safeDataAccount: PublicKey,
-    senderAddress: PublicKey
+    senderAddress: PublicKey,
+    withdrawDataAccountAddress: PublicKey,
   ): Promise<Transaction> {
 
-    const zebecPauseStreamAccounts = AccountKeys.pause(safeAddress, receiverAddress, streamDataAccountAddress)
+    const zebecPauseStreamAccounts = AccountKeys.pause(safeAddress, receiverAddress, streamDataAccountAddress, withdrawDataAccountAddress)
 
     const txAccountSize = getTxSize(zebecPauseStreamAccounts,owners,false,0)
 
@@ -409,10 +410,11 @@ export class ZebecTransactionBuilder {
     streamDataAccountAddress: PublicKey,
     zebecTransactionAccount: Keypair,
     safeDataAccount: PublicKey,
-    senderAddress: PublicKey
+    senderAddress: PublicKey,
+    withdrawDataAccountAddress: PublicKey,
   ): Promise<Transaction> {
     
-    const zebecResumeStreamAccounts = AccountKeys.resume(safeAddress, receiverAddress, streamDataAccountAddress)
+    const zebecResumeStreamAccounts = AccountKeys.resume(safeAddress, receiverAddress, streamDataAccountAddress, withdrawDataAccountAddress)
 
     const txAccountSize = getTxSize(zebecResumeStreamAccounts,owners,false,0)
 
@@ -774,10 +776,11 @@ export class ZebecTransactionBuilder {
     zebecTransactionAccount: Keypair,
     safeDataAccount: PublicKey,
     senderAddress: PublicKey,
-    tokenMintAddress: PublicKey
+    tokenMintAddress: PublicKey,
+    withdrawDataAccountAddress: PublicKey
   ): Promise<Transaction> {
 
-    const zebecPauseStreamAccounts = AccountKeys.pausetoken(safeAddress, receiverAddress, streamDataAccountAddress, tokenMintAddress)
+    const zebecPauseStreamAccounts = AccountKeys.pausetoken(safeAddress, receiverAddress, streamDataAccountAddress, tokenMintAddress, withdrawDataAccountAddress)
 
     const txAccountSize = getTxSize(zebecPauseStreamAccounts, owners, false, 0)
 
@@ -813,10 +816,11 @@ export class ZebecTransactionBuilder {
     zebecTransactionAccount: Keypair,
     safeDataAccount: PublicKey,
     senderAddress: PublicKey,
-    tokenMintAddress: PublicKey
+    tokenMintAddress: PublicKey,
+    withdrawDataAccountAddress: PublicKey
   ): Promise<Transaction> {
 
-    const zebecResumeStreamAccounts = AccountKeys.resumetoken(safeAddress, receiverAddress, streamDataAccountAddress, tokenMintAddress)
+    const zebecResumeStreamAccounts = AccountKeys.resumetoken(safeAddress, receiverAddress, streamDataAccountAddress, tokenMintAddress, withdrawDataAccountAddress)
 
 
     const txAccountSize = getTxSize(zebecResumeStreamAccounts, owners, false, 0)

@@ -31,7 +31,6 @@ const getErrorForTransaction = async (connection: Connection, txid: TransactionS
     );
 
     const tx = await connection.getParsedTransaction(txid, commitment);
-    console.log("parsed transaction: ", tx);
     const errors: string[] = [];
 
     if(tx?.meta && tx.meta.logMessages) {
@@ -53,7 +52,6 @@ const getErrorForTransaction = async (connection: Connection, txid: TransactionS
 }
 
 export const sendTx = async(tx: Transaction, provider: AnchorProvider): Promise<TransactionSignature> => {
-    console.log("------ sending transaction --------", tx);
     // tx.instructions.map(i => i.keys.map(k => console.log(k.pubkey.toBase58(), k.isSigner, k.isWritable)))
     const connection = provider.connection;
     const rawTxn = tx.serialize();
@@ -72,10 +70,6 @@ export const sendTx = async(tx: Transaction, provider: AnchorProvider): Promise<
     (async () => {
         while(!done && now() - startTime < retryTimeout) {
             connection.sendRawTransaction(rawTxn, options);
-            console.log(
-                "retry sending transaction continuously every 2 seconds...",
-                txid
-            );
             await sleep(2000);
         }
     })();

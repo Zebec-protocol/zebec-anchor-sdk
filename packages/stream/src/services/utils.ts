@@ -171,6 +171,5 @@ export class ConsoleLog {
         if (this.logger && value) { 
             console.log(message, value); 
         }
-        console.log(message);
     }
 }

@@ -299,7 +299,6 @@ export class ZebecMultisig {
 export class ZebecNativeTreasury extends ZebecMultisig {
   constructor(anchorProvider: AnchorProvider, feeReceiver: string, logger: boolean = false) {
     super(anchorProvider, feeReceiver, logger)
-    this.consolelog.info('zebec native treasury object initialized!')
   }
 
   async deposit(data: any): Promise<any> {
@@ -1574,7 +1573,6 @@ export class ZebecNativeTreasury extends ZebecMultisig {
 export class ZebecTokenTreasury extends ZebecMultisig {
   constructor(anchorProvider: AnchorProvider, feeReceiver: string, logger: boolean = false) {
     super(anchorProvider, feeReceiver, logger)
-    this.consolelog.info('zebec token treasury object initialized!')
   }
 
   async deposit(data: any): Promise<any> {

@@ -612,4 +612,32 @@ export class ZebecTransactionBuilder {
 
     return tx
   }
+
+  async execDirectTokenTransfer(
+    receiverAddress: PublicKey,
+    senderAddress: PublicKey,
+    tokenMintAddress: PublicKey,
+    senderAssociatedTokenAddress: PublicKey,
+    receiverAssociatedTokenAddress: PublicKey,
+    amount: number
+  ): Promise<Transaction> {
+    const amountBN = await getAmountInBN(amount);
+
+    const tx = await this._program.methods
+      .sendTokenDirectly(amountBN)
+      .accounts({
+        sourceAccount: senderAddress,
+        destAccount: receiverAddress,
+        systemProgram: SystemProgram.programId,
+        tokenProgram: TOKEN_PROGRAM_ID,
+        associatedTokenProgram: SPL_ASSOCIATED_TOKEN_ACCOUNT_PROGRAM_ID,
+        rent: SYSVAR_RENT_PUBKEY,
+        mint: tokenMintAddress,
+        pdaAccountTokenAccount: senderAssociatedTokenAddress,
+        destTokenAccount: receiverAssociatedTokenAddress
+      })
+      .transaction()
+
+    return tx
+  }
 }

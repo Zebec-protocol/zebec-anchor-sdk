@@ -633,7 +633,7 @@ export class ZebecTransactionBuilder {
         associatedTokenProgram: SPL_ASSOCIATED_TOKEN_ACCOUNT_PROGRAM_ID,
         rent: SYSVAR_RENT_PUBKEY,
         mint: tokenMintAddress,
-        pdaAccountTokenAccount: senderAssociatedTokenAddress,
+        sourceAccountTokenAccount: senderAssociatedTokenAddress,
         destTokenAccount: receiverAssociatedTokenAddress
       })
       .transaction()

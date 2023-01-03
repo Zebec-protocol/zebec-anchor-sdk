@@ -1160,6 +1160,50 @@ export class ZebecTokenStream extends ZebecStream implements IZebecStream {
         }
     }
 
+    async directTransfer(data: any): Promise<MZebecResponse> {
+        const { sender, receiver, token_mint_address, amount } = data;
+        const senderAddress = new PublicKey(sender);
+        const receiverAddress = new PublicKey(receiver);
+        const tokenMintAddress = new PublicKey(token_mint_address);
+
+        const amountInLamports = await getTokenAmountInLamports(amount, tokenMintAddress, this.program);
+        const [senderAssociatedTokenAddress,] = await this._findAssociatedTokenAddress(senderAddress, tokenMintAddress);
+        const [receiverAssociatedTokenAddress,] = await this._findAssociatedTokenAddress(receiverAddress, tokenMintAddress);
+
+
+        const anchorTx = await this.transactionBuilder.execDirectTokenTransfer(
+            receiverAddress,
+            senderAddress,
+            tokenMintAddress,
+            senderAssociatedTokenAddress,
+            receiverAssociatedTokenAddress,
+            amountInLamports
+        );
+
+        const tx = await this._makeTxn(anchorTx);
+        const signedRawTx = await this.anchorProvider.wallet.signTransaction(tx);
+        this.console.info("transaction after signing: ", signedRawTx);
+
+        try {
+            const signature = await sendTx(signedRawTx, this.anchorProvider);
+            this.console.info(`transaction success, TXID: ${signature}`);
+            return {
+                status: "Success",
+                message: `Token instant transfer successful`,
+                data: {
+                    transactionHash: signature,
+                }
+            }
+        } catch (err) {
+            return {
+                status: "error",
+                message: parseErrorMessage(err.message),
+                data: null
+            }
+        }
+    }
+     
+
     async fetchStreamData(escrow: PublicKey): Promise<any> {
         const response = await this.program.account.streamToken.fetch(escrow)
         return response

@@ -7,7 +7,7 @@ import { ConsoleLog, getAmountInLamports, getTokenAmountInLamports, parseErrorMe
 import { IBaseStream, IZebecStream } from "../interface";
 import { ZebecTransactionBuilder } from '../instruction';
 import { OPERATE, OPERATE_DATA, PREFIX, PREFIX_TOKEN, SPL_ASSOCIATED_TOKEN_ACCOUNT_PROGRAM_ID, ZEBEC_PROGRAM_ID } from "../config/constants";
-import { MDepositWithdrawFromZebecVault, MInitStream, MPauseResumeWithdrawCancel, MZebecResponse, MUpdateStream } from "../models";
+import { MDepositWithdrawFromZebecVault, MInitStream, MPauseResumeWithdrawCancel, MZebecResponse, MUpdateStream, MCreateFeeVault, MCollectTokenFees, MInstantTransfer, MFetchStreamingAmount } from "../models";
 
 // window.Buffer = window.Buffer || require("buffer").Buffer; 
 
@@ -129,7 +129,7 @@ class ZebecStream implements IBaseStream {
         return tx
     }
 
-    async createFeeVault(data: any): Promise<MZebecResponse> {
+    async createFeeVault(data: MCreateFeeVault): Promise<MZebecResponse> {
         const { fee_percentage } = data;
 
         const [feeVaultAddress,] = await this._findFeeVaultAddress(this.feeReceiverAddress);
@@ -168,7 +168,7 @@ class ZebecStream implements IBaseStream {
 
     }
 
-    async updateFeeVault(data: any): Promise<MZebecResponse> {
+    async updateFeeVault(data: MCreateFeeVault): Promise<MZebecResponse> {
         const { fee_percentage } = data;
 
         const [feeVaultAddress,] = await this._findFeeVaultAddress(this.feeReceiverAddress);
@@ -241,7 +241,7 @@ class ZebecStream implements IBaseStream {
         }
     }
 
-    async collectTokenFees(data: any): Promise<MZebecResponse> {
+    async collectTokenFees(data: MCollectTokenFees): Promise<MZebecResponse> {
         const { token_mint_address } = data;
 
         const tokenMintAddress = new PublicKey(token_mint_address);
@@ -743,7 +743,7 @@ export class ZebecNativeStream extends ZebecStream implements IZebecStream {
         }
     }
 
-    async instantTransfer(data: any): Promise<MZebecResponse> {
+    async instantTransfer(data: MInstantTransfer): Promise<MZebecResponse> {
 
         const { sender, receiver, amount } = data;
         this.console.info("instant token transfer: ", data);
@@ -792,7 +792,7 @@ export class ZebecNativeStream extends ZebecStream implements IZebecStream {
         return response
       }
 
-      async fetchStreamingAmount(data:any): Promise<any> {
+      async fetchStreamingAmount(data: MFetchStreamingAmount): Promise<any> {
         const { sender } = data;
         const senderAddress = new PublicKey(sender);
         const response = await this._findStreamingAmountSol(senderAddress);
@@ -1160,7 +1160,7 @@ export class ZebecTokenStream extends ZebecStream implements IZebecStream {
         }
     }
 
-    async directTransfer(data: any): Promise<MZebecResponse> {
+    async directTransfer(data: MInstantTransfer): Promise<MZebecResponse> {
         const { sender, receiver, token_mint_address, amount } = data;
         const senderAddress = new PublicKey(sender);
         const receiverAddress = new PublicKey(receiver);
@@ -1209,7 +1209,7 @@ export class ZebecTokenStream extends ZebecStream implements IZebecStream {
         return response
       }
 
-      async fetchStreamingAmount(data:any): Promise<any> {
+      async fetchStreamingAmount(data: MFetchStreamingAmount): Promise<any> {
         const { sender, token_mint_address} = data;
         const senderAddress = new PublicKey(sender);
         const tokenMintAddress = new PublicKey(token_mint_address);

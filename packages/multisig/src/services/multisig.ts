@@ -5,6 +5,7 @@ import { Keypair, PublicKey, Transaction } from '@solana/web3.js'
 import { SC_CONSTANT, ZEBEC_PROGRAM_ID } from '../config'
 import { ZEBEC_MULTISIG_PROGRAM_IDL, ZEBEC_STREAM_PROGRAM_IDL } from '../idl'
 import { ZebecTransactionBuilder } from '../instruction'
+import { MCreateFeeVault, MCreateSafe, Mdeposit, MdepositSolToSafe, MExecDeposit, MExecInit, MExecInstantTransfer, MExecPauseResumeWithdrawCancel, MExecTransferFromSafe, MExecUpdateStream, MInitStream, MInstantTransfer, MPauseResumeWithdrawCancel, MTransferFromSafe, MUpdateStream, MWithdraw } from '../model'
 import { AccountKeys } from './accounts'
 import { ConsoleLog, getAmountInLamports, getTokenAmountInLamports, parseErrorMessage, sendTx } from './utils'
 
@@ -130,7 +131,7 @@ export class ZebecMultisig {
     return tx
   }
 
-  async createSafe(data: any): Promise<any> {
+  async createSafe(data: MCreateSafe): Promise<any> {
     const { owners, min_confirmation_required } = data
 
     const multisigDataAccount = Keypair.generate()
@@ -171,7 +172,7 @@ export class ZebecMultisig {
     }
   }
 
-  async createFeeVault(data: any): Promise<any> {
+  async createFeeVault(data: MCreateFeeVault): Promise<any> {
     const { fee_percentage } = data
 
     const [feeVaultAddress] = await this._findFeeVaultAddress(this.feeReceiverAddress)
@@ -205,7 +206,7 @@ export class ZebecMultisig {
     }
   }
 
-  async depositSolToSafe(data: any): Promise<any> {
+  async depositSolToSafe(data: MdepositSolToSafe): Promise<any> {
     const { sender, safe_address, amount } = data
     const senderAddress = new PublicKey(sender)
     const zebecSafeAddress = new PublicKey(safe_address)
@@ -245,7 +246,7 @@ export class ZebecMultisig {
     }
   }
 
-  async depositTokenToSafe(data: any): Promise<any> {
+  async depositTokenToSafe(data: MdepositSolToSafe): Promise<any> {
 
     const { sender, safe_address, token_mint_address, amount } = data
     const senderAddress = new PublicKey(sender)
@@ -301,7 +302,7 @@ export class ZebecNativeTreasury extends ZebecMultisig {
     super(anchorProvider, feeReceiver, logger)
   }
 
-  async deposit(data: any): Promise<any> {
+  async deposit(data: Mdeposit): Promise<any> {
 
     const { safe_address, safe_data_account, sender, amount } = data
     const senderAddress = new PublicKey(sender)
@@ -347,7 +348,7 @@ export class ZebecNativeTreasury extends ZebecMultisig {
     }
   }
 
-  async execDespoit(data: any): Promise<any> {
+  async execDespoit(data: MExecDeposit): Promise<any> {
     const { safe_address, safe_data_account, transaction_account, signer } = data
     const safeAddress = new PublicKey(safe_address)
     const [zebecVaultAddress] = await this._findZebecVaultAccount(safeAddress)
@@ -441,7 +442,7 @@ export class ZebecNativeTreasury extends ZebecMultisig {
     }
   }
 
-  async init(data: any): Promise<any> {
+  async init(data: MInitStream): Promise<any> {
 
     const { safe_address, safe_data_account, sender, receiver, start_time, end_time, amount } = data
     this.consolelog.info('multisig init stream: ', data)
@@ -502,7 +503,7 @@ export class ZebecNativeTreasury extends ZebecMultisig {
     }
   }
 
-  async execInit(data: any): Promise<any> {
+  async execInit(data: MExecInit): Promise<any> {
     
     const { stream_data_account, safe_address, safe_data_account, transaction_account, receiver, signer } = data
     const receiverAddress = new PublicKey(receiver)
@@ -526,8 +527,8 @@ export class ZebecNativeTreasury extends ZebecMultisig {
     ownerarray.forEach((element, index) => {
       obj[element] = signaturesarray[index]
     })
-    const signcheck = obj[signer]
 
+  
     const initAccounts = AccountKeys.init(
       streamDataAccountAddress,
       withdrawDataAccountAddress,
@@ -612,7 +613,7 @@ export class ZebecNativeTreasury extends ZebecMultisig {
     }
   }
 
-  async updateStream(data: any): Promise<any> {
+  async updateStream(data: MUpdateStream): Promise<any> {
 
     const { safe_address, safe_data_account, sender, receiver, start_time, end_time, amount, stream_data_account } = data
     this.consolelog.info('multisig init stream: ', data)
@@ -667,7 +668,7 @@ export class ZebecNativeTreasury extends ZebecMultisig {
     }
   }
 
-  async execUpdateStream(data: any): Promise<any> {
+  async execUpdateStream(data: MExecUpdateStream): Promise<any> {
     
     const { stream_data_account, safe_address, safe_data_account, transaction_account, receiver, signer } = data
     const receiverAddress = new PublicKey(receiver)
@@ -771,7 +772,7 @@ export class ZebecNativeTreasury extends ZebecMultisig {
     }
   }
 
-  async pause(data: any): Promise<any> {
+  async pause(data: MPauseResumeWithdrawCancel): Promise<any> {
     const { safe_address, receiver, stream_data_account, safe_data_account, sender } = data
     const senderAddress = new PublicKey(sender)
     const safeAddress = new PublicKey(safe_address)
@@ -818,7 +819,7 @@ export class ZebecNativeTreasury extends ZebecMultisig {
     }
   }
 
-  async execPause(data: any): Promise<any> {
+  async execPause(data: MExecPauseResumeWithdrawCancel): Promise<any> {
     const { stream_data_account, safe_address, safe_data_account, transaction_account, receiver, signer } = data
 
     const receiverAddress = new PublicKey(receiver)
@@ -840,8 +841,8 @@ export class ZebecNativeTreasury extends ZebecMultisig {
     ownerarray.forEach((element, index) => {
       obj[element] = signaturesarray[index]
     })
-    const signcheck = obj[signer]
 
+    
     const initAccounts = AccountKeys.pause(safeAddress, receiverAddress, streamDataAccountAddress, withdrawDataAccountAddress)
 
     const threshholdCount = safe_details.threshold.toString() // minimum signers required to execute transaction
@@ -918,7 +919,7 @@ export class ZebecNativeTreasury extends ZebecMultisig {
     }
   }
 
-  async resume(data: any): Promise<any> {
+  async resume(data: MPauseResumeWithdrawCancel): Promise<any> {
     const { safe_address, receiver, stream_data_account, safe_data_account, sender } = data
 
     const safeAddress = new PublicKey(safe_address)
@@ -967,7 +968,7 @@ export class ZebecNativeTreasury extends ZebecMultisig {
     }
   }
 
-  async execResume(data: any): Promise<any> {
+  async execResume(data: MExecPauseResumeWithdrawCancel): Promise<any> {
     const { stream_data_account, safe_address, safe_data_account, transaction_account, receiver, signer } = data
 
     const receiverAddress = new PublicKey(receiver)
@@ -1064,7 +1065,7 @@ export class ZebecNativeTreasury extends ZebecMultisig {
     }
   }
 
-  async cancel(data: any): Promise<any> {
+  async cancel(data: MPauseResumeWithdrawCancel): Promise<any> {
     const { safe_address, receiver, stream_data_account, safe_data_account, sender } = data
     const safeAddress = new PublicKey(safe_address)
     const receiverAddress = new PublicKey(receiver)
@@ -1115,7 +1116,7 @@ export class ZebecNativeTreasury extends ZebecMultisig {
     }
   }
 
-  async execCancel(data: any): Promise<any> {
+  async execCancel(data: MExecPauseResumeWithdrawCancel): Promise<any> {
     const { stream_data_account, safe_address, safe_data_account, transaction_account, receiver, signer } = data
     const safeAddress = new PublicKey(safe_address)
     const [zebecVaultAddress] = await this._findZebecVaultAccount(safeAddress)
@@ -1224,7 +1225,7 @@ export class ZebecNativeTreasury extends ZebecMultisig {
     }
   }
 
-  async instantTransfer(data: any): Promise<any> {
+  async instantTransfer(data: MInstantTransfer): Promise<any> {
     const { safe_address, receiver, safe_data_account, sender, amount } = data
     const senderAddress = new PublicKey(sender)
     const safeAddress = new PublicKey(safe_address)
@@ -1274,7 +1275,7 @@ export class ZebecNativeTreasury extends ZebecMultisig {
     }
   }
 
-  async execInstantTransfer(data: any): Promise<any> {
+  async execInstantTransfer(data: MExecInstantTransfer): Promise<any> {
 
     const { safe_address, safe_data_account, transaction_account, receiver, signer } = data
     const safeAddress = new PublicKey(safe_address)
@@ -1377,7 +1378,7 @@ export class ZebecNativeTreasury extends ZebecMultisig {
     }
   }
 
-  async transferFromSafe(data: any): Promise<any> {
+  async transferFromSafe(data: MTransferFromSafe): Promise<any> {
     const { sender, safe_address, receiver, safe_data_account, amount } = data
     const senderAddress = new PublicKey(sender)
     const safeAddress = new PublicKey(safe_address)
@@ -1423,7 +1424,7 @@ export class ZebecNativeTreasury extends ZebecMultisig {
     }
   }
 
-  async execTransferFromSafe(data: any): Promise<any> {
+  async execTransferFromSafe(data: MExecTransferFromSafe): Promise<any> {
 
     const { safe_address, safe_data_account, transaction_account, receiver, signer } = data
     const safeAddress = new PublicKey(safe_address)
@@ -1519,7 +1520,7 @@ export class ZebecNativeTreasury extends ZebecMultisig {
     }
   }
 
-  async withdraw(data: any): Promise<any> {
+  async withdraw(data: MWithdraw): Promise<any> {
 
     const { safe_address, receiver, escrow } = data;
 
@@ -1575,7 +1576,7 @@ export class ZebecTokenTreasury extends ZebecMultisig {
     super(anchorProvider, feeReceiver, logger)
   }
 
-  async deposit(data: any): Promise<any> {
+  async deposit(data: Mdeposit): Promise<any> {
 
     const { safe_address, safe_data_account, sender, amount, token_mint_address } = data
     const senderAddress = new PublicKey(sender)
@@ -1629,7 +1630,7 @@ export class ZebecTokenTreasury extends ZebecMultisig {
     }
   }
 
-  async execDespoit(data: any): Promise<any> {
+  async execDespoit(data: MExecDeposit): Promise<any> {
 
     const { safe_address, safe_data_account, transaction_account, signer, token_mint_address } = data
     const safeAddress = new PublicKey(safe_address)
@@ -1735,7 +1736,7 @@ export class ZebecTokenTreasury extends ZebecMultisig {
     }
   }
 
-  async init(data: any): Promise<any> {
+  async init(data: MInitStream): Promise<any> {
 
     const { safe_address, safe_data_account, sender, receiver, start_time, end_time, amount, token_mint_address } = data
     const senderAddress = new PublicKey(sender)
@@ -1797,7 +1798,7 @@ export class ZebecTokenTreasury extends ZebecMultisig {
     }
   }
 
-  async execInit(data: any): Promise<any> {
+  async execInit(data: MExecInit): Promise<any> {
     const {stream_data_account, safe_address, safe_data_account, transaction_account, receiver, token_mint_address, signer} = data
     const receiverAddress = new PublicKey(receiver)
     const streamDataAccountAddress = new PublicKey(stream_data_account)
@@ -1906,7 +1907,7 @@ export class ZebecTokenTreasury extends ZebecMultisig {
     }
   }
 
-  async updateStream(data: any): Promise<any> {
+  async updateStream(data: MUpdateStream): Promise<any> {
 
     const { safe_address, safe_data_account, sender, receiver, start_time, end_time, amount, token_mint_address, stream_data_account } = data
     const senderAddress = new PublicKey(sender)
@@ -1962,7 +1963,7 @@ export class ZebecTokenTreasury extends ZebecMultisig {
     }
   }
 
-  async execUpdateStream(data: any): Promise<any> {
+  async execUpdateStream(data: MExecUpdateStream): Promise<any> {
     const {stream_data_account, safe_address, safe_data_account, transaction_account, receiver, token_mint_address, signer} = data
     const receiverAddress = new PublicKey(receiver)
     const streamDataAccountAddress = new PublicKey(stream_data_account)
@@ -2066,7 +2067,7 @@ export class ZebecTokenTreasury extends ZebecMultisig {
     }
   }
 
-  async pause(data: any): Promise<any> {
+  async pause(data: MPauseResumeWithdrawCancel): Promise<any> {
 
     const { safe_address, receiver, stream_data_account, safe_data_account, sender, token_mint_address } = data
     const safeAddress = new PublicKey(safe_address)
@@ -2119,7 +2120,7 @@ export class ZebecTokenTreasury extends ZebecMultisig {
     }
   }
 
-  async execPause(data: any): Promise<any> {
+  async execPause(data: MExecPauseResumeWithdrawCancel): Promise<any> {
     const { stream_data_account, safe_address, safe_data_account, transaction_account, receiver, token_mint_address, signer } = data
     const safeAddress = new PublicKey(safe_address)
     const receiverAddress = new PublicKey(receiver)
@@ -2217,7 +2218,7 @@ export class ZebecTokenTreasury extends ZebecMultisig {
     }
   }
 
-  async resume(data: any): Promise<any> {
+  async resume(data: MPauseResumeWithdrawCancel): Promise<any> {
 
     const { safe_address, receiver, stream_data_account, safe_data_account, sender, token_mint_address } = data
     const safeAddress = new PublicKey(safe_address)
@@ -2269,7 +2270,7 @@ export class ZebecTokenTreasury extends ZebecMultisig {
     }
   }
 
-  async execResume(data: any): Promise<any> {
+  async execResume(data: MExecPauseResumeWithdrawCancel): Promise<any> {
     const { stream_data_account, safe_address, safe_data_account, transaction_account, receiver, token_mint_address, signer} = data
     const receiverAddress = new PublicKey(receiver)
     const streamDataAccountAddress = new PublicKey(stream_data_account)
@@ -2367,7 +2368,7 @@ export class ZebecTokenTreasury extends ZebecMultisig {
     }
   }
 
-  async cancel(data: any): Promise<any> {
+  async cancel(data: MPauseResumeWithdrawCancel): Promise<any> {
 
     const { safe_address, receiver, stream_data_account, safe_data_account, sender, token_mint_address } = data
     const safeAddress = new PublicKey(safe_address)
@@ -2430,7 +2431,7 @@ export class ZebecTokenTreasury extends ZebecMultisig {
     }
   }
 
-  async execCancel(data: any): Promise<any> {
+  async execCancel(data: MExecPauseResumeWithdrawCancel): Promise<any> {
     const { stream_data_account, safe_address, safe_data_account, transaction_account, receiver, token_mint_address, signer} = data
 
     const safeAddress = new PublicKey(safe_address)
@@ -2549,7 +2550,7 @@ export class ZebecTokenTreasury extends ZebecMultisig {
     }
   }
 
-  async instanttransfer(data: any): Promise<any> {
+  async instanttransfer(data: MInstantTransfer): Promise<any> {
 
     const { safe_address, receiver, safe_data_account, sender, token_mint_address, amount } = data
     const safeAddress = new PublicKey(safe_address)
@@ -2608,7 +2609,7 @@ export class ZebecTokenTreasury extends ZebecMultisig {
     }
   }
 
-  async execInstanttransfer(data: any): Promise<any> {
+  async execInstanttransfer(data: MExecInstantTransfer): Promise<any> {
 
     const { safe_address, safe_data_account, transaction_account, receiver, token_mint_address, signer } = data
     const safeAddress = new PublicKey(safe_address)
@@ -2719,7 +2720,7 @@ export class ZebecTokenTreasury extends ZebecMultisig {
     }
   }
 
-  async transferTokenFromSafe(data: any): Promise<any> {
+  async transferTokenFromSafe(data: MTransferFromSafe): Promise<any> {
 
     const { sender, safe_address, receiver, safe_data_account, amount, token_mint_address } = data
     const senderAddress = new PublicKey(sender)
@@ -2773,7 +2774,7 @@ export class ZebecTokenTreasury extends ZebecMultisig {
     }
   }
 
-  async execTransferTokenFromSafe(data: any): Promise<any> {
+  async execTransferTokenFromSafe(data: MExecTransferFromSafe): Promise<any> {
 
     const { safe_address, safe_data_account, token_mint_address, transaction_account, receiver, signer } = data
     const safeAddress = new PublicKey(safe_address)
@@ -2878,7 +2879,7 @@ export class ZebecTokenTreasury extends ZebecMultisig {
     }
   }
 
-  async withdraw(data: any): Promise<any> {
+  async withdraw(data: MWithdraw): Promise<any> {
 
     const { safe_address, receiver, token_mint_address, escrow } = data;
 

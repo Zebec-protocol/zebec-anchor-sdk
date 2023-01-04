@@ -24,6 +24,26 @@ export type MDepositWithdrawFromZebecVault = {
     token_mint_address?: string;
 }
 
+export type MCreateFeeVault = {
+    fee_percentage: number;
+}
+
+export type MCollectTokenFees = {
+    token_mint_address: string;
+}
+
+export type MInstantTransfer = {
+    sender: string;
+    receiver: string;
+    token_mint_address?: string;
+    amount: number;
+}
+
+export type MFetchStreamingAmount = {
+    sender: string;
+    token_mint_address?: string;
+}
+
 export type MInitStream = {
     sender: string;
     receiver: string;

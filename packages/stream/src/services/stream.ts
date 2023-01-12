@@ -465,7 +465,7 @@ export class ZebecNativeStream extends ZebecStream implements IZebecStream {
 
     async init(data: MInitStream): Promise<MZebecResponse> {
 
-        const { sender, receiver, start_time, end_time, amount } = data;
+        const { sender, receiver, start_time, end_time, amount, can_cancel, can_update } = data;
         this.console.info(`sending ${amount} SOL to ${receiver}`);
 
         const senderAddress = new PublicKey(sender);
@@ -487,7 +487,9 @@ export class ZebecNativeStream extends ZebecStream implements IZebecStream {
             feeVaultDataAddress,
             start_time,
             end_time,
-            amountInLamports
+            amountInLamports,
+            can_cancel,
+            can_update
         );
 
         const tx = await this._makeTxn(anchorTx, escrowAccountKeypair);
@@ -818,7 +820,7 @@ export class ZebecTokenStream extends ZebecStream implements IZebecStream {
     }
 
     async init(data: MInitStream): Promise<MZebecResponse> {
-        const { sender, receiver, token_mint_address, start_time, end_time, amount } = data;
+        const { sender, receiver, token_mint_address, start_time, end_time, amount, can_cancel, can_update } = data;
         this.console.info(`init token stream data: }`, data);
         
         const senderAddress = new PublicKey(sender);
@@ -843,7 +845,9 @@ export class ZebecTokenStream extends ZebecStream implements IZebecStream {
             tokenMintAddress,
             start_time,
             end_time,
-            amountInLamports
+            amountInLamports,
+            can_cancel,
+            can_update
         );
         const tx = await this._makeTxn(anchorTx, escrowAccountKeypair);
         const signedRawTx = await this.anchorProvider.wallet.signTransaction(tx);

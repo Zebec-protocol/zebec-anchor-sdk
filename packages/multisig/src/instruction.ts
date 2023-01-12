@@ -260,13 +260,13 @@ export class ZebecTransactionBuilder {
     receiverAddress: PublicKey,
     startTime: number,
     endTime: number,
-    amount: number
+    amount: number,
+    can_cancel: boolean,
+    can_update: boolean
   ): Promise<Transaction> {
     const startTimeBN = new BN(startTime)
     const endTimeBN = new BN(endTime)
     const amountBN = await getAmountInBN(amount);
-    const canCancel = true
-    const canUpdate = true
 
     const streamEscrowAccountDataSize = STREAM_SIZE
 
@@ -287,8 +287,8 @@ export class ZebecTransactionBuilder {
       startTime: startTimeBN,
       endTime: endTimeBN,
       amount: amountBN,
-      canCancel,
-      canUpdate
+      can_cancel,
+      can_update
     })
 
     const createTxDataStoringAccountIx = await this._multisigProgram.account.transaction.createInstruction(
@@ -713,13 +713,13 @@ export class ZebecTransactionBuilder {
     tokenMintAddress: PublicKey,
     startTime: number,
     endTime: number,
-    amount: number
+    amount: number,
+    can_cancel: boolean,
+    can_update: boolean
   ): Promise<Transaction> {
     const startTimeBN = new BN(startTime)
     const endTimeBN = new BN(endTime)
     const amountBN = await getAmountInBN(amount);
-    const canCancel = true
-    const canUpdate = true
 
     const zebecInitStreamAccounts = AccountKeys.inittoken(
       streamDataAccountAddress.publicKey,
@@ -740,8 +740,8 @@ export class ZebecTransactionBuilder {
       startTime: startTimeBN,
       endTime: endTimeBN,
       amount: amountBN,
-      canCancel,
-      canUpdate
+      can_cancel,
+      can_update
     })
 
     const createTxDataStoringAccountIx = await this._multisigProgram.account.transaction.createInstruction(

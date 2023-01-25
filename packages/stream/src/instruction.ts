@@ -278,13 +278,13 @@ export class ZebecTransactionBuilder {
     const amountBN = await getAmountInBN(amount);
 
     const tx = this._program.methods
-      .nativeStream(startTimeBN, endTimeBN, amountBN)
+      .nativeStreamUpdate(startTimeBN, endTimeBN, amountBN)
       .accounts({
         dataAccount: escrowAccountPublicKey,
         withdrawData: withdrawEscrowDataAccountAddress,
-        systemProgram: SystemProgram.programId,
         sender: senderAddress,
         receiver: receiverAddress,
+        systemProgram: SystemProgram.programId,
       }).transaction()
     return tx
   }

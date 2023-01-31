@@ -351,6 +351,7 @@ export class ZebecNativeTreasury extends ZebecMultisig {
   async execDespoit(data: MExecDeposit): Promise<any> {
     const { safe_address, safe_data_account, transaction_account, signer } = data
     const safeAddress = new PublicKey(safe_address)
+    const signerpubkey = new PublicKey(signer);
     const [zebecVaultAddress] = await this._findZebecVaultAccount(safeAddress)
     const safeDataAccountAddress = new PublicKey(safe_data_account)
     const depositAccountAddress = new PublicKey(transaction_account)
@@ -376,7 +377,7 @@ export class ZebecNativeTreasury extends ZebecMultisig {
       const anchorTx = await this.transactionBuilder.execApproveTransaction(
         safeDataAccountAddress,
         depositAccountAddress,
-        signer
+        signerpubkey
       )
 
       const remainingAccounts = AccountKeys.remainingAccounts(initAccounts, safeAddress)
@@ -415,7 +416,7 @@ export class ZebecNativeTreasury extends ZebecMultisig {
       const anchorTx = await this.transactionBuilder.execApproveTransaction(
         safeDataAccountAddress,
         depositAccountAddress,
-        signer
+        signerpubkey
       )
 
       const tx = await this._makeTxn(anchorTx)
@@ -509,6 +510,7 @@ export class ZebecNativeTreasury extends ZebecMultisig {
     
     const { stream_data_account, safe_address, safe_data_account, transaction_account, receiver, signer } = data
     const receiverAddress = new PublicKey(receiver)
+    const signerpubkey = new PublicKey(signer)
     const streamDataAccountAddress = new PublicKey(stream_data_account)
     const [feeVaultAddress] = await this._findFeeVaultAddress(this.feeReceiverAddress)
     const [feeVaultDataAddress] = await this._findFeeVaultDataAccount(this.feeReceiverAddress)
@@ -549,7 +551,7 @@ export class ZebecNativeTreasury extends ZebecMultisig {
       const anchorTx = await this.transactionBuilder.execApproveTransaction(
         safeDataAccountAddress,
         initTransactionAccountAddress,
-        signer
+        signerpubkey
       )
 
       const remainingAccounts = AccountKeys.remainingAccounts(initAccounts, safeAddress)
@@ -588,7 +590,7 @@ export class ZebecNativeTreasury extends ZebecMultisig {
       const anchorTx = await this.transactionBuilder.execApproveTransaction(
         safeDataAccountAddress,
         initTransactionAccountAddress,
-        signer
+        signerpubkey
       )
 
       const tx = await this._makeTxn(anchorTx)
@@ -674,6 +676,7 @@ export class ZebecNativeTreasury extends ZebecMultisig {
     
     const { stream_data_account, safe_address, safe_data_account, transaction_account, receiver, signer } = data
     const receiverAddress = new PublicKey(receiver)
+    const signerpubkey = new PublicKey(signer)
     const streamDataAccountAddress = new PublicKey(stream_data_account)
     const safeAddress = new PublicKey(safe_address)
     const safeDataAccountAddress = new PublicKey(safe_data_account)
@@ -708,7 +711,7 @@ export class ZebecNativeTreasury extends ZebecMultisig {
       const anchorTx = await this.transactionBuilder.execApproveTransaction(
         safeDataAccountAddress,
         initTransactionAccountAddress,
-        signer
+        signerpubkey
       )
 
       const remainingAccounts = AccountKeys.remainingAccounts(updateInitAccounts, safeAddress)
@@ -747,7 +750,7 @@ export class ZebecNativeTreasury extends ZebecMultisig {
       const anchorTx = await this.transactionBuilder.execApproveTransaction(
         safeDataAccountAddress,
         initTransactionAccountAddress,
-        signer
+        signerpubkey
       )
 
       const tx = await this._makeTxn(anchorTx)
@@ -823,7 +826,7 @@ export class ZebecNativeTreasury extends ZebecMultisig {
 
   async execPause(data: MExecPauseResumeWithdrawCancel): Promise<any> {
     const { stream_data_account, safe_address, safe_data_account, transaction_account, receiver, signer } = data
-
+    const signerpubkey = new PublicKey(signer)
     const receiverAddress = new PublicKey(receiver)
     const streamDataAccountAddress = new PublicKey(stream_data_account)
     const safeAddress = new PublicKey(safe_address)
@@ -855,7 +858,7 @@ export class ZebecNativeTreasury extends ZebecMultisig {
       const anchorTx = await this.transactionBuilder.execApproveTransaction(
         safeDataAccountAddress,
         pauseTransactionAccountAddress,
-        signer
+        signerpubkey
       )
 
       const remainingAccounts = AccountKeys.remainingAccounts(initAccounts, safeAddress)
@@ -894,7 +897,7 @@ export class ZebecNativeTreasury extends ZebecMultisig {
       const anchorTx = await this.transactionBuilder.execApproveTransaction(
         safeDataAccountAddress,
         pauseTransactionAccountAddress,
-        signer
+        signerpubkey
       )
 
       const tx = await this._makeTxn(anchorTx)
@@ -972,7 +975,7 @@ export class ZebecNativeTreasury extends ZebecMultisig {
 
   async execResume(data: MExecPauseResumeWithdrawCancel): Promise<any> {
     const { stream_data_account, safe_address, safe_data_account, transaction_account, receiver, signer } = data
-
+    const signerpubkey = new PublicKey(signer)
     const receiverAddress = new PublicKey(receiver)
     const streamDataAccountAddress = new PublicKey(stream_data_account)
     const safeAddress = new PublicKey(safe_address)
@@ -1002,7 +1005,7 @@ export class ZebecNativeTreasury extends ZebecMultisig {
       const anchorTx = await this.transactionBuilder.execApproveTransaction(
         safeDataAccountAddress,
         pauseTransactionAccountAddress,
-        signer
+        signerpubkey
       )
 
       const remainingAccounts = AccountKeys.remainingAccounts(initAccounts, safeAddress)
@@ -1041,7 +1044,7 @@ export class ZebecNativeTreasury extends ZebecMultisig {
       const anchorTx = await this.transactionBuilder.execApproveTransaction(
         safeDataAccountAddress,
         pauseTransactionAccountAddress,
-        signer
+        signerpubkey
       )
       const tx = await this._makeTxn(anchorTx)
       const signedRawTx = await this.anchorProvider.wallet.signTransaction(tx)
@@ -1121,6 +1124,7 @@ export class ZebecNativeTreasury extends ZebecMultisig {
   async execCancel(data: MExecPauseResumeWithdrawCancel): Promise<any> {
     const { stream_data_account, safe_address, safe_data_account, transaction_account, receiver, signer } = data
     const safeAddress = new PublicKey(safe_address)
+    const signerpubkey = new PublicKey(signer)
     const [zebecVaultAddress] = await this._findZebecVaultAccount(safeAddress)
     const receiverAddress = new PublicKey(receiver)
     const streamDataAccountAddress = new PublicKey(stream_data_account)
@@ -1162,7 +1166,7 @@ export class ZebecNativeTreasury extends ZebecMultisig {
       const anchorTx = await this.transactionBuilder.execApproveTransaction(
         safeDataAccountAddress,
         cancelTransactionAccountAddress,
-        signer
+        signerpubkey
       )
 
       const remainingAccounts = AccountKeys.remainingAccounts(initAccounts, safeAddress)
@@ -1201,7 +1205,7 @@ export class ZebecNativeTreasury extends ZebecMultisig {
       const anchorTx = await this.transactionBuilder.execApproveTransaction(
         safeDataAccountAddress,
         cancelTransactionAccountAddress,
-        signer
+        signerpubkey
       )
       const tx = await this._makeTxn(anchorTx)
       const signedRawTx = await this.anchorProvider.wallet.signTransaction(tx)
@@ -1281,6 +1285,7 @@ export class ZebecNativeTreasury extends ZebecMultisig {
 
     const { safe_address, safe_data_account, transaction_account, receiver, signer } = data
     const safeAddress = new PublicKey(safe_address)
+    const signerpubkey = new PublicKey(signer)
     const [zebecVaultAddress] = await this._findZebecVaultAccount(safeAddress)
     const receiverAddress = new PublicKey(receiver)
     const safeDataAccountAddress = new PublicKey(safe_data_account)
@@ -1315,7 +1320,7 @@ export class ZebecNativeTreasury extends ZebecMultisig {
       const anchorTx = await this.transactionBuilder.execApproveTransaction(
         safeDataAccountAddress,
         instantTransferTransactionAccountAddress,
-        signer
+        signerpubkey
       )
 
       const remainingAccounts = AccountKeys.remainingAccounts(initAccounts, safeAddress)
@@ -1354,7 +1359,7 @@ export class ZebecNativeTreasury extends ZebecMultisig {
       const anchorTx = await this.transactionBuilder.execApproveTransaction(
         safeDataAccountAddress,
         instantTransferTransactionAccountAddress,
-        signer
+        signerpubkey
       )
       const tx = await this._makeTxn(anchorTx)
       const signedRawTx = await this.anchorProvider.wallet.signTransaction(tx)
@@ -1430,6 +1435,7 @@ export class ZebecNativeTreasury extends ZebecMultisig {
 
     const { safe_address, safe_data_account, transaction_account, receiver, signer } = data
     const safeAddress = new PublicKey(safe_address)
+    const signerpubkey = new PublicKey(signer)
     const receiverAddress = new PublicKey(receiver)
     const safeDataAccountAddress = new PublicKey(safe_data_account)
     const TransferFromSafeAccountAddress = new PublicKey(transaction_account)
@@ -1457,7 +1463,7 @@ export class ZebecNativeTreasury extends ZebecMultisig {
       const anchorTx = await this.transactionBuilder.execApproveTransaction(
         safeDataAccountAddress,
         TransferFromSafeAccountAddress,
-        signer
+        signerpubkey
       )
 
       const remainingAccounts = AccountKeys.remainingAccounts(initAccounts, safeAddress)
@@ -1496,7 +1502,7 @@ export class ZebecNativeTreasury extends ZebecMultisig {
       const anchorTx = await this.transactionBuilder.execApproveTransaction(
         safeDataAccountAddress,
         TransferFromSafeAccountAddress,
-        signer
+        signerpubkey
       )
       const tx = await this._makeTxn(anchorTx)
       const signedRawTx = await this.anchorProvider.wallet.signTransaction(tx)
@@ -1636,6 +1642,7 @@ export class ZebecTokenTreasury extends ZebecMultisig {
 
     const { safe_address, safe_data_account, transaction_account, signer, token_mint_address } = data
     const safeAddress = new PublicKey(safe_address)
+    const signerpubkey = new PublicKey(signer)
     const tokenMintAddress = new PublicKey(token_mint_address)
     const [zebecVaultAddress] = await this._findZebecVaultAccount(safeAddress)
     const safeDataAccountAddress = new PublicKey(safe_data_account)
@@ -1672,7 +1679,7 @@ export class ZebecTokenTreasury extends ZebecMultisig {
       const anchorTx = await this.transactionBuilder.execApproveTransaction(
         safeDataAccountAddress,
         depositAccountAddress,
-        signer
+        signerpubkey
       )
 
       const remainingAccounts = AccountKeys.remainingAccounts(initAccounts, safeAddress)
@@ -1711,7 +1718,7 @@ export class ZebecTokenTreasury extends ZebecMultisig {
       const anchorTx = await this.transactionBuilder.execApproveTransaction(
         safeDataAccountAddress,
         depositAccountAddress,
-        signer
+        signerpubkey
       )
 
       const tx = await this._makeTxn(anchorTx)
@@ -1805,6 +1812,7 @@ export class ZebecTokenTreasury extends ZebecMultisig {
   async execInit(data: MExecInit): Promise<any> {
     const {stream_data_account, safe_address, safe_data_account, transaction_account, receiver, token_mint_address, signer} = data
     const receiverAddress = new PublicKey(receiver)
+    const signerpubkey = new PublicKey(signer)
     const streamDataAccountAddress = new PublicKey(stream_data_account)
     const tokenMintAddress = new PublicKey(token_mint_address)
     const [feeVaultAddress] = await this._findFeeVaultAddress(this.feeReceiverAddress)
@@ -1846,7 +1854,7 @@ export class ZebecTokenTreasury extends ZebecMultisig {
       const anchorTx = await this.transactionBuilder.execApproveTransaction(
         safeDataAccountAddress,
         initTransactionAccountAddress,
-        signer
+        signerpubkey
       )
 
       const remainingAccounts = AccountKeys.remainingAccounts(initAccounts, safeAddress)
@@ -1885,7 +1893,7 @@ export class ZebecTokenTreasury extends ZebecMultisig {
       const anchorTx = await this.transactionBuilder.execApproveTransaction(
         safeDataAccountAddress,
         initTransactionAccountAddress,
-        signer
+        signerpubkey
       )
       const tx = await this._makeTxn(anchorTx)
       const signedRawTx = await this.anchorProvider.wallet.signTransaction(tx)
@@ -1970,6 +1978,7 @@ export class ZebecTokenTreasury extends ZebecMultisig {
   async execUpdateStream(data: MExecUpdateStream): Promise<any> {
     const {stream_data_account, safe_address, safe_data_account, transaction_account, receiver, token_mint_address, signer} = data
     const receiverAddress = new PublicKey(receiver)
+    const signerpubkey = new PublicKey(signer)
     const streamDataAccountAddress = new PublicKey(stream_data_account)
     const tokenMintAddress = new PublicKey(token_mint_address)
     const safeAddress = new PublicKey(safe_address)
@@ -2006,7 +2015,7 @@ export class ZebecTokenTreasury extends ZebecMultisig {
       const anchorTx = await this.transactionBuilder.execApproveTransaction(
         safeDataAccountAddress,
         initTransactionAccountAddress,
-        signer
+        signerpubkey
       )
 
       const remainingAccounts = AccountKeys.remainingAccounts(initAccounts, safeAddress)
@@ -2045,7 +2054,7 @@ export class ZebecTokenTreasury extends ZebecMultisig {
       const anchorTx = await this.transactionBuilder.execApproveTransaction(
         safeDataAccountAddress,
         initTransactionAccountAddress,
-        signer
+        signerpubkey
       )
       const tx = await this._makeTxn(anchorTx)
       const signedRawTx = await this.anchorProvider.wallet.signTransaction(tx)
@@ -2127,6 +2136,7 @@ export class ZebecTokenTreasury extends ZebecMultisig {
   async execPause(data: MExecPauseResumeWithdrawCancel): Promise<any> {
     const { stream_data_account, safe_address, safe_data_account, transaction_account, receiver, token_mint_address, signer } = data
     const safeAddress = new PublicKey(safe_address)
+    const signerpubkey = new PublicKey(signer)
     const receiverAddress = new PublicKey(receiver)
     const streamDataAccountAddress = new PublicKey(stream_data_account)
     const tokenMintAddress = new PublicKey(token_mint_address)
@@ -2157,7 +2167,7 @@ export class ZebecTokenTreasury extends ZebecMultisig {
       const anchorTx = await this.transactionBuilder.execApproveTransaction(
         safeDataAccountAddress,
         pauseTransactionAccountAddress,
-        signer
+        signerpubkey
       )
 
       const remainingAccounts = AccountKeys.remainingAccounts(initAccounts, safeAddress)
@@ -2196,7 +2206,7 @@ export class ZebecTokenTreasury extends ZebecMultisig {
       const anchorTx = await this.transactionBuilder.execApproveTransaction(
         safeDataAccountAddress,
         pauseTransactionAccountAddress,
-        signer
+        signerpubkey
       )
       const tx = await this._makeTxn(anchorTx)
       const signedRawTx = await this.anchorProvider.wallet.signTransaction(tx)
@@ -2276,6 +2286,7 @@ export class ZebecTokenTreasury extends ZebecMultisig {
 
   async execResume(data: MExecPauseResumeWithdrawCancel): Promise<any> {
     const { stream_data_account, safe_address, safe_data_account, transaction_account, receiver, token_mint_address, signer} = data
+    const signerpubkey = new PublicKey(signer)
     const receiverAddress = new PublicKey(receiver)
     const streamDataAccountAddress = new PublicKey(stream_data_account)
     const tokenMintAddress = new PublicKey(token_mint_address)
@@ -2307,7 +2318,7 @@ export class ZebecTokenTreasury extends ZebecMultisig {
       const anchorTx = await this.transactionBuilder.execApproveTransaction(
         safeDataAccountAddress,
         resumeTransactionAccountAddress,
-        signer
+        signerpubkey
       )
 
       const remainingAccounts = AccountKeys.remainingAccounts(initAccounts, safeAddress)
@@ -2346,7 +2357,7 @@ export class ZebecTokenTreasury extends ZebecMultisig {
       const anchorTx = await this.transactionBuilder.execApproveTransaction(
         safeDataAccountAddress,
         resumeTransactionAccountAddress,
-        signer
+        signerpubkey
       )
       const tx = await this._makeTxn(anchorTx)
       const signedRawTx = await this.anchorProvider.wallet.signTransaction(tx)
@@ -2437,7 +2448,7 @@ export class ZebecTokenTreasury extends ZebecMultisig {
 
   async execCancel(data: MExecPauseResumeWithdrawCancel): Promise<any> {
     const { stream_data_account, safe_address, safe_data_account, transaction_account, receiver, token_mint_address, signer} = data
-
+    const signerpubkey = new PublicKey(signer)
     const safeAddress = new PublicKey(safe_address)
     const [zebecVaultAddress] = await this._findZebecVaultAccount(safeAddress)
     const receiverAddress = new PublicKey(receiver)
@@ -2489,7 +2500,7 @@ export class ZebecTokenTreasury extends ZebecMultisig {
       const anchorTx = await this.transactionBuilder.execApproveTransaction(
         safeDataAccountAddress,
         cancelTransactionAccountAddress,
-        signer
+        signerpubkey
       )
 
       const remainingAccounts = AccountKeys.remainingAccounts(initAccounts, safeAddress)
@@ -2528,7 +2539,7 @@ export class ZebecTokenTreasury extends ZebecMultisig {
       const anchorTx = await this.transactionBuilder.execApproveTransaction(
         safeDataAccountAddress,
         cancelTransactionAccountAddress,
-        signer
+        signerpubkey
       )
       const tx = await this._makeTxn(anchorTx)
       const signedRawTx = await this.anchorProvider.wallet.signTransaction(tx)
@@ -2617,6 +2628,7 @@ export class ZebecTokenTreasury extends ZebecMultisig {
 
     const { safe_address, safe_data_account, transaction_account, receiver, token_mint_address, signer } = data
     const safeAddress = new PublicKey(safe_address)
+    const signerpubkey = new PublicKey(signer)
     const [zebecVaultAddress] = await this._findZebecVaultAccount(safeAddress)
     const receiverAddress = new PublicKey(receiver)
     const tokenMintAddress = new PublicKey(token_mint_address)
@@ -2659,7 +2671,7 @@ export class ZebecTokenTreasury extends ZebecMultisig {
       const anchorTx = await this.transactionBuilder.execApproveTransaction(
         safeDataAccountAddress,
         instantTransferTransactionAccountAddress,
-        signer
+        signerpubkey
       )
 
       const remainingAccounts = AccountKeys.remainingAccounts(initAccounts, safeAddress)
@@ -2698,7 +2710,7 @@ export class ZebecTokenTreasury extends ZebecMultisig {
       const anchorTx = await this.transactionBuilder.execApproveTransaction(
         safeDataAccountAddress,
         instantTransferTransactionAccountAddress,
-        signer
+        signerpubkey
       )
       const tx = await this._makeTxn(anchorTx)
       const signedRawTx = await this.anchorProvider.wallet.signTransaction(tx)
@@ -2782,6 +2794,7 @@ export class ZebecTokenTreasury extends ZebecMultisig {
 
     const { safe_address, safe_data_account, token_mint_address, transaction_account, receiver, signer } = data
     const safeAddress = new PublicKey(safe_address)
+    const signerpubkey = new PublicKey(signer)
     const tokenMintAddress = new PublicKey(token_mint_address)
     const receiverAddress = new PublicKey(receiver)
     const destTokenAddress = await this._getAccociatedTokenAddress(receiverAddress, tokenMintAddress)
@@ -2818,7 +2831,7 @@ export class ZebecTokenTreasury extends ZebecMultisig {
       const anchorTx = await this.transactionBuilder.execApproveTransaction(
         safeDataAccountAddress,
         TransferFromSafeAccountAddress,
-        signer
+        signerpubkey
       )
 
       const remainingAccounts = AccountKeys.remainingAccounts(initAccounts, safeAddress)
@@ -2857,7 +2870,7 @@ export class ZebecTokenTreasury extends ZebecMultisig {
       const anchorTx = await this.transactionBuilder.execApproveTransaction(
         safeDataAccountAddress,
         TransferFromSafeAccountAddress,
-        signer
+        signerpubkey
       )
       const tx = await this._makeTxn(anchorTx)
       const signedRawTx = await this.anchorProvider.wallet.signTransaction(tx)

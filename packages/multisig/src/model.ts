@@ -34,7 +34,7 @@ export type MExecDeposit = {
     safe_address: string;
     safe_data_account: string;
     transaction_account: string;
-    signer: PublicKey;
+    signer: string;
     token_mint_address?: string;
 }
 
@@ -45,7 +45,7 @@ export type MExecInit = {
     safe_data_account: string;
     transaction_account: string;
     receiver: string;
-    signer: PublicKey;
+    signer: string;
     token_mint_address?: string;
 }
 
@@ -55,7 +55,7 @@ export type MExecUpdateStream = {
     safe_data_account: string;
     transaction_account: string;
     receiver: string;
-    signer: PublicKey;
+    signer: string;
     token_mint_address?: string;
 }
 
@@ -111,7 +111,6 @@ export type MPauseResumeWithdrawCancel = {
     safe_data_account: string;
     sender: string;
     receiver: string;
-    escrow: string;
     token_mint_address?: string;
 }
 
@@ -121,7 +120,7 @@ export type MExecPauseResumeWithdrawCancel = {
     safe_data_account: string;
     transaction_account: string;
     receiver: string;
-    signer: PublicKey;
+    signer: string;
     token_mint_address?: string;
 }
 
@@ -140,7 +139,7 @@ export type MExecInstantTransfer = {
     transaction_account: string;
     token_mint_address?: string;
     receiver: string;
-    signer: PublicKey;
+    signer: string;
 }
 
 export type MTransferFromSafe = {
@@ -158,7 +157,7 @@ export type MExecTransferFromSafe = {
     transaction_account: string;
     receiver: string;
     token_mint_address?: string;
-    signer: PublicKey;
+    signer: string;
 }
 
 export type MWithdraw = {

@@ -87,8 +87,6 @@ export type MInitStream = {
     amount: number;
     token_mint_address?: string;
     withdraw_limit?: number;
-    canCancel: boolean;
-    canUpdate: boolean;
 }
 
 export type MUpdateStream = {

@@ -260,9 +260,7 @@ export class ZebecTransactionBuilder {
     receiverAddress: PublicKey,
     startTime: number,
     endTime: number,
-    amount: number,
-    can_cancel: boolean,
-    can_update: boolean
+    amount: number
   ): Promise<Transaction> {
     const startTimeBN = new BN(startTime)
     const endTimeBN = new BN(endTime)
@@ -287,8 +285,8 @@ export class ZebecTransactionBuilder {
       startTime: startTimeBN,
       endTime: endTimeBN,
       amount: amountBN,
-      can_cancel,
-      can_update
+      canUpdate:true,
+      canCancel:true
     })
 
     const createTxDataStoringAccountIx = await this._multisigProgram.account.transaction.createInstruction(
@@ -713,9 +711,7 @@ export class ZebecTransactionBuilder {
     tokenMintAddress: PublicKey,
     startTime: number,
     endTime: number,
-    amount: number,
-    can_cancel: boolean,
-    can_update: boolean
+    amount: number
   ): Promise<Transaction> {
     const startTimeBN = new BN(startTime)
     const endTimeBN = new BN(endTime)
@@ -740,8 +736,8 @@ export class ZebecTransactionBuilder {
       startTime: startTimeBN,
       endTime: endTimeBN,
       amount: amountBN,
-      can_cancel,
-      can_update
+      canUpdate: true,
+      canCancel:true
     })
 
     const createTxDataStoringAccountIx = await this._multisigProgram.account.transaction.createInstruction(

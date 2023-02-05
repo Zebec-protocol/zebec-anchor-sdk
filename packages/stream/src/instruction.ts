@@ -232,9 +232,7 @@ export class ZebecTransactionBuilder {
     feeVaultDataAddress: PublicKey,
     startTime: number,
     endTime: number,
-    amount: number,
-    can_cancel: boolean,
-    can_update: boolean
+    amount: number
   ): Promise<Transaction> {
     const dataSize = STREAM_SIZE
 
@@ -242,10 +240,12 @@ export class ZebecTransactionBuilder {
 
     const startTimeBN = new BN(startTime)
     const endTimeBN = new BN(endTime)
-    const amountBN = await getAmountInBN(amount);
+    const amountBN = await getAmountInBN(amount)
+    const canCancel = true
+    const canUpdate = true
 
     const tx = this._program.methods
-      .nativeStream(startTimeBN, endTimeBN, amountBN, can_cancel, can_update)
+      .nativeStream(startTimeBN, endTimeBN, amountBN, canCancel, canUpdate)
       .accounts({
         dataAccount: escrowAccountKeypair.publicKey,
         withdrawData: withdrawEscrowDataAccountAddress,
@@ -394,9 +394,7 @@ export class ZebecTransactionBuilder {
     tokenMintAddress: PublicKey,
     startTime: number,
     endTime: number,
-    amount: number,
-    can_cancel: boolean,
-    can_update: boolean
+    amount: number
   ): Promise<Transaction> {
     
     const dataSize = STREAM_TOKEN_SIZE
@@ -406,9 +404,11 @@ export class ZebecTransactionBuilder {
     const startTimeBN = new BN(startTime)
     const endTimeBN = new BN(endTime)
     const amountBN = await getAmountInBN(amount);
+    const canUpdate = true;
+    const canCancel = true;
 
     const tx = await this._program.methods
-      .tokenStream(startTimeBN, endTimeBN, amountBN, can_cancel, can_update)
+      .tokenStream(startTimeBN, endTimeBN, amountBN, canCancel, canUpdate)
       .accounts({
         dataAccount: escrowAccountKeypair.publicKey,
         withdrawData: withdrawEscrowDataAccountAddress,

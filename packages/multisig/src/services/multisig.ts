@@ -445,7 +445,7 @@ export class ZebecNativeTreasury extends ZebecMultisig {
 
   async init(data: MInitStream): Promise<any> {
 
-    const { safe_address, safe_data_account, sender, receiver, start_time, end_time, amount, canCancel, canUpdate } = data
+    const { safe_address, safe_data_account, sender, receiver, start_time, end_time, amount} = data
     this.consolelog.info('multisig init stream: ', data)
     const senderAddress = new PublicKey(sender)
     const receiverAddress = new PublicKey(receiver)
@@ -475,9 +475,7 @@ export class ZebecNativeTreasury extends ZebecMultisig {
       receiverAddress,
       start_time,
       end_time,
-      amountInLamports,
-      canCancel,
-      canUpdate
+      amountInLamports
     )
 
     const tx = await this._makeTxn(anchorTx, [streamDataAccount, zebecTransactionAccount])
@@ -1747,7 +1745,7 @@ export class ZebecTokenTreasury extends ZebecMultisig {
 
   async init(data: MInitStream): Promise<any> {
 
-    const { safe_address, safe_data_account, sender, receiver, start_time, end_time, amount, token_mint_address, canCancel, canUpdate } = data
+    const { safe_address, safe_data_account, sender, receiver, start_time, end_time, amount, token_mint_address} = data
     const senderAddress = new PublicKey(sender)
     const receiverAddress = new PublicKey(receiver)
     const safeAddress = new PublicKey(safe_address)
@@ -1778,9 +1776,7 @@ export class ZebecTokenTreasury extends ZebecMultisig {
       tokenMintAddress,
       start_time,
       end_time,
-      amountInLamports,
-      canCancel,
-      canUpdate
+      amountInLamports
     )
 
     const tx = await this._makeTxn(anchorTx, [streamDataAccount, zebecTransactionAccount])

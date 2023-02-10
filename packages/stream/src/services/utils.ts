@@ -94,22 +94,22 @@ export const sendTx = async(tx: Transaction, provider: AnchorProvider): Promise<
     }
 
 
-    if (status?.err) {
-        let errors: string[] = [];
-        if (
-            (status.err as Error).message &&
-            ((status.err as Error).message.includes("block height exceeded") ||
-            (status.err as Error).message.includes("timeout exceeded"))
-        ) {
-            errors = [(status.err as Error).message];
-        } else {
-            errors = await getErrorForTransaction(connection, txid);
-        }
+    // if (status?.err) {
+    //     let errors: string[] = [];
+    //     if (
+    //         (status.err as Error).message &&
+    //         ((status.err as Error).message.includes("block height exceeded") ||
+    //         (status.err as Error).message.includes("timeout exceeded"))
+    //     ) {
+    //         errors = [(status.err as Error).message];
+    //     } else {
+    //         errors = await getErrorForTransaction(connection, txid);
+    //     }
 
-        throw new Error(
-            `Raw transaction ${txid} faied (${JSON.stringify(status)})`
-        );
-    }
+    //     throw new Error(
+    //         `Raw transaction ${txid} faied (${JSON.stringify(status)})`
+    //     );
+    // }
     return txid;
 }
 

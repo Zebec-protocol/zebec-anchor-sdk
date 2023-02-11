@@ -94,8 +94,6 @@ export const sendTx = async(tx: Transaction, provider: AnchorProvider): Promise<
         done = true;
     }
 
-    console.log("status: ", status);
-
     if (status?.err) {
         let errors: string[] = [];
         if (
@@ -108,9 +106,9 @@ export const sendTx = async(tx: Transaction, provider: AnchorProvider): Promise<
             errors = await getErrorForTransaction(connection, txid);
         }
 
-        throw new Error(
-            `Raw transaction ${txid} faied (${JSON.stringify(status)})`
-        );
+        // throw new Error(
+        //     `Raw transaction ${txid} faied (${JSON.stringify(status)})`
+        // );
     }
     return txid;
 }

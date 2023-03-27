@@ -1,0 +1,1 @@
+export const BATCH_TRANFER_PROGRAM_ID = "FddwD1WwcAN5XfR3bzD9jW1wHs4Bg1jz7YXTMicshzZp";

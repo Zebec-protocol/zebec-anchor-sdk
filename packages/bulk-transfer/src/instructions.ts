@@ -2,7 +2,33 @@ import * as anchor from "@project-serum/anchor";
 
 import { BatchTransfer } from "./artifacts";
 
-export class BatchTransferInstruction {
+export interface IBatchTransferInstruction {
+	getBatchVaultKey(address: anchor.web3.PublicKey): [anchor.web3.PublicKey, number];
+
+	getDepositSolInstruction(
+		authority: anchor.web3.PublicKey,
+		amount: anchor.BN,
+	): Promise<anchor.web3.TransactionInstruction>;
+
+	getDepositTokenInstruciton(
+		authority: anchor.web3.PublicKey,
+		mint: anchor.web3.PublicKey,
+		amount: anchor.BN,
+	): Promise<anchor.web3.TransactionInstruction>;
+
+	getSolBatchTransfer(
+		fromAuthority: anchor.web3.PublicKey,
+		amounts: anchor.BN[],
+	): Promise<anchor.web3.TransactionInstruction>;
+
+	getTokenBatchTransfer(
+		fromAuthority: anchor.web3.PublicKey,
+		mint: anchor.web3.PublicKey,
+		amounts: anchor.BN[],
+	): Promise<anchor.web3.TransactionInstruction>;
+}
+
+export class BatchTransferInstruction implements IBatchTransferInstruction {
 	private readonly BATCH_TRANFER = "transfer-batch";
 
 	constructor(readonly program: anchor.Program<BatchTransfer>) {}

@@ -1,5 +1,3 @@
-import BigNumber from 'bignumber.js'
-
 import {
   BN,
   Program
@@ -11,18 +9,12 @@ import {
 import {
   AccountMeta,
   Keypair,
-  LAMPORTS_PER_SOL,
   PublicKey,
   SystemProgram,
   SYSVAR_RENT_PUBKEY,
   Transaction
 } from '@solana/web3.js'
 
-import {
-  BatchTransfer,
-  BatchTransferInstruction,
-  IBatchTransferInstruction
-} from '../../bulk-transfer/src'
 import {
   STREAM_SIZE,
   STREAM_TOKEN_SIZE,
@@ -42,14 +34,10 @@ import { AccountKeys } from './services/accounts'
 export class ZebecTransactionBuilder {
   readonly _multisigProgram: Program
   readonly _streamProgram: Program
-  readonly _batchTransferProgram: Program<BatchTransfer>;
-  readonly _batchTransferInstructions: IBatchTransferInstruction;
 
-  constructor(multisigProgram: Program, streamProgram: Program, batchTransferProgram: Program<BatchTransfer>) {
+  constructor(multisigProgram: Program, streamProgram: Program) {
     this._multisigProgram = multisigProgram;
     this._streamProgram = streamProgram;
-    this._batchTransferProgram = batchTransferProgram;
-    this._batchTransferInstructions = new BatchTransferInstruction(this._batchTransferProgram);
   }
 
   async execApproveTransaction(
@@ -1026,75 +1014,5 @@ export class ZebecTransactionBuilder {
       .transaction()
 
     return tx
-  }
-
-  async execDepositSolForBulkTransfer(
-    owners: PublicKey[],
-    safeAddress: PublicKey,
-    safeDataAccount: PublicKey,
-    transactionAccKeypair: Keypair,
-    proposer: PublicKey,
-    amount: number
-    ): Promise<Transaction> {
-    const parsedAmount = new BN(
-      BigNumber(amount)
-      .times(LAMPORTS_PER_SOL)
-      .toFixed()
-    );
-    const depositSolInstruction = await this._batchTransferInstructions.getDepositSolInstruction(safeAddress, parsedAmount) 
-      const txAccountSize = getTxSize(depositSolInstruction.keys, owners, false, depositSolInstruction.data.length);
-      const createTxDataStoringAccountIx = await this._multisigProgram.account.transaction.createInstruction(
-        transactionAccKeypair,
-        txAccountSize
-      )
-
-      return this._multisigProgram.methods.createTransaction(
-        depositSolInstruction.programId,
-        depositSolInstruction.keys,
-        depositSolInstruction.data 
-        ).accounts({
-          multisig: safeDataAccount,
-          proposer,
-          transaction: transactionAccKeypair.publicKey,
-        }).preInstructions([createTxDataStoringAccountIx])
-        .signers([transactionAccKeypair])
-        .transaction();
-  }
-
-  async execDepositTokenforBulkTransfer( 
-    owners: PublicKey[],
-    safeAddress: PublicKey,
-    safeDataAccount: PublicKey,
-    mint: PublicKey,
-    proposer: PublicKey,
-    transactionAccKeypair: Keypair,
-    decimals: number,
-    amount: number
-    ): Promise<Transaction> {
-      const parsedAmount = new BN(
-        BigNumber(amount)
-        .times(BigNumber(10).pow(decimals))
-        .decimalPlaces(0)
-        .toFixed()
-      );
-
-      const depositTokenInstruction = await this._batchTransferInstructions.getDepositTokenInstruciton(safeAddress, mint, parsedAmount) 
-      const txAccountSize = getTxSize(depositTokenInstruction.keys, owners, false, depositTokenInstruction.data.length);
-      const createTxDataStoringAccountIx = await this._multisigProgram.account.transaction.createInstruction(
-        transactionAccKeypair,
-        txAccountSize
-      )
-
-      return this._multisigProgram.methods.createTransaction(
-        depositTokenInstruction.programId,
-        depositTokenInstruction.keys,
-        depositTokenInstruction.data 
-        ).accounts({
-          multisig: safeDataAccount,
-          proposer,
-          transaction: transactionAccKeypair.publicKey,
-        }).preInstructions([createTxDataStoringAccountIx])
-        .signers([transactionAccKeypair])
-        .transaction();
   }
 }

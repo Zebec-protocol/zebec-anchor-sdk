@@ -1035,7 +1035,7 @@ export class ZebecTransactionBuilder {
     transactionAccKeypair: Keypair,
     proposer: PublicKey,
     amount: number
-    ) {
+    ): Promise<Transaction> {
     const parsedAmount = new BN(
       BigNumber(amount)
       .times(LAMPORTS_PER_SOL)
@@ -1052,6 +1052,43 @@ export class ZebecTransactionBuilder {
         depositSolInstruction.programId,
         depositSolInstruction.keys,
         depositSolInstruction.data 
+        ).accounts({
+          multisig: safeDataAccount,
+          proposer,
+          transaction: transactionAccKeypair.publicKey,
+        }).preInstructions([createTxDataStoringAccountIx])
+        .signers([transactionAccKeypair])
+        .transaction();
+  }
+
+  async execDepositTokenforBulkTransfer( 
+    owners: PublicKey[],
+    safeAddress: PublicKey,
+    safeDataAccount: PublicKey,
+    mint: PublicKey,
+    proposer: PublicKey,
+    transactionAccKeypair: Keypair,
+    decimals: number,
+    amount: number
+    ): Promise<Transaction> {
+      const parsedAmount = new BN(
+        BigNumber(amount)
+        .times(BigNumber(10).pow(decimals))
+        .decimalPlaces(0)
+        .toFixed()
+      );
+
+      const depositTokenInstruction = await this._batchTransferInstructions.getDepositTokenInstruciton(safeAddress, mint, parsedAmount) 
+      const txAccountSize = getTxSize(depositTokenInstruction.keys, owners, false, depositTokenInstruction.data.length);
+      const createTxDataStoringAccountIx = await this._multisigProgram.account.transaction.createInstruction(
+        transactionAccKeypair,
+        txAccountSize
+      )
+
+      return this._multisigProgram.methods.createTransaction(
+        depositTokenInstruction.programId,
+        depositTokenInstruction.keys,
+        depositTokenInstruction.data 
         ).accounts({
           multisig: safeDataAccount,
           proposer,

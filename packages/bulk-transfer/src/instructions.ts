@@ -19,12 +19,14 @@ export interface IBatchTransferInstruction {
 	getSolBatchTransfer(
 		fromAuthority: anchor.web3.PublicKey,
 		amounts: anchor.BN[],
+		remainingAccounts: anchor.web3.PublicKey[],
 	): Promise<anchor.web3.TransactionInstruction>;
 
 	getTokenBatchTransfer(
 		fromAuthority: anchor.web3.PublicKey,
 		mint: anchor.web3.PublicKey,
 		amounts: anchor.BN[],
+		remainingAccounts: anchor.web3.PublicKey[],
 	): Promise<anchor.web3.TransactionInstruction>;
 }
 
@@ -91,8 +93,23 @@ export class BatchTransferInstruction implements IBatchTransferInstruction {
 	async getSolBatchTransfer(
 		fromAuthority: anchor.web3.PublicKey,
 		amounts: anchor.BN[],
+		remainingAccounts: anchor.web3.PublicKey[],
 	): Promise<anchor.web3.TransactionInstruction> {
+		const remainingAccountsMeta: anchor.web3.AccountMeta[] = [];
+		remainingAccounts.forEach((account) => {
+			remainingAccountsMeta.push({
+				pubkey: account,
+				isSigner: false,
+				isWritable: true,
+			});
+		});
+
 		const [batchVault] = this.getBatchVaultKey(fromAuthority);
+		remainingAccountsMeta.push({
+			pubkey: batchVault,
+			isSigner: false,
+			isWritable: false,
+		});
 
 		return this.program.methods
 			.batchSolTransfer(amounts)
@@ -102,6 +119,7 @@ export class BatchTransferInstruction implements IBatchTransferInstruction {
 				rent: anchor.web3.SYSVAR_RENT_PUBKEY,
 				systemProgram: anchor.web3.SystemProgram.programId,
 			})
+			.remainingAccounts(remainingAccountsMeta)
 			.instruction();
 	}
 
@@ -109,12 +127,39 @@ export class BatchTransferInstruction implements IBatchTransferInstruction {
 		fromAuthority: anchor.web3.PublicKey,
 		mint: anchor.web3.PublicKey,
 		amounts: anchor.BN[],
+		remainingAccounts: anchor.web3.PublicKey[],
 	): Promise<anchor.web3.TransactionInstruction> {
+		const remainingAccountsMeta: anchor.web3.AccountMeta[] = [];
+		remainingAccounts.forEach((account) => {
+			remainingAccountsMeta.push({
+				pubkey: account,
+				isSigner: false,
+				isWritable: true,
+			});
+		});
+
 		const [batchVault] = this.getBatchVaultKey(fromAuthority);
 		const batchVaultTokenAccount = await anchor.utils.token.associatedAddress({
 			mint,
 			owner: batchVault,
 		});
+		remainingAccountsMeta.push(
+			{
+				pubkey: batchVault,
+				isSigner: false,
+				isWritable: false,
+			},
+			{
+				pubkey: batchVaultTokenAccount,
+				isSigner: false,
+				isWritable: true,
+			},
+			{
+				pubkey: anchor.utils.token.TOKEN_PROGRAM_ID,
+				isSigner: false,
+				isWritable: false,
+			},
+		);
 
 		return this.program.methods
 			.batchTokenTransfer(amounts)
@@ -127,6 +172,9 @@ export class BatchTransferInstruction implements IBatchTransferInstruction {
 				systemProgram: anchor.web3.SystemProgram.programId,
 				tokenProgram: anchor.utils.token.TOKEN_PROGRAM_ID,
 			})
+			.remainingAccounts(remainingAccountsMeta)
 			.instruction();
 	}
+
+	//how to make versioned transaction
 }

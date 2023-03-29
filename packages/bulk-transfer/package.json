@@ -13,10 +13,16 @@
     "build": "npm run clean && tsc",
     "clean": "rimraf ./dist",
     "start": "npm run format && ts-node src",
-    "format": "prettier --write ."
+    "format": "prettier --write .",
+    "test:single": "export SDK_ENV=test; mocha --bail --timeout=300000 --check-leaks -r ts-node/register"
   },
   "devDependencies": {
     "@types/bn.js": "^5.1.1",
+    "@types/chai": "^4.3.4",
+    "@types/mocha": "^10.0.1",
+    "chai": "^4.3.7",
+    "dotenv": "^16.0.3",
+    "mocha": "^10.2.0",
     "prettier": "^2.8.7",
     "rimraf": "^4.4.1",
     "ts-node": "^10.9.1",

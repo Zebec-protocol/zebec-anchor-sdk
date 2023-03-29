@@ -1,39 +1,62 @@
 import * as anchor from "@project-serum/anchor";
 import { AnchorProvider } from "@project-serum/anchor";
-import {
-	createAssociatedTokenAccountInstruction,
-	getAssociatedTokenAddressSync,
-} from "@solana/spl-token";
+import { createAssociatedTokenAccountInstruction, getAssociatedTokenAddressSync } from "@solana/spl-token";
 
 import { IBatchTransferInstruction } from "./instructions";
-import {
-	parseToLamports,
-	parseToUnits,
-} from "./utils/parseUnits";
+import { parseToLamports, parseToUnits } from "./utils/parseUnits";
 
 export type BatchSolTransferData = { account: anchor.web3.PublicKey; amount: number | string };
 export type BatchTokenTransferData = { account: anchor.web3.PublicKey; amount: number | string; decimals: number };
+export type TranactionExecuter = () => Promise<anchor.web3.TransactionSignature>;
+export type TransactionPayload = {
+	transaction: anchor.web3.Transaction;
+	blockhash: string;
+	lastValidBlockHeight: number;
+	execute: TranactionExecuter;
+};
 
-export class BatchTransferProgram {
+export class BatchTransferService {
 	constructor(
 		private readonly provider: AnchorProvider,
 		private readonly batchTransferIxns: IBatchTransferInstruction,
 	) {}
 
-	async depositSol(feepayer: anchor.web3.PublicKey, authority: anchor.web3.PublicKey, amount: number | string) {
+	private createTranactionExecuter(
+		transaction: anchor.web3.Transaction,
+		blockhash: string,
+		lastValidBlockHeight: number,
+	): TranactionExecuter {
+		const execute = async () => {
+			const signedtx = await this.provider.wallet.signTransaction(transaction);
+			const signature = await this.provider.connection.sendRawTransaction(signedtx.serialize());
+			await this.provider.connection.confirmTransaction({
+				blockhash,
+				lastValidBlockHeight,
+				signature,
+			});
+			return signature;
+		};
+		return execute;
+	}
+
+	async depositSol(authority: anchor.web3.PublicKey, amount: number | string): Promise<TransactionPayload> {
 		const parsedAmount = parseToLamports(amount);
 		const ix = await this.batchTransferIxns.getDepositSolInstruction(authority, parsedAmount);
-		const { blockhash } = await this.provider.connection.getLatestBlockhash();
+		const { blockhash, lastValidBlockHeight } = await this.provider.connection.getLatestBlockhash();
 
-		const message = new anchor.web3.TransactionMessage({
-			payerKey: feepayer,
-			instructions: [ix],
-			recentBlockhash: blockhash,
-		}).compileToV0Message();
+		const transaction = new anchor.web3.Transaction().add(ix);
+		transaction.feePayer = authority;
+		transaction.recentBlockhash = blockhash;
+		transaction.lastValidBlockHeight = lastValidBlockHeight;
 
-		const transaction = new anchor.web3.VersionedTransaction(message);
+		const execute = this.createTranactionExecuter(transaction, blockhash, lastValidBlockHeight);
 
-		return transaction;
+		return {
+			blockhash,
+			lastValidBlockHeight,
+			transaction,
+			execute,
+		};
 	}
 
 	async depositToken(
@@ -45,42 +68,45 @@ export class BatchTransferProgram {
 	) {
 		const parsedAmount = parseToUnits(amount, decimals);
 		const ix = await this.batchTransferIxns.getDepositTokenInstruciton(authority, mint, parsedAmount);
-		const { blockhash } = await this.provider.connection.getLatestBlockhash();
+		const { blockhash, lastValidBlockHeight } = await this.provider.connection.getLatestBlockhash();
 
-		const message = new anchor.web3.TransactionMessage({
-			payerKey: feepayer,
-			instructions: [ix],
-			recentBlockhash: blockhash,
-		}).compileToV0Message();
+		const transaction = new anchor.web3.Transaction().add(ix);
+		transaction.feePayer = authority;
+		transaction.recentBlockhash = blockhash;
+		transaction.lastValidBlockHeight = lastValidBlockHeight;
 
-		const transaction = new anchor.web3.VersionedTransaction(message);
+		const execute = this.createTranactionExecuter(transaction, blockhash, lastValidBlockHeight);
 
-		return transaction;
+		return {
+			blockhash,
+			lastValidBlockHeight,
+			transaction,
+			execute,
+		};
 	}
 
-	async transferSolInBatch(
-		feepayer: anchor.web3.PublicKey,
-		authority: anchor.web3.PublicKey,
-		batchData: BatchSolTransferData[],
-	) {
+	async transferSolInBatch(authority: anchor.web3.PublicKey, batchData: BatchSolTransferData[]) {
 		const parsedAmounts = batchData.map<anchor.BN>(({ amount }) => parseToLamports(amount));
 		const accounts = batchData.map<anchor.web3.PublicKey>(({ account }) => account);
 		const ix = await this.batchTransferIxns.getSolBatchTransfer(authority, parsedAmounts, accounts);
-		const { blockhash } = await this.provider.connection.getLatestBlockhash();
+		const { blockhash, lastValidBlockHeight } = await this.provider.connection.getLatestBlockhash();
 
-		const message = new anchor.web3.TransactionMessage({
-			payerKey: feepayer,
-			instructions: [ix],
-			recentBlockhash: blockhash,
-		}).compileToV0Message();
+		const transaction = new anchor.web3.Transaction().add(ix);
+		transaction.feePayer = authority;
+		transaction.recentBlockhash = blockhash;
+		transaction.lastValidBlockHeight = lastValidBlockHeight;
 
-		const transaction = new anchor.web3.VersionedTransaction(message);
+		const execute = this.createTranactionExecuter(transaction, blockhash, lastValidBlockHeight);
 
-		return transaction;
+		return {
+			blockhash,
+			lastValidBlockHeight,
+			transaction,
+			execute,
+		};
 	}
 
 	async transferTokenInBatch(
-		feepayer: anchor.web3.PublicKey,
 		authority: anchor.web3.PublicKey,
 		mint: anchor.web3.PublicKey,
 		batchData: BatchTokenTransferData[],
@@ -88,17 +114,21 @@ export class BatchTransferProgram {
 		const parsedAmounts = batchData.map<anchor.BN>(({ amount, decimals }) => parseToUnits(amount, decimals));
 		const accounts = batchData.map<anchor.web3.PublicKey>(({ account }) => account);
 		const ix = await this.batchTransferIxns.getTokenBatchTransfer(authority, mint, parsedAmounts, accounts);
-		const { blockhash } = await this.provider.connection.getLatestBlockhash();
+		const { blockhash, lastValidBlockHeight } = await this.provider.connection.getLatestBlockhash();
 
-		const message = new anchor.web3.TransactionMessage({
-			payerKey: feepayer,
-			instructions: [ix],
-			recentBlockhash: blockhash,
-		}).compileToV0Message();
+		const transaction = new anchor.web3.Transaction().add(ix);
+		transaction.feePayer = authority;
+		transaction.recentBlockhash = blockhash;
+		transaction.lastValidBlockHeight = lastValidBlockHeight;
 
-		const transaction = new anchor.web3.VersionedTransaction(message);
+		const execute = this.createTranactionExecuter(transaction, blockhash, lastValidBlockHeight);
 
-		return transaction;
+		return {
+			blockhash,
+			lastValidBlockHeight,
+			transaction,
+			execute,
+		};
 	}
 
 	async createTokenAccounts(
@@ -119,16 +149,20 @@ export class BatchTransferProgram {
 			);
 		}
 
-		const { blockhash } = await this.provider.connection.getLatestBlockhash();
+		const { blockhash, lastValidBlockHeight } = await this.provider.connection.getLatestBlockhash();
 
-		const message = new anchor.web3.TransactionMessage({
-			payerKey: feepayer,
-			instructions: createIxns,
-			recentBlockhash: blockhash,
-		}).compileToV0Message();
+		const transaction = new anchor.web3.Transaction().add(...createIxns);
+		transaction.feePayer = feepayer;
+		transaction.recentBlockhash = blockhash;
+		transaction.lastValidBlockHeight = lastValidBlockHeight;
 
-		const transaction = new anchor.web3.VersionedTransaction(message);
+		const execute = this.createTranactionExecuter(transaction, blockhash, lastValidBlockHeight);
 
-		return transaction;
+		return {
+			blockhash,
+			lastValidBlockHeight,
+			transaction,
+			execute,
+		};
 	}
 }

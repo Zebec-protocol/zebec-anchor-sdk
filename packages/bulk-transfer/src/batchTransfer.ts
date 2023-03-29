@@ -60,9 +60,8 @@ export class BatchTransferService {
 	}
 
 	async depositToken(
-		feepayer: anchor.web3.PublicKey,
-		mint: anchor.web3.PublicKey,
 		authority: anchor.web3.PublicKey,
+		mint: anchor.web3.PublicKey,
 		amount: number | string,
 		decimals: number,
 	) {

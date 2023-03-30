@@ -10,7 +10,7 @@ describe("depositSol()", () => {
 	it("deposit sol to vault", async () => {
 		const feePayer = provider.publicKey;
 		const authority = feePayer;
-		const amount = 1.2353523;
+		const amount = 2;
 		const depositSolPayload = await service.depositSol(authority, amount);
 		const signature = await depositSolPayload.execute();
 

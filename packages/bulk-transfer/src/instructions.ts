@@ -108,7 +108,7 @@ export class BatchTransferInstruction implements IBatchTransferInstruction {
 		remainingAccountsMeta.push({
 			pubkey: batchVault,
 			isSigner: false,
-			isWritable: false,
+			isWritable: true,
 		});
 
 		return this.program.methods

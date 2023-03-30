@@ -1,17 +1,10 @@
-import {
-	describe,
-	it,
-} from "mocha";
+import { describe, it } from "mocha";
 
 import * as anchor from "@project-serum/anchor";
 
-import {
-	BatchSolTransferData,
-	BatchTransferInstruction,
-	BatchTransferService,
-	ProgramFactory,
-} from "../../src";
+import { BatchSolTransferData, BatchTransferInstruction, BatchTransferService, ProgramFactory } from "../../src";
 import { provider } from "../shared";
+import receivers from "../../accountKeys.json";
 
 const BATCH_SEED = "transfer-batch";
 
@@ -25,15 +18,19 @@ describe("BatchSolTransfer", () => {
 
 	it("should transfer SOL to multiple accounts", async () => {
 		let batchSolTransferData: BatchSolTransferData[] = [];
+
 		//max 22 accounts
-		for (let i = 0; i < 22; i++) {
-			let account = anchor.web3.Keypair.generate();
-			//request airdrop
-			// await provider.connection.requestAirdrop(account.publicKey, 1);
-			console.log("airdrop");
+		// for every account in the array
+		let receiversAddresses = receivers.pubkey;
+
+		for (let i = 0; i < receiversAddresses.length; i++) {
+			let receiverPubkey = new anchor.web3.PublicKey(receiversAddresses[i]);
+			//await provider.connection.requestAirdrop(receiverPubkey, 1);
+			//await new Promise((resolve) => setTimeout(resolve, 10000));
+			//console.log(receiverPubkey.toBase58() + " airdropped");
 			let amount = 0.001;
 			batchSolTransferData.push({
-				account: account.publicKey,
+				account: receiverPubkey,
 				amount: amount,
 			});
 		}

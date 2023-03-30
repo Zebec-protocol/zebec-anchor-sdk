@@ -150,6 +150,11 @@ export class BatchTransferInstruction implements IBatchTransferInstruction {
 				isWritable: false,
 			},
 			{
+				pubkey: mint,
+				isSigner: false,
+				isWritable: true,
+			},
+			{
 				pubkey: batchVaultTokenAccount,
 				isSigner: false,
 				isWritable: true,

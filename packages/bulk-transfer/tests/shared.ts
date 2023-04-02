@@ -18,14 +18,16 @@ const payer = web3.Keypair.fromSecretKey(
 	),
 );
 
-export async function signTransaction<T extends web3.Transaction | web3.VersionedTransaction>(
-	transaction: T,
-): Promise<T> {
-	if (transaction instanceof web3.VersionedTransaction) {
-		transaction.sign([payer]);
-	} else {
-		(transaction as web3.Transaction).partialSign(payer);
+export async function signAllTransactions<T extends web3.Transaction | web3.VersionedTransaction>(
+	transactions: T[],
+): Promise<T[]> {
+	for (let i = 0; i < transactions.length; i++) {
+		const transaction = transactions[i];
+		if (transaction instanceof web3.VersionedTransaction) {
+			transaction.sign([payer]);
+		} else {
+			(transaction as web3.Transaction).partialSign(payer);
+		}
 	}
-
-	return transaction;
+	return transactions;
 }

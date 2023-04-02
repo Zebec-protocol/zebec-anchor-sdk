@@ -3,11 +3,11 @@ import { describe, it } from "mocha";
 import * as anchor from "@project-serum/anchor";
 
 import { BatchTransferInstruction, BatchTransferService, ProgramFactory } from "../../src";
-import { provider, signTransaction } from "../shared";
+import { provider, signAllTransactions } from "../shared";
 
 describe("Deposit Token", () => {
 	const batchTransferIxns = new BatchTransferInstruction(ProgramFactory.getBatchTranferProgram({}));
-	const batchTransferService = new BatchTransferService(provider, batchTransferIxns, signTransaction);
+	const batchTransferService = new BatchTransferService(provider, batchTransferIxns, signAllTransactions);
 
 	it("should deposit token", async () => {
 		const feePayer = provider.wallet.publicKey;

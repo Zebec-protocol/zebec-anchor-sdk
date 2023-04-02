@@ -1,11 +1,11 @@
 import { describe, it } from "mocha";
 
 import { BatchTransferInstruction, BatchTransferService, ProgramFactory } from "../../src";
-import { provider, signTransaction } from "../shared";
+import { provider, signAllTransactions } from "../shared";
 
 describe("depositSol()", () => {
 	const batchTransferIxns = new BatchTransferInstruction(ProgramFactory.getBatchTranferProgram({}));
-	const service = new BatchTransferService(provider, batchTransferIxns, signTransaction);
+	const service = new BatchTransferService(provider, batchTransferIxns, signAllTransactions);
 
 	it("deposit sol to vault", async () => {
 		const feePayer = provider.publicKey;

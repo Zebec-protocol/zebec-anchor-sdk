@@ -4,17 +4,13 @@ import * as anchor from "@project-serum/anchor";
 
 import receivers from "../../accountKeys.json";
 import { BatchSolTransferData, BatchTransferInstruction, BatchTransferService, ProgramFactory } from "../../src";
-import { provider, signTransaction } from "../shared";
+import { provider, signAllTransactions } from "../shared";
 
 const BATCH_SEED = "transfer-batch";
 
 describe("BatchSolTransfer", () => {
 	const batchTransferIxns = new BatchTransferInstruction(ProgramFactory.getBatchTranferProgram({}));
-	const batchTransactionService = new BatchTransferService(provider, batchTransferIxns, signTransaction);
-	const batchVault = anchor.web3.PublicKey.findProgramAddressSync(
-		[Buffer.from(BATCH_SEED), provider.wallet.publicKey.toBuffer()],
-		ProgramFactory.getBatchTranferProgram({}).programId,
-	);
+	const batchTransactionService = new BatchTransferService(provider, batchTransferIxns, signAllTransactions);
 
 	it("should transfer SOL to multiple accounts", async () => {
 		let batchSolTransferData: BatchSolTransferData[] = [];

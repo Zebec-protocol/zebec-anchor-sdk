@@ -1,9 +1,15 @@
 import * as anchor from "@project-serum/anchor";
 import { AnchorProvider } from "@project-serum/anchor";
-import { createAssociatedTokenAccountInstruction, getAssociatedTokenAddressSync } from "@solana/spl-token";
+import {
+	createAssociatedTokenAccountInstruction,
+	getAssociatedTokenAddressSync,
+} from "@solana/spl-token";
 
 import { IBatchTransferInstruction } from "./instructions";
-import { parseToLamports, parseToUnits } from "./utils/parseUnits";
+import {
+	parseToLamports,
+	parseToUnits,
+} from "./utils/parseUnits";
 
 export type BatchSolTransferData = { account: anchor.web3.PublicKey; amount: number | string };
 export type BatchTokenTransferData = { account: anchor.web3.PublicKey; amount: number | string; decimals: number };
@@ -19,7 +25,7 @@ export class BatchTransferService<T extends anchor.web3.Transaction | anchor.web
 	constructor(
 		private readonly provider: AnchorProvider,
 		private readonly batchTransferIxns: IBatchTransferInstruction,
-		private readonly signTransaction: (transaction: T) => Promise<T>,
+		private readonly signAllTransactions: (transaction: T[]) => Promise<T[]>,
 	) {}
 
 	private createTransactionExecuter(
@@ -29,8 +35,10 @@ export class BatchTransferService<T extends anchor.web3.Transaction | anchor.web
 	): TranactionExecuter {
 		const execute = async () => {
 			let signatures: string[] = [];
-			for (let i = 0; i < transactions.length; i++) {
-				const signed = await this.signTransaction(transactions[i]);
+			const signedTxs = await this.signAllTransactions(transactions);
+
+			for (let i = 0; i < signedTxs.length; i++) {
+				const signed = signedTxs[i];
 				const signature = await this.provider.connection.sendRawTransaction(signed.serialize());
 				await this.provider.connection.confirmTransaction({
 					blockhash,
@@ -138,15 +146,79 @@ export class BatchTransferService<T extends anchor.web3.Transaction | anchor.web
 		};
 	}
 
+	async createLookupTables(feepayer: anchor.web3.PublicKey, users: anchor.web3.PublicKey[], mint: anchor.web3.PublicKey): Promise<TransactionPayload> {
+		const tokenAddresses = users.map((account) => getAssociatedTokenAddressSync(account, mint));
+
+		const { blockhash, lastValidBlockHeight } = await this.provider.connection.getLatestBlockhash();
+
+		//create lookup table instruction
+		const [lookupTableInst, lookupTableAddress] = anchor.web3.AddressLookupTableProgram.createLookupTable({
+			authority: feepayer,
+			payer: feepayer,
+			recentSlot: await this.provider.connection.getSlot("finalized"),
+		});
+		const messageCreateTable = new anchor.web3.TransactionMessage({
+			instructions: [lookupTableInst],
+			payerKey: feepayer,
+			recentBlockhash: blockhash,
+		}).compileToV0Message();
+		const txCreateTable = new anchor.web3.VersionedTransaction(messageCreateTable);
+
+		//add users addresses to lookup table
+		const addAccounts = anchor.web3.AddressLookupTableProgram.extendLookupTable({
+			payer: feepayer,
+			authority: feepayer,
+			lookupTable: lookupTableAddress,
+			addresses: users,
+		});
+		const messageAddAccounts = new anchor.web3.TransactionMessage({
+			instructions: [addAccounts],
+			payerKey: feepayer,
+			recentBlockhash: blockhash,
+		}).compileToV0Message();
+		const txAddAccounts = new anchor.web3.VersionedTransaction(messageAddAccounts);
+
+		//add users token addresses to lookup table
+		const addTokenAccounts = anchor.web3.AddressLookupTableProgram.extendLookupTable({
+			payer: feepayer,
+			authority: feepayer,
+			lookupTable: lookupTableAddress,
+			addresses: tokenAddresses,
+		});
+		const messageAddTokenAccounts = new anchor.web3.TransactionMessage({
+			instructions: [addTokenAccounts],
+			payerKey: feepayer,
+			recentBlockhash: blockhash,
+		}).compileToV0Message();
+		const txAddTokenAccounts = new anchor.web3.VersionedTransaction(messageAddTokenAccounts);
+
+		const transactions = [txCreateTable, txAddAccounts, txAddTokenAccounts];
+		const execute =  this.createTransactionExecuter(
+			transactions as T[],
+			blockhash,
+			lastValidBlockHeight,
+		);
+
+		return {
+			transactions,
+			blockhash,
+			lastValidBlockHeight,
+			execute,
+		}
+	}
+
 	async createTokenAccounts(
 		feepayer: anchor.web3.PublicKey,
 		users: anchor.web3.PublicKey[],
 		mint: anchor.web3.PublicKey,
+		lookUpTableAccount: anchor.web3.AddressLookupTableAccount
 	): Promise<TransactionPayload> {
+		const { blockhash, lastValidBlockHeight } = await this.provider.connection.getLatestBlockhash();
+		
 		let createIxns: anchor.web3.TransactionInstruction[] = [];
 
-		if (users.length > 13) {
-			throw new Error("Accounts more than 13 will exceed max transaction size limit!");
+		if (users.length > 30) {
+			throw new Error("Accounts more than 30 will exceed max transaction size limit!");
 		}
 
 		for (let i = 0; i < users.length; i++) {
@@ -155,20 +227,25 @@ export class BatchTransferService<T extends anchor.web3.Transaction | anchor.web
 				createAssociatedTokenAccountInstruction(this.provider.wallet.publicKey, tokenAccount, users[i], mint),
 			);
 		}
+		
+		const messageCreateTokenAccounts = new anchor.web3.TransactionMessage({
+			instructions: createIxns,
+			payerKey: feepayer,
+			recentBlockhash: blockhash,
+		}).compileToV0Message([lookUpTableAccount]);
 
-		const { blockhash, lastValidBlockHeight } = await this.provider.connection.getLatestBlockhash();
+		const txCreateTokenAccounts = new anchor.web3.VersionedTransaction(messageCreateTokenAccounts);
 
-		const transaction = new anchor.web3.Transaction().add(...createIxns);
-		transaction.feePayer = feepayer;
-		transaction.recentBlockhash = blockhash;
-		transaction.lastValidBlockHeight = lastValidBlockHeight;
-
-		const execute = this.createTransactionExecuter([transaction as T], blockhash, lastValidBlockHeight);
+		const execute = this.createTransactionExecuter(
+			[txCreateTokenAccounts as T],
+			blockhash,
+			lastValidBlockHeight,
+		);
 
 		return {
 			blockhash,
 			lastValidBlockHeight,
-			transactions: [transaction],
+			transactions: [txCreateTokenAccounts],
 			execute,
 		};
 	}

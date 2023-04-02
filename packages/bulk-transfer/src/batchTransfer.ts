@@ -18,6 +18,7 @@ export type TransactionPayload = {
 	transactions: (anchor.web3.Transaction | anchor.web3.VersionedTransaction)[];
 	blockhash: string;
 	lastValidBlockHeight: number;
+	lookupTableAddress?: anchor.web3.PublicKey;
 	execute: TranactionExecuter;
 };
 
@@ -146,7 +147,11 @@ export class BatchTransferService<T extends anchor.web3.Transaction | anchor.web
 		};
 	}
 
-	async createLookupTables(feepayer: anchor.web3.PublicKey, users: anchor.web3.PublicKey[], mint: anchor.web3.PublicKey): Promise<TransactionPayload> {
+	async createLookupTables(
+		feepayer: anchor.web3.PublicKey,
+		users: anchor.web3.PublicKey[],
+		mint: anchor.web3.PublicKey,
+	): Promise<TransactionPayload> {
 		const tokenAddresses = users.map((account) => getAssociatedTokenAddressSync(account, mint));
 
 		const { blockhash, lastValidBlockHeight } = await this.provider.connection.getLatestBlockhash();
@@ -179,6 +184,7 @@ export class BatchTransferService<T extends anchor.web3.Transaction | anchor.web
 		const txAddAccounts = new anchor.web3.VersionedTransaction(messageAddAccounts);
 
 		//add users token addresses to lookup table
+		tokenAddresses.push()
 		const addTokenAccounts = anchor.web3.AddressLookupTableProgram.extendLookupTable({
 			payer: feepayer,
 			authority: feepayer,
@@ -193,28 +199,25 @@ export class BatchTransferService<T extends anchor.web3.Transaction | anchor.web
 		const txAddTokenAccounts = new anchor.web3.VersionedTransaction(messageAddTokenAccounts);
 
 		const transactions = [txCreateTable, txAddAccounts, txAddTokenAccounts];
-		const execute =  this.createTransactionExecuter(
-			transactions as T[],
-			blockhash,
-			lastValidBlockHeight,
-		);
+		const execute = this.createTransactionExecuter(transactions as T[], blockhash, lastValidBlockHeight);
 
 		return {
 			transactions,
 			blockhash,
 			lastValidBlockHeight,
+			lookupTableAddress,
 			execute,
-		}
+		};
 	}
 
 	async createTokenAccounts(
 		feepayer: anchor.web3.PublicKey,
 		users: anchor.web3.PublicKey[],
 		mint: anchor.web3.PublicKey,
-		lookUpTableAccount: anchor.web3.AddressLookupTableAccount
+		lookUpTableAccount: anchor.web3.AddressLookupTableAccount,
 	): Promise<TransactionPayload> {
 		const { blockhash, lastValidBlockHeight } = await this.provider.connection.getLatestBlockhash();
-		
+
 		let createIxns: anchor.web3.TransactionInstruction[] = [];
 
 		if (users.length > 30) {
@@ -227,7 +230,7 @@ export class BatchTransferService<T extends anchor.web3.Transaction | anchor.web
 				createAssociatedTokenAccountInstruction(this.provider.wallet.publicKey, tokenAccount, users[i], mint),
 			);
 		}
-		
+
 		const messageCreateTokenAccounts = new anchor.web3.TransactionMessage({
 			instructions: createIxns,
 			payerKey: feepayer,
@@ -236,11 +239,7 @@ export class BatchTransferService<T extends anchor.web3.Transaction | anchor.web
 
 		const txCreateTokenAccounts = new anchor.web3.VersionedTransaction(messageCreateTokenAccounts);
 
-		const execute = this.createTransactionExecuter(
-			[txCreateTokenAccounts as T],
-			blockhash,
-			lastValidBlockHeight,
-		);
+		const execute = this.createTransactionExecuter([txCreateTokenAccounts as T], blockhash, lastValidBlockHeight);
 
 		return {
 			blockhash,

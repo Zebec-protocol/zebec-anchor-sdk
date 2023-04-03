@@ -152,7 +152,7 @@ export class BatchTransferService<T extends anchor.web3.Transaction | anchor.web
 		users: anchor.web3.PublicKey[],
 		mint: anchor.web3.PublicKey,
 	): Promise<TransactionPayload> {
-		const tokenAddresses = users.map((account) => getAssociatedTokenAddressSync(account, mint));
+		const tokenAddresses = users.map((account) => getAssociatedTokenAddressSync(account, mint, true));
 
 		const { blockhash, lastValidBlockHeight } = await this.provider.connection.getLatestBlockhash();
 

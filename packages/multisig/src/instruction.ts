@@ -1,8 +1,29 @@
-import { BN, Program } from '@project-serum/anchor'
-import { ASSOCIATED_PROGRAM_ID, TOKEN_PROGRAM_ID } from '@project-serum/anchor/dist/cjs/utils/token'
-import { AccountMeta, Keypair, PublicKey, SystemProgram, SYSVAR_RENT_PUBKEY, Transaction } from '@solana/web3.js'
-import { STREAM_SIZE, STREAM_TOKEN_SIZE, ZEBEC_STREAM } from './config'
-import { getAmountInBN, getTxSize } from './services'
+import {
+  BN,
+  Program
+} from '@project-serum/anchor'
+import {
+  ASSOCIATED_PROGRAM_ID,
+  TOKEN_PROGRAM_ID
+} from '@project-serum/anchor/dist/cjs/utils/token'
+import {
+  AccountMeta,
+  Keypair,
+  PublicKey,
+  SystemProgram,
+  SYSVAR_RENT_PUBKEY,
+  Transaction
+} from '@solana/web3.js'
+
+import {
+  STREAM_SIZE,
+  STREAM_TOKEN_SIZE,
+  ZEBEC_STREAM
+} from './config'
+import {
+  getAmountInBN,
+  getTxSize
+} from './services'
 import { AccountKeys } from './services/accounts'
 
 // Test code Mappings
@@ -15,8 +36,8 @@ export class ZebecTransactionBuilder {
   readonly _streamProgram: Program
 
   constructor(multisigProgram: Program, streamProgram: Program) {
-    this._multisigProgram = multisigProgram
-    this._streamProgram = streamProgram
+    this._multisigProgram = multisigProgram;
+    this._streamProgram = streamProgram;
   }
 
   async execApproveTransaction(

@@ -1,8 +1,14 @@
 import * as anchor from "@project-serum/anchor";
-import { createAssociatedTokenAccountInstruction, getAssociatedTokenAddressSync } from "@solana/spl-token";
+import {
+	createAssociatedTokenAccountInstruction,
+	getAssociatedTokenAddressSync,
+} from "@solana/spl-token";
 
 import { IBatchTransferInstruction } from "./instructions";
-import { parseToLamports, parseToUnits } from "./utils/parseUnits";
+import {
+	parseToLamports,
+	parseToUnits,
+} from "./utils/parseUnits";
 
 export interface ITransactionPayload {
 	readonly transactions: anchor.web3.Transaction[];

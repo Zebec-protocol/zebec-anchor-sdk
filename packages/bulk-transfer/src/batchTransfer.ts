@@ -50,7 +50,7 @@ export type BatchTokenTransferData = { account: string; amount: number | string;
 export class BatchTransferService {
 	constructor(
 		private readonly provider: anchor.AnchorProvider,
-		private readonly batchTransferIxns: IBatchTransferInstruction,
+		readonly batchTransferIxns: IBatchTransferInstruction,
 	) {}
 
 	async checkTokenAccount({

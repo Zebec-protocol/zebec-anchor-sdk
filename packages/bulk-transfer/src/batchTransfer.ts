@@ -5,6 +5,7 @@ import {
 } from "@solana/spl-token";
 
 import { IBatchTransferInstruction } from "./instructions";
+import { getDecimals } from "./utils";
 import {
 	parseToLamports,
 	parseToUnits,
@@ -43,8 +44,8 @@ export class TransactionPayload implements ITransactionPayload {
 	}
 }
 
-export type BatchSolTransferData = { account: anchor.web3.PublicKey; amount: number | string };
-export type BatchTokenTransferData = { account: anchor.web3.PublicKey; amount: number | string; decimals: number };
+export type BatchSolTransferData = { account: string; amount: number | string };
+export type BatchTokenTransferData = { account: string; amount: number | string; decimals: number };
 
 export class BatchTransferService {
 	constructor(
@@ -57,18 +58,18 @@ export class BatchTransferService {
 		mint,
 		allowOwnerOffCurve,
 	}: {
-		accounts: anchor.web3.PublicKey[];
-		mint: anchor.web3.PublicKey;
+		accounts: string[];
+		mint: string;
 		allowOwnerOffCurve?: boolean;
 	}): Promise<anchor.web3.PublicKey[]> {
 		const arr: anchor.web3.PublicKey[] = [];
 
 		for (let i = 0; i < accounts.length; i++) {
-			const account = accounts[i];
-			const tokenAccount = getAssociatedTokenAddressSync(mint, account, allowOwnerOffCurve);
+			const account = new anchor.web3.PublicKey(accounts[i]);
+			const tokenAccount = getAssociatedTokenAddressSync(new anchor.web3.PublicKey(mint), account, allowOwnerOffCurve);
 			const accountInfo = await this.provider.connection.getAccountInfo(tokenAccount);
 			if (accountInfo == null) {
-				arr.push(account);
+				arr.push(new anchor.web3.PublicKey(account));
 			}
 		}
 		return arr;
@@ -78,15 +79,15 @@ export class BatchTransferService {
 		authority,
 		amount,
 	}: {
-		authority: anchor.web3.PublicKey;
+		authority: string;
 		amount: number | string;
 	}): Promise<TransactionPayload> {
 		const parsedAmount = parseToLamports(amount);
-		const ix = await this.batchTransferIxns.getDepositSolInstruction(authority, parsedAmount);
+		const ix = await this.batchTransferIxns.getDepositSolInstruction(new anchor.web3.PublicKey(authority), parsedAmount);
 		const { blockhash, lastValidBlockHeight } = await this.provider.connection.getLatestBlockhash();
 
 		const transaction = new anchor.web3.Transaction().add(ix);
-		transaction.feePayer = authority;
+		transaction.feePayer = new anchor.web3.PublicKey(authority);
 		transaction.recentBlockhash = blockhash;
 		transaction.lastValidBlockHeight = lastValidBlockHeight;
 
@@ -96,20 +97,19 @@ export class BatchTransferService {
 	async depositToken({
 		authority,
 		amount,
-		decimals,
 		mint,
 	}: {
-		authority: anchor.web3.PublicKey;
-		mint: anchor.web3.PublicKey;
+		authority: string;
+		mint: string;
 		amount: number | string;
-		decimals: number;
 	}): Promise<TransactionPayload> {
+		const decimals = await getDecimals(this.provider.connection, new anchor.web3.PublicKey(mint));
 		const parsedAmount = parseToUnits(amount, decimals);
-		const ix = await this.batchTransferIxns.getDepositTokenInstruciton(authority, mint, parsedAmount);
+		const ix = await this.batchTransferIxns.getDepositTokenInstruciton(new anchor.web3.PublicKey(authority), new anchor.web3.PublicKey(mint), parsedAmount);
 		const { blockhash, lastValidBlockHeight } = await this.provider.connection.getLatestBlockhash();
 
 		const transaction = new anchor.web3.Transaction().add(ix);
-		transaction.feePayer = authority;
+		transaction.feePayer = new anchor.web3.PublicKey(authority);
 		transaction.recentBlockhash = blockhash;
 		transaction.lastValidBlockHeight = lastValidBlockHeight;
 
@@ -120,16 +120,16 @@ export class BatchTransferService {
 		authority,
 		batchData,
 	}: {
-		authority: anchor.web3.PublicKey;
+		authority: string;
 		batchData: BatchSolTransferData[];
 	}): Promise<TransactionPayload> {
 		const parsedAmounts = batchData.map<anchor.BN>(({ amount }) => parseToLamports(amount));
-		const accounts = batchData.map<anchor.web3.PublicKey>(({ account }) => account);
-		const ix = await this.batchTransferIxns.getSolBatchTransfer(authority, parsedAmounts, accounts);
+		const accounts = batchData.map<anchor.web3.PublicKey>(({ account }) => new anchor.web3.PublicKey(account));
+		const ix = await this.batchTransferIxns.getSolBatchTransfer(new anchor.web3.PublicKey(authority), parsedAmounts, accounts);
 		const { blockhash, lastValidBlockHeight } = await this.provider.connection.getLatestBlockhash();
 
 		const transaction = new anchor.web3.Transaction().add(ix);
-		transaction.feePayer = authority;
+		transaction.feePayer = new anchor.web3.PublicKey(authority);
 		transaction.recentBlockhash = blockhash;
 		transaction.lastValidBlockHeight = lastValidBlockHeight;
 
@@ -141,17 +141,17 @@ export class BatchTransferService {
 		batchData,
 		mint,
 	}: {
-		authority: anchor.web3.PublicKey;
-		mint: anchor.web3.PublicKey;
+		authority: string;
+		mint: string;
 		batchData: BatchTokenTransferData[];
 	}): Promise<TransactionPayload> {
 		const parsedAmounts = batchData.map<anchor.BN>(({ amount, decimals }) => parseToUnits(amount, decimals));
-		const accounts = batchData.map<anchor.web3.PublicKey>(({ account }) => account);
-		const ix = await this.batchTransferIxns.getTokenBatchTransfer(authority, mint, parsedAmounts, accounts);
+		const accounts = batchData.map<anchor.web3.PublicKey>(({ account }) => new anchor.web3.PublicKey(account));
+		const ix = await this.batchTransferIxns.getTokenBatchTransfer(new anchor.web3.PublicKey(authority), new anchor.web3.PublicKey(mint), parsedAmounts, accounts);
 		const { blockhash, lastValidBlockHeight } = await this.provider.connection.getLatestBlockhash();
 
 		const transaction = new anchor.web3.Transaction().add(ix);
-		transaction.feePayer = authority;
+		transaction.feePayer = new anchor.web3.PublicKey(authority);
 		transaction.recentBlockhash = blockhash;
 		transaction.lastValidBlockHeight = lastValidBlockHeight;
 

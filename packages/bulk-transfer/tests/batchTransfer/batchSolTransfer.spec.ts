@@ -1,4 +1,7 @@
-import { describe, it } from "mocha";
+import {
+	describe,
+	it,
+} from "mocha";
 
 import * as anchor from "@project-serum/anchor";
 
@@ -10,8 +13,6 @@ import {
 	BatchTransferService,
 } from "../../src";
 import { provider } from "../shared";
-
-const BATCH_SEED = "transfer-batch";
 
 describe("BatchSolTransfer", () => {
 	const batchTransferIxns = new BatchTransferInstruction(BatchTranferProgramFactory.getProgram({}));
@@ -31,13 +32,13 @@ describe("BatchSolTransfer", () => {
 			//console.log(receiverPubkey.toBase58() + " airdropped");
 			let amount = 0.001;
 			batchSolTransferData.push({
-				account: receiverPubkey,
+				account: receiverPubkey.toString(),
 				amount: amount,
 			});
 		}
 
 		const batchTransferIxn = await batchTransactionService.transferSolInBatch({
-			authority: provider.wallet.publicKey,
+			authority: provider.wallet.publicKey.toString(),
 			batchData: batchSolTransferData,
 		});
 		try {

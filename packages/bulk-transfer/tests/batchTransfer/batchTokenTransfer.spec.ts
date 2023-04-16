@@ -3,12 +3,17 @@ import { describe, it } from "mocha";
 import * as anchor from "@project-serum/anchor";
 import { getAssociatedTokenAddressSync } from "@solana/spl-token";
 
-import { BatchTokenTransferData, BatchTransferInstruction, BatchTransferService, ProgramFactory } from "../../src";
-import { provider, signTransaction } from "../shared";
+import {
+	BatchTokenTransferData,
+	BatchTranferProgramFactory,
+	BatchTransferInstruction,
+	BatchTransferService,
+} from "../../src";
+import { provider } from "../shared";
 
 describe("BatchTokenTransfer", () => {
-	const batchTransferIxns = new BatchTransferInstruction(ProgramFactory.getBatchTranferProgram({}));
-	const batchTransferService = new BatchTransferService(provider, batchTransferIxns, signTransaction);
+	const batchTransferIxns = new BatchTransferInstruction(BatchTranferProgramFactory.getProgram({}));
+	const batchTransferService = new BatchTransferService(provider, batchTransferIxns);
 	const accounts = [
 		"Fx3xZ86YZw3gJUHU3FQKKq6ZDbkDLHa5j4z84gBY5LzF",
 		"4VbwC8uYtjfj2jimQpyshaXRW2u5A3iyhUXQFTb82kCV",
@@ -42,7 +47,11 @@ describe("BatchTokenTransfer", () => {
 			decimals: 9,
 		}));
 
-		const splTransferPayload = await batchTransferService.transferTokenInBatch(provider.wallet.publicKey, mint, data);
+		const splTransferPayload = await batchTransferService.transferTokenInBatch({
+			authority: provider.wallet.publicKey,
+			mint,
+			batchData: data,
+		});
 
 		try {
 			const signature = await splTransferPayload.execute();

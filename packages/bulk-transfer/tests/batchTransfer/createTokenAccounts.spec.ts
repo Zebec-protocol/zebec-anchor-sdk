@@ -1,17 +1,29 @@
-import assert from "assert";
 import { describe, it } from "mocha";
 
 import { web3 } from "@project-serum/anchor";
 import { getAssociatedTokenAddressSync } from "@solana/spl-token";
 
-import { BatchTransferInstruction, BatchTransferService, ProgramFactory } from "../../src";
-import { provider, signAllTransactions } from "../shared";
+import { BatchTranferProgramFactory, BatchTransferInstruction, BatchTransferService } from "../../src";
+import { provider } from "../shared";
 
 describe("createTokenAccount", () => {
-	const batchTransferIxns = new BatchTransferInstruction(ProgramFactory.getBatchTranferProgram({}));
-	const batchTransactionService = new BatchTransferService(provider, batchTransferIxns, signAllTransactions);
+	const batchTransferIxns = new BatchTransferInstruction(BatchTranferProgramFactory.getProgram({}));
+	const batchTransactionService = new BatchTransferService(provider, batchTransferIxns);
 	const users: { pubkeys: web3.PublicKey; ata: web3.PublicKey }[] = [];
 	const mint = new web3.PublicKey("AbLwGR8A1wvsiLWrzzA5eYPoQw51NVMcMMTPvAv5LTJ");
+
+	const accounts = [
+		"AnvVhPxh7nBeCkct77H7NY2EgXPT4PM1TLmnufQ7pkQE",
+		"GYVrSXLBJzzTqS1na3k4V9kMxPvTaKhGBfR9kTHTxRH9",
+		"AWbCrDbLFksVV9DtoTPCj3G9qGZTXHWpt7yMu4Gg6mQr",
+		"96uyYvvBQeFDB5zmL3Gapgm6EMD7fiVZPunANMtYrqvR",
+		"Cpvwb78bWLiJryzj7VeabFgF5najjLFuaipLgYuRvucF",
+		"9LGhEeEiStMhEfcjddcbrVyCmBswcifCqhQqsKeMcJvs",
+		"134bFEgqyJxCgfAQuCNJb1xRRs1YKoC4rqrr2gxv2CgA",
+		"7Mq255ucRzpDKAU9gA9jy7gfggPy1Zny9fi9A5aUME7M",
+		"8hAsCwErSQ6B8UaEhrXMkPT82ECzYEMWoZom4a8zQ2Lh",
+		"ENj7bCH4pW1XT9arJ1vSAA1QKAXJm4V2opbQSUhkXSNd",
+	];
 
 	it("creates token accounts", async () => {
 		for (let i = 0; i < 22; i++) {
@@ -22,36 +34,16 @@ describe("createTokenAccount", () => {
 			users.push({ pubkeys, ata });
 		}
 
-		await Promise.all(
-			users.map(async ({ pubkeys }) => {
-				await provider.connection.requestAirdrop(pubkeys, 1);
-			}),
-		);
-		console.log(users);
+		users.forEach(async ({ pubkeys }) => {
+			await provider.connection.requestAirdrop(pubkeys, 1);
+		}),
+			console.log(users);
 
-		const createLookupTablePayload = await batchTransactionService.createLookupTables(
-			provider.publicKey,
-			users.map(({ pubkeys }) => pubkeys),
+		const createTokenAccountPayload = await batchTransactionService.createTokenAccounts({
+			feepayer: provider.publicKey,
+			users: users.map(({ pubkeys }) => pubkeys),
 			mint,
-		);
-		const signatures = await createLookupTablePayload.execute();
-		console.log("createLookupTableSignature", signatures);
-
-		assert(createLookupTablePayload.lookupTableAddress, "LookupTableAddress is undefined.");
-		const lookupTableAccount = (
-			await provider.connection.getAddressLookupTable(createLookupTablePayload.lookupTableAddress)
-		).value;
-		assert(lookupTableAccount, "lookupTableAccount is null!");
-		console.log("lookupTableAccount length", lookupTableAccount.state.addresses.length);
-
-		await new Promise((resolve) => setTimeout(resolve, 10000));
-
-		const createTokenAccountPayload = await batchTransactionService.createTokenAccounts(
-			provider.publicKey,
-			users.map(({ pubkeys }) => pubkeys),
-			mint,
-			lookupTableAccount,
-		);
+		});
 
 		const createTokenAccountSignatures = await createTokenAccountPayload.execute();
 		console.log("createTokenAccountSignatures", createTokenAccountSignatures);

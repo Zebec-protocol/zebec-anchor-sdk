@@ -3,14 +3,19 @@ import { describe, it } from "mocha";
 import * as anchor from "@project-serum/anchor";
 
 import receivers from "../../accountKeys.json";
-import { BatchSolTransferData, BatchTransferInstruction, BatchTransferService, ProgramFactory } from "../../src";
-import { provider, signAllTransactions } from "../shared";
+import {
+	BatchSolTransferData,
+	BatchTranferProgramFactory,
+	BatchTransferInstruction,
+	BatchTransferService,
+} from "../../src";
+import { provider } from "../shared";
 
 const BATCH_SEED = "transfer-batch";
 
 describe("BatchSolTransfer", () => {
-	const batchTransferIxns = new BatchTransferInstruction(ProgramFactory.getBatchTranferProgram({}));
-	const batchTransactionService = new BatchTransferService(provider, batchTransferIxns, signAllTransactions);
+	const batchTransferIxns = new BatchTransferInstruction(BatchTranferProgramFactory.getProgram({}));
+	const batchTransactionService = new BatchTransferService(provider, batchTransferIxns);
 
 	it("should transfer SOL to multiple accounts", async () => {
 		let batchSolTransferData: BatchSolTransferData[] = [];
@@ -31,10 +36,10 @@ describe("BatchSolTransfer", () => {
 			});
 		}
 
-		const batchTransferIxn = await batchTransactionService.transferSolInBatch(
-			provider.wallet.publicKey,
-			batchSolTransferData,
-		);
+		const batchTransferIxn = await batchTransactionService.transferSolInBatch({
+			authority: provider.wallet.publicKey,
+			batchData: batchSolTransferData,
+		});
 		try {
 			const signature = await batchTransferIxn.execute();
 			console.log(signature);

@@ -1,14 +1,7 @@
 import { expect } from "chai";
-import {
-	describe,
-	it,
-} from "mocha";
+import { describe, it } from "mocha";
 
-import {
-	BatchTranferProgramFactory,
-	BatchTransferInstruction,
-	BatchTransferService,
-} from "../../src";
+import { BatchTranferProgramFactory, BatchTransferInstruction, BatchTransferService } from "../../src";
 import { provider } from "../shared";
 
 describe("checkTokenAccount", () => {

@@ -1,7 +1,8 @@
 {
   "name": "bulk-transfer",
   "version": "1.0.0",
-  "main": "index.js",
+  "main": "./dist/esm/index.js",
+  "types": "./dist/types/index.d.ts",
   "author": "Ashish Sapkota | Raghib Islam | Zebec Protocol",
   "license": "MIT",
   "dependencies": {

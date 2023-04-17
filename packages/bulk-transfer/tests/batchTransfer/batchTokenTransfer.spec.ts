@@ -1,7 +1,4 @@
-import {
-	describe,
-	it,
-} from "mocha";
+import { describe, it } from "mocha";
 
 import * as anchor from "@project-serum/anchor";
 import { getAssociatedTokenAddressSync } from "@solana/spl-token";

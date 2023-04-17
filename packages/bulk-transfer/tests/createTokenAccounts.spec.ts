@@ -1,13 +1,7 @@
-import {
-	describe,
-	it,
-} from "mocha";
+import { describe, it } from "mocha";
 
 import { web3 } from "@project-serum/anchor";
-import {
-	createAssociatedTokenAccountInstruction,
-	getAssociatedTokenAddressSync,
-} from "@solana/spl-token";
+import { createAssociatedTokenAccountInstruction, getAssociatedTokenAddressSync } from "@solana/spl-token";
 
 import { provider } from "./shared";
 

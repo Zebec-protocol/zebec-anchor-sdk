@@ -1,16 +1,9 @@
-import {
-	describe,
-	it,
-} from "mocha";
+import { describe, it } from "mocha";
 
 import { web3 } from "@project-serum/anchor";
 import { getAssociatedTokenAddressSync } from "@solana/spl-token";
 
-import {
-	BatchTranferProgramFactory,
-	BatchTransferInstruction,
-	BatchTransferService,
-} from "../../src";
+import { BatchTranferProgramFactory, BatchTransferInstruction, BatchTransferService } from "../../src";
 import { provider } from "../shared";
 
 describe("createTokenAccount", () => {

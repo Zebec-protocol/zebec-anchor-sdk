@@ -1,4 +1,5 @@
 import * as anchor from "@project-serum/anchor";
+import { ASSOCIATED_PROGRAM_ID, TOKEN_PROGRAM_ID } from "@project-serum/anchor/dist/cjs/utils/token";
 
 import { BatchTransfer } from "./artifacts";
 
@@ -10,23 +11,34 @@ export interface IBatchTransferInstruction {
 		amount: anchor.BN,
 	): Promise<anchor.web3.TransactionInstruction>;
 
-	getDepositTokenInstruciton(
+	getDepositTokenInstruction(
 		authority: anchor.web3.PublicKey,
 		mint: anchor.web3.PublicKey,
 		amount: anchor.BN,
 	): Promise<anchor.web3.TransactionInstruction>;
 
-	getSolBatchTransfer(
+	getSolBatchTransferInstruction(
 		fromAuthority: anchor.web3.PublicKey,
 		amounts: anchor.BN[],
 		remainingAccounts: anchor.web3.PublicKey[],
 	): Promise<anchor.web3.TransactionInstruction>;
 
-	getTokenBatchTransfer(
+	getTokenBatchTransferInstruction(
 		fromAuthority: anchor.web3.PublicKey,
 		mint: anchor.web3.PublicKey,
 		amounts: anchor.BN[],
 		remainingAccounts: anchor.web3.PublicKey[],
+	): Promise<anchor.web3.TransactionInstruction>;
+
+	getWithdrawSolInstruction(
+		authority: anchor.web3.PublicKey,
+		amount: anchor.BN,
+	): Promise<anchor.web3.TransactionInstruction>;
+
+	getWithdrawTokenInstruction(
+		authority: anchor.web3.PublicKey,
+		mint: anchor.web3.PublicKey,
+		amount: anchor.BN,
 	): Promise<anchor.web3.TransactionInstruction>;
 }
 
@@ -59,7 +71,7 @@ export class BatchTransferInstruction implements IBatchTransferInstruction {
 			.instruction();
 	}
 
-	async getDepositTokenInstruciton(
+	async getDepositTokenInstruction(
 		authority: anchor.web3.PublicKey,
 		mint: anchor.web3.PublicKey,
 		amount: anchor.BN,
@@ -90,7 +102,7 @@ export class BatchTransferInstruction implements IBatchTransferInstruction {
 			.instruction();
 	}
 
-	async getSolBatchTransfer(
+	async getSolBatchTransferInstruction(
 		fromAuthority: anchor.web3.PublicKey,
 		amounts: anchor.BN[],
 		remainingAccounts: anchor.web3.PublicKey[],
@@ -123,7 +135,7 @@ export class BatchTransferInstruction implements IBatchTransferInstruction {
 			.instruction();
 	}
 
-	async getTokenBatchTransfer(
+	async getTokenBatchTransferInstruction(
 		fromAuthority: anchor.web3.PublicKey,
 		mint: anchor.web3.PublicKey,
 		amounts: anchor.BN[],
@@ -181,5 +193,50 @@ export class BatchTransferInstruction implements IBatchTransferInstruction {
 			.instruction();
 	}
 
-	//how to make versioned transaction
+	async getWithdrawSolInstruction(
+		authority: anchor.web3.PublicKey,
+		amount: anchor.BN,
+	): Promise<anchor.web3.TransactionInstruction> {
+		const [batchVault] = this.getBatchVaultKey(authority);
+
+		return this.program.methods
+			.withdrawSol(amount)
+			.accounts({
+				authority,
+				batchVault,
+				rent: anchor.web3.SYSVAR_RENT_PUBKEY,
+				systemProgram: anchor.web3.SystemProgram.programId,
+			})
+			.instruction();
+	}
+
+	async getWithdrawTokenInstruction(
+		authority: anchor.web3.PublicKey,
+		mint: anchor.web3.PublicKey,
+		amount: anchor.BN,
+	): Promise<anchor.web3.TransactionInstruction> {
+		const [batchVault] = this.getBatchVaultKey(authority);
+		const batchVaultTokenAccount = await anchor.utils.token.associatedAddress({
+			mint,
+			owner: batchVault,
+		});
+		const to = await anchor.utils.token.associatedAddress({
+			mint,
+			owner: authority,
+		});
+		return this.program.methods
+			.withdrawToken(amount)
+			.accounts({
+				associatedTokenProgram: ASSOCIATED_PROGRAM_ID,
+				authority,
+				batchVault,
+				to,
+				batchVaultTokenAccount,
+				mint,
+				rent: anchor.web3.SYSVAR_RENT_PUBKEY,
+				systemProgram: anchor.web3.SystemProgram.programId,
+				tokenProgram: TOKEN_PROGRAM_ID,
+			})
+			.instruction();
+	}
 }

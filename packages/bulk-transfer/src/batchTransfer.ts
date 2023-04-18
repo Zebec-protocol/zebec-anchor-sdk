@@ -54,8 +54,8 @@ export class BatchTransferService {
 		accounts: string[];
 		mint: string;
 		allowOwnerOffCurve?: boolean;
-	}): Promise<anchor.web3.PublicKey[]> {
-		const arr: anchor.web3.PublicKey[] = [];
+	}): Promise<{ account: string; index: number }[]> {
+		const arr: { account: string; index: number }[] = [];
 
 		for (let i = 0; i < accounts.length; i++) {
 			const account = new anchor.web3.PublicKey(accounts[i]);
@@ -65,7 +65,7 @@ export class BatchTransferService {
 			});
 			const accountInfo = await this.provider.connection.getAccountInfo(tokenAccount);
 			if (accountInfo == null) {
-				arr.push(new anchor.web3.PublicKey(account));
+				arr.push({ account: account.toString(), index: i });
 			}
 		}
 		return arr;

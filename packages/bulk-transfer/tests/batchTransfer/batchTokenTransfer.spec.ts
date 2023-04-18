@@ -1,7 +1,6 @@
 import { describe, it } from "mocha";
 
 import * as anchor from "@project-serum/anchor";
-import { getAssociatedTokenAddressSync } from "@solana/spl-token";
 
 import {
 	BatchTokenTransferData,
@@ -42,7 +41,7 @@ describe("BatchTokenTransfer", () => {
 	it("transfers token to multiple recipient", async () => {
 		const mint = new anchor.web3.PublicKey("AbLwGR8A1wvsiLWrzzA5eYPoQw51NVMcMMTPvAv5LTJ");
 		const data = accounts.map<BatchTokenTransferData>((account) => ({
-			account: getAssociatedTokenAddressSync(mint, new anchor.web3.PublicKey(account)).toString(),
+			account,
 			amount: 1,
 			decimals: 9,
 		}));

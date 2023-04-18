@@ -147,7 +147,15 @@ export class BatchTransferService {
 		batchData: BatchTokenTransferData[];
 	}): Promise<TransactionPayload> {
 		const parsedAmounts = batchData.map<anchor.BN>(({ amount, decimals }) => parseToUnits(amount, decimals));
-		const accounts = batchData.map<anchor.web3.PublicKey>(({ account }) => new anchor.web3.PublicKey(account));
+		const accounts = await Promise.all(
+			batchData.map<Promise<anchor.web3.PublicKey>>(
+				async ({ account }) =>
+					await anchor.utils.token.associatedAddress({
+						mint: new anchor.web3.PublicKey(mint),
+						owner: new anchor.web3.PublicKey(account),
+					}),
+			),
+		);
 		const ix = await this.batchTransferIxns.getTokenBatchTransferInstruction(
 			new anchor.web3.PublicKey(authority),
 			new anchor.web3.PublicKey(mint),

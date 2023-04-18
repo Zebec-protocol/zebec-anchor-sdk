@@ -1,5 +1,5 @@
 import * as anchor from "@project-serum/anchor";
-import { createAssociatedTokenAccountInstruction, getAssociatedTokenAddressSync } from "@solana/spl-token";
+import { createAssociatedTokenAccountInstruction } from "@solana/spl-token";
 
 import { IBatchTransferInstruction } from "./instructions";
 import { getDecimals } from "./utils";
@@ -182,7 +182,10 @@ export class BatchTransferService {
 		}
 
 		for (let i = 0; i < users.length; i++) {
-			const tokenAccount = getAssociatedTokenAddressSync(mint, users[i], true);
+			const tokenAccount = await anchor.utils.token.associatedAddress({
+				mint: new anchor.web3.PublicKey(mint),
+				owner: users[i],
+			});
 			transaction.add(
 				createAssociatedTokenAccountInstruction(this.provider.wallet.publicKey, tokenAccount, users[i], mint),
 			);

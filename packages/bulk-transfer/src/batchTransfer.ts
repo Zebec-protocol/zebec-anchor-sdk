@@ -50,7 +50,6 @@ export class BatchTransferService {
 	async checkTokenAccount({
 		accounts,
 		mint,
-		allowOwnerOffCurve,
 	}: {
 		accounts: string[];
 		mint: string;
@@ -60,7 +59,10 @@ export class BatchTransferService {
 
 		for (let i = 0; i < accounts.length; i++) {
 			const account = new anchor.web3.PublicKey(accounts[i]);
-			const tokenAccount = getAssociatedTokenAddressSync(new anchor.web3.PublicKey(mint), account, allowOwnerOffCurve);
+			const tokenAccount = await anchor.utils.token.associatedAddress({
+				mint: new anchor.web3.PublicKey(mint),
+				owner: account,
+			});
 			const accountInfo = await this.provider.connection.getAccountInfo(tokenAccount);
 			if (accountInfo == null) {
 				arr.push(new anchor.web3.PublicKey(account));

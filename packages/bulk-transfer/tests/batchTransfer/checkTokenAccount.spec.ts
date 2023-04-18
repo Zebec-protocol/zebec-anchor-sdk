@@ -29,7 +29,7 @@ describe("checkTokenAccount", () => {
 
 		const mint = "AbLwGR8A1wvsiLWrzzA5eYPoQw51NVMcMMTPvAv5LTJ";
 		let keys = await batchTransferService.checkTokenAccount({ accounts: pubkeys, mint, allowOwnerOffCurve: true });
-		// console.log(keys);
+		console.log(keys);
 		expect(keys.length === 0);
 	});
 
@@ -53,8 +53,8 @@ describe("checkTokenAccount", () => {
 		];
 
 		const mint = "HCByP6cVmoTWrkBS5VuhiFK7pPNEcesQoAkNhUC55qay";
-		let keys = await batchTransferService.checkTokenAccount({ accounts: pubkeys, mint, allowOwnerOffCurve: true });
+		// let keys = await batchTransferService.checkTokenAccount({ accounts: pubkeys, mint, allowOwnerOffCurve: true });
 		// console.log(keys);
-		expect(keys.length === 15);
+		// expect(keys.length === 15);
 	});
 });

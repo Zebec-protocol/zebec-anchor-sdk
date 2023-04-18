@@ -54,8 +54,8 @@ export class BatchTransferService {
 		accounts: string[];
 		mint: string;
 		allowOwnerOffCurve?: boolean;
-	}): Promise<anchor.web3.PublicKey[]> {
-		const arr: anchor.web3.PublicKey[] = [];
+	}): Promise<{ account: string; index: number }[]> {
+		const arr: { account: string; index: number }[] = [];
 
 		for (let i = 0; i < accounts.length; i++) {
 			const account = new anchor.web3.PublicKey(accounts[i]);
@@ -65,7 +65,7 @@ export class BatchTransferService {
 			});
 			const accountInfo = await this.provider.connection.getAccountInfo(tokenAccount);
 			if (accountInfo == null) {
-				arr.push(new anchor.web3.PublicKey(account));
+				arr.push({ account: account.toString(), index: i });
 			}
 		}
 		return arr;
@@ -169,9 +169,9 @@ export class BatchTransferService {
 		mint,
 		users,
 	}: {
-		feepayer: anchor.web3.PublicKey;
-		users: anchor.web3.PublicKey[];
-		mint: anchor.web3.PublicKey;
+		feepayer: string;
+		users: string[];
+		mint: string;
 	}): Promise<TransactionPayload> {
 		const { blockhash, lastValidBlockHeight } = await this.provider.connection.getLatestBlockhash();
 
@@ -182,15 +182,17 @@ export class BatchTransferService {
 		}
 
 		for (let i = 0; i < users.length; i++) {
+			const owner = new anchor.web3.PublicKey(users[i]);
+			const mint_ = new anchor.web3.PublicKey(mint);
 			const tokenAccount = await anchor.utils.token.associatedAddress({
-				mint: new anchor.web3.PublicKey(mint),
-				owner: users[i],
+				mint: mint_,
+				owner,
 			});
 			transaction.add(
-				createAssociatedTokenAccountInstruction(this.provider.wallet.publicKey, tokenAccount, users[i], mint),
+				createAssociatedTokenAccountInstruction(this.provider.wallet.publicKey, tokenAccount, owner, mint_),
 			);
 		}
-		transaction.feePayer = feepayer;
+		transaction.feePayer = new anchor.web3.PublicKey(feepayer);
 		transaction.recentBlockhash = blockhash;
 		transaction.lastValidBlockHeight = lastValidBlockHeight;
 

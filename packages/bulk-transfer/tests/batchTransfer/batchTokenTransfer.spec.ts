@@ -15,47 +15,54 @@ describe("BatchTokenTransfer", () => {
 	const batchTransferIxns = new BatchTransferInstruction(BatchTranferProgramFactory.getProgram({}));
 	const batchTransferService = new BatchTransferService(provider, batchTransferIxns);
 	const accounts = [
-		"Fx3xZ86YZw3gJUHU3FQKKq6ZDbkDLHa5j4z84gBY5LzF",
-		"4VbwC8uYtjfj2jimQpyshaXRW2u5A3iyhUXQFTb82kCV",
-		"H9kQHjJSUgbAABxwyFG4MXWb7vqfbBXq2nmPDFFU1S6T",
-		"95Zp1x4f55uHBHFghX6YmKtQK16ZkqG7KZNmzyeg2ZGL",
-		"FoqznQf9YL4kuTuRzTJbi4pCHghN32wEtqi4ZaE4bmJi",
-		"6mcgvH3n5KWfedpzMj7aKT19VWLrkAeq5FSyLtwX2beq",
-		"5JF1zKkoUWTGuCgRCT9caEP5a2kGB66jsGmfwsBKYsjE",
-		"AxuiXjbNsGGRSCHgDvHFr8Y2c53jbbpXPeiWBvJmdvaX",
-		"5QeqNRYVjJ8Apt8D44JtDHq4R3kkNX9p6sLtf2yUMvFL",
-		"BGv5qqyi69HgR6EEYQK6wdFRj3cWsK2PvntvgJ9ECCdV",
-		"4xrE4NUmXEW4PwCQU25AmLQmCBNagmWF8ehT5Qoyjrwk",
-		"DMGY4uF97WRGohaJLKHH7ndSwKTqsZLxZLwusitgpHue",
-		"H8dgDYpJWpHBauKfR1mpw6GybEVaUmPhy4phNbvLRpgA",
-		"6q3CLKPQZECGA9QRHNdYmr796Cn8bYCgK9eHD63T6eeb",
-		"8XoCkZz1WM7ndkbQX8fVXaGYyJobroUs2o2of8m5S8HU",
-		// "Gp2dJNgoqm8zqFHrgV5AZiGp3sRebdAqmP9werpzjMxF",
-		// "5E6homPXerHHTPRwRn22L2u8qkGaXQHMj4v5d9vSMvui",
-		// "5XBesCRdQKqJJor2MawQZf45fegUbNkD4nFxSUpZhnnA",
-		// "5XRQpwDLdQAa14U2W6aCAZxHvQxqRRdcGMvH7xEkUiK4",
-		// "3N1aEZQ5kontZwXXvYHt2PitNo283rfQn3D5F5tnAB7x",
-		// "GqJjf4joy9tBtjKWoFJ4B3Qz8ebGvf5XcWeKJ3SaTvDb",
-		// "3BYwYKd49HPh5EQDciPwWampjtL8cLNKMQrZh8QwKKyF"
+		[
+			"CtyJPoJ7EqtwppFeUh8MmLCL7LYMixSFVPQ9kyayaJ3X", //1
+			"bz2eDc2FCMGb1zD6bMn42s2nNSqf1eMnC6ZKwgfYmMV", //2
+			"Fqgqj9HjKyoDJmptz5wDUEmXnRci9JhxdykBZ5Lp8wMN", //3
+			"7Qnbys1mwCrDPYTDZRDrfpvKQBigX1MV1j69RFVtweDR", //4
+			"Dmm2r52nQMGiPeknbG2osbMsaKZiyAECxFKvJyMPbHza", //5
+			"E9mQT5ki2ZV2zk9wPbZTrzVMcbYkoSg8PUhqbzmJYXXX", //6
+			"4kDteHtVpeYSrz5wjsv6n2GfGi4TM8dzWTYYL9tr5VsZ", //7
+			"G4MUjSZbPMFNFAcM873NAoFdficSaC2XS9zaZexQQBSm", //8
+			"ECPCafMDGBUeazu3wSXmtQm7fky9MtwEmRVVVyab6WMv", //9
+			"2t2U16aPvRXkFhJxaMQadLHJeKnLbrEhYan1UqR1Kaur", //10
+			"FvrpB5hbyXWoJWTAWQbg9QnbJA3xQwwDqmm6JBNLD7Sb", //11
+			"E3ViMvdoRQ1HsXGU1WEH638y8e9w96sDDJso7kJEnirv", //12
+			"21aAFEukkk2RWzgcTLAUdNTrtRUprHtwRPEiwFoXfLMv", //13
+			"EeJLkM6ywW8HL7h2g8k8hVBSerXo2RAsaj4b8yViVyDD", //14
+			"7kjN13MRvDqH2HZYJ6nvNgwV1WrQH1ULKYBuzeJqg4qr", //15
+		],
+		[
+			"DCmScX6vX6fLfNk87Q7DeDHCgHGxvize4Px9DL9muWFU", //1
+			"3WZpemGADQVo3nDMjogWaVSaniWdfoF29jmZf9DmsPJb", //2
+			"TjoNX1ieiCqR6hvbAKZLCfZJ3yC9mFn88s2aXojNmeN", //3
+			"8zAVR2eGe89edpXM7xKwQvthqL9hTfw9TeviSnBjd8xi", //4
+			"4sc4saeq2rheGXpi3HK3zPDE81VzGmjuskhfxB99z2xC", //5
+			"GZkpaj6s8b8iWNXpwKA77kas4UMCDSBHeyaMcbfRfZHW", //6
+			"ASEYkCiwuAS2TVHvjiMUdcfdoiLZct3hdG66BYjviTNG", //7
+		],
 	];
 
 	it("transfers token to multiple recipient", async () => {
-		const mint = new anchor.web3.PublicKey("AbLwGR8A1wvsiLWrzzA5eYPoQw51NVMcMMTPvAv5LTJ");
-		const data = accounts.map<BatchTokenTransferData>((account) => ({
-			account: getAssociatedTokenAddressSync(mint, new anchor.web3.PublicKey(account)).toString(),
-			amount: 1,
-			decimals: 9,
-		}));
-
+		const mint = new anchor.web3.PublicKey("BRjpCHtyQLNCo8gqRUr8jtdAj5AjPYQaoqbvcZiHok1k");
+		let batchData: BatchTokenTransferData[][] = [];
+		for (let i = 0; i < accounts.length; i++) {
+			const data = accounts[i].map<BatchTokenTransferData>((account) => ({
+				account: getAssociatedTokenAddressSync(mint, new anchor.web3.PublicKey(account)).toString(),
+				amount: 0.0001,
+				decimals: 6,
+			}));
+			batchData.push(data);
+		}
 		const splTransferPayload = await batchTransferService.transferTokenInBatch({
 			authority: provider.wallet.publicKey.toString(),
 			mint: mint.toString(),
-			batchData: data,
+			batchData: batchData,
 		});
 
 		try {
-			const signature = await splTransferPayload.execute();
-			console.log("signature", signature);
+			const result = await splTransferPayload.execute();
+			console.log("result", result);
 		} catch (e) {
 			console.log((e as anchor.web3.SendTransactionError).logs);
 			throw e;

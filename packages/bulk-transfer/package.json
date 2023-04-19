@@ -10,7 +10,9 @@
     "@solana/spl-token": "^0.3.7",
     "bignumber.js": "^9.1.1"
   },
-  "files": ["dist/"],
+  "files": [
+    "dist/"
+  ],
   "scripts": {
     "build": "npm run clean && tsc",
     "clean": "rimraf ./dist",

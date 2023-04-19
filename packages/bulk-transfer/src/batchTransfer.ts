@@ -1,40 +1,60 @@
 import * as anchor from "@project-serum/anchor";
-import { createAssociatedTokenAccountInstruction, getAssociatedTokenAddressSync } from "@solana/spl-token";
+import { createAssociatedTokenAccountInstruction } from "@solana/spl-token";
 
 import { IBatchTransferInstruction } from "./instructions";
-import { getDecimals } from "./utils";
+import { chunkArray, getDecimals } from "./utils";
 import { parseToLamports, parseToUnits } from "./utils/parseUnits";
 
 export interface ITransactionPayload {
 	readonly transactions: anchor.web3.Transaction[];
-	readonly blockhash: string;
-	readonly lastValidBlockHeight: number;
-	execute(): Promise<anchor.web3.TransactionSignature[]>;
+	execute(): Promise<PromiseSettledResult<string>[]>;
 }
 
 export class TransactionPayload implements ITransactionPayload {
+	private readonly blockhashes: string[];
+	private readonly lastValidBlockHeights: number[];
+
 	constructor(
 		private provider: anchor.AnchorProvider,
-		public readonly transactions: anchor.web3.Transaction[],
-		public readonly blockhash: string,
-		public readonly lastValidBlockHeight: number,
-	) {}
+		public readonly transactions: anchor.web3.Transaction[], // public readonly blockhashes: string[], // public readonly lastValidBlockHeights: number[],
+	) {
+		this.blockhashes = [];
+		this.lastValidBlockHeights = [];
+	}
 
-	async execute(): Promise<anchor.web3.TransactionSignature[]> {
-		let signatures: string[] = [];
+	async execute(): Promise<PromiseSettledResult<string>[]> {
+		let batches: PromiseSettledResult<string>[] = [];
+		const { blockhash, lastValidBlockHeight } = await this.provider.connection.getLatestBlockhash();
+		for (let i = 0; i < this.transactions.length; i++) {
+			this.transactions[i].recentBlockhash = blockhash;
+			this.transactions[i].lastValidBlockHeight = lastValidBlockHeight;
+			this.blockhashes.push(blockhash);
+			this.lastValidBlockHeights.push(lastValidBlockHeight);
+		}
 		const signedTxs = await this.provider.wallet.signAllTransactions(this.transactions);
-
+		let transferPromises: Promise<any>[] = [];
 		for (let i = 0; i < signedTxs.length; i++) {
 			const signed = signedTxs[i];
-			const signature = await this.provider.connection.sendRawTransaction(signed.serialize());
-			await this.provider.connection.confirmTransaction({
-				blockhash: this.blockhash,
-				lastValidBlockHeight: this.lastValidBlockHeight,
-				signature,
-			});
-			signatures.push(signature);
+			transferPromises.push(this.sendSignedTransaction(signed, i));
 		}
-		return signatures;
+		await Promise.allSettled(transferPromises)
+			.then((results) => {
+				results.forEach((result: PromiseSettledResult<string>, i) => {
+					batches.push(result);
+				});
+			})
+			.catch((e) => console.log("errr", e));
+		return batches;
+	}
+
+	async sendSignedTransaction(signed: anchor.web3.Transaction, i: number): Promise<string> {
+		const signature = await this.provider.connection.sendRawTransaction(signed.serialize());
+		await this.provider.connection.confirmTransaction({
+			blockhash: this.blockhashes[i],
+			lastValidBlockHeight: this.lastValidBlockHeights[i],
+			signature,
+		});
+		return signature;
 	}
 }
 
@@ -50,7 +70,6 @@ export class BatchTransferService {
 	async checkTokenAccount({
 		accounts,
 		mint,
-		allowOwnerOffCurve,
 	}: {
 		accounts: string[];
 		mint: string;
@@ -60,7 +79,10 @@ export class BatchTransferService {
 
 		for (let i = 0; i < accounts.length; i++) {
 			const account = new anchor.web3.PublicKey(accounts[i]);
-			const tokenAccount = getAssociatedTokenAddressSync(new anchor.web3.PublicKey(mint), account, allowOwnerOffCurve);
+			const tokenAccount = await anchor.utils.token.associatedAddress({
+				mint: new anchor.web3.PublicKey(mint),
+				owner: account,
+			});
 			const accountInfo = await this.provider.connection.getAccountInfo(tokenAccount);
 			if (accountInfo == null) {
 				arr.push(new anchor.web3.PublicKey(account));
@@ -75,14 +97,11 @@ export class BatchTransferService {
 			new anchor.web3.PublicKey(authority),
 			parsedAmount,
 		);
-		const { blockhash, lastValidBlockHeight } = await this.provider.connection.getLatestBlockhash();
 
 		const transaction = new anchor.web3.Transaction().add(ix);
 		transaction.feePayer = new anchor.web3.PublicKey(authority);
-		transaction.recentBlockhash = blockhash;
-		transaction.lastValidBlockHeight = lastValidBlockHeight;
 
-		return new TransactionPayload(this.provider, [transaction], blockhash, lastValidBlockHeight);
+		return new TransactionPayload(this.provider, [transaction]);
 	}
 
 	async depositToken({
@@ -101,14 +120,11 @@ export class BatchTransferService {
 			new anchor.web3.PublicKey(mint),
 			parsedAmount,
 		);
-		const { blockhash, lastValidBlockHeight } = await this.provider.connection.getLatestBlockhash();
 
 		const transaction = new anchor.web3.Transaction().add(ix);
 		transaction.feePayer = new anchor.web3.PublicKey(authority);
-		transaction.recentBlockhash = blockhash;
-		transaction.lastValidBlockHeight = lastValidBlockHeight;
 
-		return new TransactionPayload(this.provider, [transaction], blockhash, lastValidBlockHeight);
+		return new TransactionPayload(this.provider, [transaction]);
 	}
 
 	async transferSolInBatch({
@@ -116,23 +132,27 @@ export class BatchTransferService {
 		batchData,
 	}: {
 		authority: string;
-		batchData: BatchSolTransferData[];
+		batchData: BatchSolTransferData[][];
 	}): Promise<TransactionPayload> {
-		const parsedAmounts = batchData.map<anchor.BN>(({ amount }) => parseToLamports(amount));
-		const accounts = batchData.map<anchor.web3.PublicKey>(({ account }) => new anchor.web3.PublicKey(account));
-		const ix = await this.batchTransferIxns.getSolBatchTransferInstruction(
-			new anchor.web3.PublicKey(authority),
-			parsedAmounts,
-			accounts,
-		);
-		const { blockhash, lastValidBlockHeight } = await this.provider.connection.getLatestBlockhash();
+		const transactions: anchor.web3.Transaction[] = [];
+		for (let i = 0; i < batchData.length; i++) {
+			const chunk = batchData[i];
+			if (chunk.length > 22) {
+				throw new Error("Accounts more than 22 per batch will exceed max transaction size limit!");
+			}
+			const parsedAmounts = chunk.map<anchor.BN>(({ amount }) => parseToLamports(amount));
+			const accounts = chunk.map<anchor.web3.PublicKey>(({ account }) => new anchor.web3.PublicKey(account));
+			const ix = await this.batchTransferIxns.getSolBatchTransferInstruction(
+				new anchor.web3.PublicKey(authority),
+				parsedAmounts,
+				accounts,
+			);
+			const transaction = new anchor.web3.Transaction().add(ix);
+			transaction.feePayer = new anchor.web3.PublicKey(authority);
+			transactions.push(transaction);
+		}
 
-		const transaction = new anchor.web3.Transaction().add(ix);
-		transaction.feePayer = new anchor.web3.PublicKey(authority);
-		transaction.recentBlockhash = blockhash;
-		transaction.lastValidBlockHeight = lastValidBlockHeight;
-
-		return new TransactionPayload(this.provider, [transaction], blockhash, lastValidBlockHeight);
+		return new TransactionPayload(this.provider, transactions);
 	}
 
 	async transferTokenInBatch({
@@ -142,24 +162,28 @@ export class BatchTransferService {
 	}: {
 		authority: string;
 		mint: string;
-		batchData: BatchTokenTransferData[];
-	}): Promise<TransactionPayload> {
-		const parsedAmounts = batchData.map<anchor.BN>(({ amount, decimals }) => parseToUnits(amount, decimals));
-		const accounts = batchData.map<anchor.web3.PublicKey>(({ account }) => new anchor.web3.PublicKey(account));
-		const ix = await this.batchTransferIxns.getTokenBatchTransferInstruction(
-			new anchor.web3.PublicKey(authority),
-			new anchor.web3.PublicKey(mint),
-			parsedAmounts,
-			accounts,
-		);
-		const { blockhash, lastValidBlockHeight } = await this.provider.connection.getLatestBlockhash();
+		batchData: BatchTokenTransferData[][];
+	}) {
+		const transactions: anchor.web3.Transaction[] = [];
+		for (let i = 0; i < batchData.length; i++) {
+			const chunk = batchData[i];
+			if (chunk.length > 15) {
+				throw new Error("Accounts more than 15 per batch will exceed max transaction size limit!");
+			}
+			const parsedAmounts = chunk.map<anchor.BN>(({ amount, decimals }) => parseToUnits(amount, decimals));
+			const accounts = chunk.map<anchor.web3.PublicKey>(({ account }) => new anchor.web3.PublicKey(account));
+			const ix = await this.batchTransferIxns.getTokenBatchTransferInstruction(
+				new anchor.web3.PublicKey(authority),
+				new anchor.web3.PublicKey(mint),
+				parsedAmounts,
+				accounts,
+			);
 
-		const transaction = new anchor.web3.Transaction().add(ix);
-		transaction.feePayer = new anchor.web3.PublicKey(authority);
-		transaction.recentBlockhash = blockhash;
-		transaction.lastValidBlockHeight = lastValidBlockHeight;
-
-		return new TransactionPayload(this.provider, [transaction], blockhash, lastValidBlockHeight);
+			const transaction = new anchor.web3.Transaction().add(ix);
+			transaction.feePayer = new anchor.web3.PublicKey(authority);
+			transactions.push(transaction);
+		}
+		return new TransactionPayload(this.provider, transactions);
 	}
 
 	async createTokenAccounts({
@@ -171,27 +195,25 @@ export class BatchTransferService {
 		users: anchor.web3.PublicKey[];
 		mint: anchor.web3.PublicKey;
 	}): Promise<TransactionPayload> {
-		const { blockhash, lastValidBlockHeight } = await this.provider.connection.getLatestBlockhash();
-
-		const transaction = new anchor.web3.Transaction();
-
-		if (users.length > 30) {
-			throw new Error("Accounts more than 30 will exceed max transaction size limit!");
+		const transactions: anchor.web3.Transaction[] = [];
+		let receivers: anchor.web3.PublicKey[][] = chunkArray(users, 13);
+		for (let i = 0; i < receivers.length; i++) {
+			const transaction = new anchor.web3.Transaction();
+			const chunk = receivers[i];
+			if (chunk.length > 13) {
+				throw new Error("Accounts more than 13 will exceed max transaction size limit!");
+			}
+			for (let j = 0; j < chunk.length; j++) {
+				const tokenAccount = await anchor.utils.token.associatedAddress({ mint, owner: chunk[j] });
+				transaction.add(
+					createAssociatedTokenAccountInstruction(this.provider.wallet.publicKey, tokenAccount, chunk[j], mint),
+				);
+			}
+			transaction.feePayer = feepayer;
+			transactions.push(transaction);
 		}
-
-		for (let i = 0; i < users.length; i++) {
-			const tokenAccount = getAssociatedTokenAddressSync(mint, users[i], true);
-			transaction.add(
-				createAssociatedTokenAccountInstruction(this.provider.wallet.publicKey, tokenAccount, users[i], mint),
-			);
-		}
-		transaction.feePayer = feepayer;
-		transaction.recentBlockhash = blockhash;
-		transaction.lastValidBlockHeight = lastValidBlockHeight;
-
-		return new TransactionPayload(this.provider, [transaction], blockhash, lastValidBlockHeight);
+		return new TransactionPayload(this.provider, transactions);
 	}
-
 	async withdrawSol({
 		authority,
 		amount,
@@ -204,14 +226,11 @@ export class BatchTransferService {
 			new anchor.web3.PublicKey(authority),
 			parsedAmount,
 		);
-		const { blockhash, lastValidBlockHeight } = await this.provider.connection.getLatestBlockhash();
 
 		const transaction = new anchor.web3.Transaction().add(ix);
 		transaction.feePayer = new anchor.web3.PublicKey(authority);
-		transaction.recentBlockhash = blockhash;
-		transaction.lastValidBlockHeight = lastValidBlockHeight;
 
-		return new TransactionPayload(this.provider, [transaction], blockhash, lastValidBlockHeight);
+		return new TransactionPayload(this.provider, [transaction]);
 	}
 
 	async withdrawToken({ authority, mint, amount }: { authority: string; mint: string; amount: string | number }) {
@@ -222,13 +241,10 @@ export class BatchTransferService {
 			new anchor.web3.PublicKey(mint),
 			parsedAmount,
 		);
-		const { blockhash, lastValidBlockHeight } = await this.provider.connection.getLatestBlockhash();
 
 		const transaction = new anchor.web3.Transaction().add(ix);
 		transaction.feePayer = new anchor.web3.PublicKey(authority);
-		transaction.recentBlockhash = blockhash;
-		transaction.lastValidBlockHeight = lastValidBlockHeight;
 
-		return new TransactionPayload(this.provider, [transaction], blockhash, lastValidBlockHeight);
+		return new TransactionPayload(this.provider, [transaction]);
 	}
 }

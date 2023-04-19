@@ -74,8 +74,8 @@ export class BatchTransferService {
 		accounts: string[];
 		mint: string;
 		allowOwnerOffCurve?: boolean;
-	}): Promise<anchor.web3.PublicKey[]> {
-		const arr: anchor.web3.PublicKey[] = [];
+	}): Promise<{ account: string; index: number }[]> {
+		const arr: { account: string; index: number }[] = [];
 
 		for (let i = 0; i < accounts.length; i++) {
 			const account = new anchor.web3.PublicKey(accounts[i]);
@@ -85,7 +85,7 @@ export class BatchTransferService {
 			});
 			const accountInfo = await this.provider.connection.getAccountInfo(tokenAccount);
 			if (accountInfo == null) {
-				arr.push(new anchor.web3.PublicKey(account));
+				arr.push({ account: account.toString(), index: i });
 			}
 		}
 		return arr;
@@ -178,7 +178,7 @@ export class BatchTransferService {
 				parsedAmounts,
 				accounts,
 			);
-
+      
 			const transaction = new anchor.web3.Transaction().add(ix);
 			transaction.feePayer = new anchor.web3.PublicKey(authority);
 			transactions.push(transaction);
@@ -191,9 +191,9 @@ export class BatchTransferService {
 		mint,
 		users,
 	}: {
-		feepayer: anchor.web3.PublicKey;
-		users: anchor.web3.PublicKey[];
-		mint: anchor.web3.PublicKey;
+		feepayer: string;
+		users: string[];
+		mint: string;
 	}): Promise<TransactionPayload> {
 		const transactions: anchor.web3.Transaction[] = [];
 		let receivers: anchor.web3.PublicKey[][] = chunkArray(users, 13);
@@ -214,6 +214,7 @@ export class BatchTransferService {
 		}
 		return new TransactionPayload(this.provider, transactions);
 	}
+  
 	async withdrawSol({
 		authority,
 		amount,

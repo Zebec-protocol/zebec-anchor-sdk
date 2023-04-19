@@ -178,7 +178,7 @@ export class BatchTransferService {
 				parsedAmounts,
 				accounts,
 			);
-      
+
 			const transaction = new anchor.web3.Transaction().add(ix);
 			transaction.feePayer = new anchor.web3.PublicKey(authority);
 			transactions.push(transaction);
@@ -196,7 +196,9 @@ export class BatchTransferService {
 		mint: string;
 	}): Promise<TransactionPayload> {
 		const transactions: anchor.web3.Transaction[] = [];
-		let receivers: anchor.web3.PublicKey[][] = chunkArray(users, 13);
+
+		let receivers: string[][] = chunkArray(users, 13);
+
 		for (let i = 0; i < receivers.length; i++) {
 			const transaction = new anchor.web3.Transaction();
 			const chunk = receivers[i];
@@ -204,17 +206,20 @@ export class BatchTransferService {
 				throw new Error("Accounts more than 13 will exceed max transaction size limit!");
 			}
 			for (let j = 0; j < chunk.length; j++) {
-				const tokenAccount = await anchor.utils.token.associatedAddress({ mint, owner: chunk[j] });
+				const owner = new anchor.web3.PublicKey(chunk[j]);
+				const mint_ = new anchor.web3.PublicKey(mint);
+
+				const tokenAccount = await anchor.utils.token.associatedAddress({ mint: mint_, owner });
 				transaction.add(
-					createAssociatedTokenAccountInstruction(this.provider.wallet.publicKey, tokenAccount, chunk[j], mint),
+					createAssociatedTokenAccountInstruction(this.provider.wallet.publicKey, tokenAccount, owner, mint_),
 				);
 			}
-			transaction.feePayer = feepayer;
+			transaction.feePayer = new anchor.web3.PublicKey(feepayer);
 			transactions.push(transaction);
 		}
 		return new TransactionPayload(this.provider, transactions);
 	}
-  
+
 	async withdrawSol({
 		authority,
 		amount,

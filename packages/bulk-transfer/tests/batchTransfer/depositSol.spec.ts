@@ -11,8 +11,8 @@ describe("depositSol()", () => {
 		const authority = provider.publicKey.toString();
 		const amount = 1.2353523;
 		const depositSolPayload = await service.depositSol({ authority, amount });
-		const signature = await depositSolPayload.execute();
+		const result = await depositSolPayload.execute();
 
-		console.log("signature", signature);
+		console.log("result", result);
 	});
 });

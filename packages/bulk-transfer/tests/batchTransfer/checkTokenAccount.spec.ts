@@ -28,7 +28,7 @@ describe("checkTokenAccount", () => {
 		];
 
 		const mint = "AbLwGR8A1wvsiLWrzzA5eYPoQw51NVMcMMTPvAv5LTJ";
-		let keys = await batchTransferService.checkTokenAccount({ accounts: pubkeys, mint, allowOwnerOffCurve: true });
+		let keys = await batchTransferService.checkTokenAccount({ accounts: pubkeys, mint });
 		console.log(keys);
 		expect(keys.length === 0);
 	});

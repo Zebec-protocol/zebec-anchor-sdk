@@ -73,7 +73,6 @@ export class BatchTransferService {
 	}: {
 		accounts: string[];
 		mint: string;
-		allowOwnerOffCurve?: boolean;
 	}): Promise<{ account: string; index: number }[]> {
 		const arr: { account: string; index: number }[] = [];
 
@@ -171,7 +170,14 @@ export class BatchTransferService {
 				throw new Error("Accounts more than 15 per batch will exceed max transaction size limit!");
 			}
 			const parsedAmounts = chunk.map<anchor.BN>(({ amount, decimals }) => parseToUnits(amount, decimals));
-			const accounts = chunk.map<anchor.web3.PublicKey>(({ account }) => new anchor.web3.PublicKey(account));
+			const accounts = await Promise.all(
+				chunk.map(({ account }) =>
+					anchor.utils.token.associatedAddress({
+						owner: new anchor.web3.PublicKey(account),
+						mint: new anchor.web3.PublicKey(mint),
+					}),
+				),
+			);
 			const ix = await this.batchTransferIxns.getTokenBatchTransferInstruction(
 				new anchor.web3.PublicKey(authority),
 				new anchor.web3.PublicKey(mint),
@@ -202,8 +208,8 @@ export class BatchTransferService {
 		for (let i = 0; i < receivers.length; i++) {
 			const transaction = new anchor.web3.Transaction();
 			const chunk = receivers[i];
-			if (chunk.length > 13) {
-				throw new Error("Accounts more than 13 will exceed max transaction size limit!");
+			if (chunk.length > 12) {
+				throw new Error("Accounts more than 12 will exceed max transaction size limit!");
 			}
 			for (let j = 0; j < chunk.length; j++) {
 				const owner = new anchor.web3.PublicKey(chunk[j]);

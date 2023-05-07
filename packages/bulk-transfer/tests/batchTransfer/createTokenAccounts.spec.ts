@@ -6,7 +6,7 @@ import { provider } from "../shared";
 describe("createTokenAccount", () => {
 	const batchTransferIxns = new BatchTransferInstruction(BatchTranferProgramFactory.getProgram({}));
 	const batchTransactionService = new BatchTransferService(provider, batchTransferIxns);
-	const mint = "AbLwGR8A1wvsiLWrzzA5eYPoQw51NVMcMMTPvAv5LTJ";
+	const mint = "htoHLBJV1err8xP5oxyQdV2PLQhtVjxLXpKB7FsgJQD";
 
 	const accounts = [
 		[

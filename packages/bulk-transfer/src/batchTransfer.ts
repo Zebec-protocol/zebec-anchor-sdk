@@ -203,7 +203,7 @@ export class BatchTransferService {
 	}): Promise<TransactionPayload> {
 		const transactions: anchor.web3.Transaction[] = [];
 
-		let receivers: string[][] = chunkArray(users, 13);
+		let receivers: string[][] = chunkArray(users, 12);
 
 		for (let i = 0; i < receivers.length; i++) {
 			const transaction = new anchor.web3.Transaction();

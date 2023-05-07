@@ -13,7 +13,7 @@ Make sure, you've the following installed.
 - node (v14+)
 - npm or yarn
 
-
+<!---
 ## Install Packages
 
 Install with npm
@@ -34,3 +34,4 @@ yarn add @zebec.io/stream
 ```
 yarn add @zebec.io/multisig
 ```
+--->

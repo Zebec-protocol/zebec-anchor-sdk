@@ -37,3 +37,4 @@ jobs:
           NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
         with:
           working_directory: ./packages/${{ matrix.packages }}
+          tag_format: "${{ matrix.packages}}-v${version}"

@@ -1,21 +1,18 @@
 {
-  "name": "@zebec-io/stream",
-  "version": "0.0.1",
+  "name": "@zebec-protocol/stream",
+  "version": "0.0.0-development",
   "description": "Zebec Protocol SDK - Stream",
   "types": "./dist/types/index.d.ts",
   "main": "./dist/esm/index.js",
-  "files": [
-    "/dist"
-  ],
   "scripts": {
     "build": "npm run clean; tsc",
     "clean": "rm -rf ./dist",
-    "publish": "npm publish --access public",
     "start": "ts-node src/index.ts",
     "test": "echo \"Error: no test specified\" && exit 1",
     "docs": "typedoc --excludePrivate --includeVersion --out ../docs/src/.vuepress/dist/ts/ --readme none src/index.ts",
     "lint:fix": "prettier src/** tests/** -w",
-    "lint": "prettier src/** tests/** --check"
+    "lint": "prettier src/** tests/** --check",
+    "semantic-release": "semantic-release"
   },
   "keywords": [
     "Money",
@@ -26,6 +23,10 @@
     "multisig",
     "zbc"
   ],
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/Zebec-protocol/zebec-anchor-sdk.git"
+  },
   "author": "Ashish | Zebec Protocol",
   "license": "ISC",
   "dependencies": {
@@ -48,6 +49,24 @@
     "prettier": "^2.7.1",
     "ts-node": "^10.8.2",
     "typedoc": "^0.23.5",
-    "typescript": "^4.7.4"
+    "typescript": "^4.7.4",
+    "semantic-release": "^21.0.2"
+  },
+  "publishConfig": {
+    "access": "public"
+  },
+  "release": {
+    "branches": [
+      "master",
+      {
+        "name": "dev",
+        "prerelease": true
+      }
+    ]
+  },
+  "config": {
+    "commitizen": {
+      "path": "./node_modules/cz-conventional-changelog"
+    }
   }
 }

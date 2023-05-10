@@ -7,11 +7,11 @@ on:
       - main
 
 jobs:
-  build-and-push-treasury:
+  build-and-push-packages:
     runs-on: ubuntu-latest
-    defaults:
-      run:
-        working-directory: ./packages/multisig
+    strategy:
+      matrix:
+        packages: ["multisig", "stream"]
 
     steps:
       - name: Checkout
@@ -24,9 +24,11 @@ jobs:
 
       - name: Install Dependencies
         run: npm install
+        working-directory: ./packages/${{ matrix.packages }}
 
       - name: Build Library
         run: npm run build
+        working-directory: ./packages/${{ matrix.packages }}
 
       - name: Semantic Release
         uses: cycjimmy/semantic-release-action@v3
@@ -34,4 +36,4 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
         with:
-          working_directory: ./packages/multisig
+          working_directory: ./packages/${{ matrix.packages }}

@@ -1,17 +1,16 @@
-name: Deploy to NPM Registry
+name: Deploy Stream to NPM Registry
 
 on:
   push:
     branches:
       - dev
       - master
+    paths:
+      - "packages/stream/**"
 
 jobs:
   build-and-push-packages:
     runs-on: ubuntu-latest
-    strategy:
-      matrix:
-        packages: ["multisig", "stream"]
 
     steps:
       - name: Checkout
@@ -24,11 +23,11 @@ jobs:
 
       - name: Install Dependencies
         run: npm install
-        working-directory: ./packages/${{ matrix.packages }}
+        working-directory: ./packages/stream
 
       - name: Build Library
         run: npm run build
-        working-directory: ./packages/${{ matrix.packages }}
+        working-directory: ./packages/stream
 
       - name: Semantic Release
         uses: cycjimmy/semantic-release-action@v3
@@ -36,5 +35,5 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
         with:
-          working_directory: ./packages/${{ matrix.packages }}
-          tag_format: "${{ matrix.packages}}-v${version}"
+          working_directory: ./packages/stream
+          tag_format: "stream-v${version}"

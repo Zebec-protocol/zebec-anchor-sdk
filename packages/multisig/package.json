@@ -1,7 +1,7 @@
 {
   "name": "@zebec-protocol/treasury",
   "version": "0.0.0-development",
-  "description": "Zebec Procotol SDK - Multisig",
+  "description": "Zebec Procotol SDK - Treasury",
   "types": "./dist/types/index.d.ts",
   "main": "./dist/esm/index.js",
   "scripts": {

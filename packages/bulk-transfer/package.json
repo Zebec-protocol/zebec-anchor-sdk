@@ -1,6 +1,6 @@
 {
   "name": "@zebec-protocol/bulk-transfer",
-  "version": "0.0.0-development",
+  "version": "1.0.0-dev.2",
   "main": "./dist/esm/index.js",
   "types": "./dist/types/index.d.ts",
   "author": "Ashish Sapkota | Raghib Islam | Zebec Protocol",
@@ -47,7 +47,6 @@
         "prerelease": true
       }
     ]
-
   },
   "config": {
     "commitizen": {

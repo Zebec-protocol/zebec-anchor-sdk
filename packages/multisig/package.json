@@ -1,12 +1,9 @@
 {
-  "name": "@zebec-io/multisig",
-  "version": "0.0.1",
+  "name": "@zebec-protocol/treasury",
+  "version": "0.0.0-development",
   "description": "Zebec Procotol SDK - Multisig",
   "types": "./dist/types/index.d.ts",
   "main": "./dist/esm/index.js",
-  "files": [
-    "/dist"
-  ],
   "scripts": {
     "build": "npm run clean; tsc",
     "clean": "rm -rf ./dist",
@@ -15,11 +12,12 @@
     "test": "echo \"Error: no test specified\" && exit 1",
     "docs": "typedoc --excludePrivate --includeVersion --out ../docs/src/.vuepress/dist/ts/ --readme none src/index.ts",
     "lint:fix": "prettier src/** tests/** -w",
-    "lint": "prettier src/** tests/** --check"
+    "lint": "prettier src/** tests/** --check",
+    "semantic-release": "semantic-release"
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/Zebec-protocol/zebec-anchor-sdk.git"
+    "url": "https://github.com/Zebec-protocol/zebec-anchor-sdk.git"
   },
   "keywords": [
     "Money",
@@ -59,6 +57,19 @@
     "prettier": "^2.7.1",
     "ts-node": "^10.9.1",
     "typedoc": "^0.23.8",
-    "typescript": "^4.7.4"
+    "typescript": "^4.7.4",
+    "semantic-release": "^21.0.2"
+  },
+  "release": {
+    "branches": [
+      {
+        "name": "main",
+        "prerelease": false
+      },
+      {
+        "name": "dev",
+        "prerelease": true
+      }
+    ]
   }
 }

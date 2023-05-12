@@ -1,0 +1,687 @@
+<!DOCTYPE html><html class="default" lang="en"><head><meta charSet="utf-8"/><meta http-equiv="x-ua-compatible" content="IE=edge"/><title>ZebecNativeTreasury | Zebec Protocol - v1.0.0</title><meta name="description" content="Documentation for Zebec Protocol - v1.0.0"/><meta name="viewport" content="width=device-width, initial-scale=1"/><link rel="stylesheet" href="../assets/style.css"/><link rel="stylesheet" href="../assets/highlight.css"/><script async src="../assets/search.js" id="search-script"></script></head><body><script>document.documentElement.dataset.theme = localStorage.getItem("tsd-theme") || "os"</script><header class="tsd-page-toolbar">
+<div class="tsd-toolbar-contents container">
+<div class="table-cell" id="tsd-search" data-base="..">
+<div class="field"><label for="tsd-search-field" class="tsd-widget tsd-toolbar-icon search no-caption"><svg width="16" height="16" viewBox="0 0 16 16" fill="none"><path d="M15.7824 13.833L12.6666 10.7177C12.5259 10.5771 12.3353 10.499 12.1353 10.499H11.6259C12.4884 9.39596 13.001 8.00859 13.001 6.49937C13.001 2.90909 10.0914 0 6.50048 0C2.90959 0 0 2.90909 0 6.49937C0 10.0896 2.90959 12.9987 6.50048 12.9987C8.00996 12.9987 9.39756 12.4863 10.5008 11.6239V12.1332C10.5008 12.3332 10.5789 12.5238 10.7195 12.6644L13.8354 15.7797C14.1292 16.0734 14.6042 16.0734 14.8948 15.7797L15.7793 14.8954C16.0731 14.6017 16.0731 14.1267 15.7824 13.833ZM6.50048 10.499C4.29094 10.499 2.50018 8.71165 2.50018 6.49937C2.50018 4.29021 4.28781 2.49976 6.50048 2.49976C8.71001 2.49976 10.5008 4.28708 10.5008 6.49937C10.5008 8.70852 8.71314 10.499 6.50048 10.499Z" fill="var(--color-text)"></path></svg></label><input type="text" id="tsd-search-field" aria-label="Search"/></div>
+<div class="field">
+<div id="tsd-toolbar-links"></div></div>
+<ul class="results">
+<li class="state loading">Preparing search index...</li>
+<li class="state failure">The search index is not available</li></ul><a href="../index.html" class="title">Zebec Protocol - v1.0.0</a></div>
+<div class="table-cell" id="tsd-widgets"><a href="#" class="tsd-widget tsd-toolbar-icon menu no-caption" data-toggle="menu" aria-label="Menu"><svg width="16" height="16" viewBox="0 0 16 16" fill="none"><rect x="1" y="3" width="14" height="2" fill="var(--color-text)"></rect><rect x="1" y="7" width="14" height="2" fill="var(--color-text)"></rect><rect x="1" y="11" width="14" height="2" fill="var(--color-text)"></rect></svg></a></div></div></header>
+<div class="container container-main">
+<div class="col-8 col-content">
+<div class="tsd-page-title">
+<ul class="tsd-breadcrumb">
+<li><a href="../modules.html">Zebec Protocol - v1.0.0</a></li>
+<li><a href="../modules/_zebec_protocol_multisig.html">@zebec-protocol/multisig</a></li>
+<li><a href="_zebec_protocol_multisig.ZebecNativeTreasury.html">ZebecNativeTreasury</a></li></ul>
+<h1>Class ZebecNativeTreasury</h1></div>
+<section class="tsd-panel tsd-hierarchy">
+<h4>Hierarchy</h4>
+<ul class="tsd-hierarchy">
+<li><a href="_zebec_protocol_multisig.ZebecMultisig.html" class="tsd-signature-type" data-tsd-kind="Class">ZebecMultisig</a>
+<ul class="tsd-hierarchy">
+<li><span class="target">ZebecNativeTreasury</span></li></ul></li></ul></section><aside class="tsd-sources">
+<ul>
+<li>Defined in <a href="https://github.com/Zebec-protocol/zebec-anchor-sdk/blob/b546a3d/packages/multisig/src/services/multisig.ts#L300">multisig/src/services/multisig.ts:300</a></li></ul></aside>
+<section class="tsd-panel-group tsd-index-group">
+<section class="tsd-panel tsd-index-panel">
+<details class="tsd-index-content tsd-index-accordion" open><summary class="tsd-accordion-summary tsd-index-summary">
+<h5 class="tsd-index-heading uppercase" role="button" aria-expanded="false" tabIndex=0><svg width="16" height="16" viewBox="0 0 16 16" fill="none"><path d="M1.5 5.50969L8 11.6609L14.5 5.50969L12.5466 3.66086L8 7.96494L3.45341 3.66086L1.5 5.50969Z" fill="var(--color-text)"></path></svg> Index</h5></summary>
+<div class="tsd-accordion-details">
+<section class="tsd-index-section">
+<h3 class="tsd-index-heading">Constructors</h3>
+<div class="tsd-index-list"><a href="_zebec_protocol_multisig.ZebecNativeTreasury.html#constructor" class="tsd-index-link tsd-kind-constructor tsd-parent-kind-class"><svg class="tsd-kind-icon" width="24" height="24" viewBox="0 0 24 24"><rect fill="var(--color-icon-background)" stroke="#4D7FFF" stroke-width="1.5" x="1" y="1" width="22" height="22" rx="12" id="icon-512-path"></rect><path d="M11.898 16.1201C11.098 16.1201 10.466 15.8961 10.002 15.4481C9.53803 15.0001 9.30603 14.3841 9.30603 13.6001V9.64012C9.30603 8.85612 9.53803 8.24012 10.002 7.79212C10.466 7.34412 11.098 7.12012 11.898 7.12012C12.682 7.12012 13.306 7.34812 13.77 7.80412C14.234 8.25212 14.466 8.86412 14.466 9.64012H13.386C13.386 9.14412 13.254 8.76412 12.99 8.50012C12.734 8.22812 12.37 8.09212 11.898 8.09212C11.426 8.09212 11.054 8.22412 10.782 8.48812C10.518 8.75212 10.386 9.13212 10.386 9.62812V13.6001C10.386 14.0961 10.518 14.4801 10.782 14.7521C11.054 15.0161 11.426 15.1481 11.898 15.1481C12.37 15.1481 12.734 15.0161 12.99 14.7521C13.254 14.4801 13.386 14.0961 13.386 13.6001H14.466C14.466 14.3761 14.234 14.9921 13.77 15.4481C13.306 15.8961 12.682 16.1201 11.898 16.1201Z" fill="var(--color-text)" id="icon-512-text"></path></svg><span>constructor</span></a>
+</div></section>
+<section class="tsd-index-section">
+<h3 class="tsd-index-heading">Properties</h3>
+<div class="tsd-index-list"><a href="_zebec_protocol_multisig.ZebecNativeTreasury.html#anchorProvider" class="tsd-index-link tsd-kind-property tsd-parent-kind-class tsd-is-inherited"><svg class="tsd-kind-icon" width="24" height="24" viewBox="0 0 24 24"><rect fill="var(--color-icon-background)" stroke="#FF984D" stroke-width="1.5" x="1" y="1" width="22" height="22" rx="12" id="icon-1024-path"></rect><path d="M9.354 16V7.24H12.174C12.99 7.24 13.638 7.476 14.118 7.948C14.606 8.412 14.85 9.036 14.85 9.82C14.85 10.604 14.606 11.232 14.118 11.704C13.638 12.168 12.99 12.4 12.174 12.4H10.434V16H9.354ZM10.434 11.428H12.174C12.646 11.428 13.022 11.284 13.302 10.996C13.59 10.7 13.734 10.308 13.734 9.82C13.734 9.324 13.59 8.932 13.302 8.644C13.022 8.356 12.646 8.212 12.174 8.212H10.434V11.428Z" fill="var(--color-text)" id="icon-1024-text"></path></svg><span>anchor<wbr/>Provider</span></a>
+<a href="_zebec_protocol_multisig.ZebecNativeTreasury.html#consolelog" class="tsd-index-link tsd-kind-property tsd-parent-kind-class tsd-is-inherited"><svg class="tsd-kind-icon" width="24" height="24" viewBox="0 0 24 24"><use href="#icon-1024-path"></use><use href="#icon-1024-text"></use></svg><span>consolelog</span></a>
+<a href="_zebec_protocol_multisig.ZebecNativeTreasury.html#feeReceiverAddress" class="tsd-index-link tsd-kind-property tsd-parent-kind-class tsd-is-inherited"><svg class="tsd-kind-icon" width="24" height="24" viewBox="0 0 24 24"><use href="#icon-1024-path"></use><use href="#icon-1024-text"></use></svg><span>fee<wbr/>Receiver<wbr/>Address</span></a>
+<a href="_zebec_protocol_multisig.ZebecNativeTreasury.html#logger" class="tsd-index-link tsd-kind-property tsd-parent-kind-class tsd-is-inherited"><svg class="tsd-kind-icon" width="24" height="24" viewBox="0 0 24 24"><use href="#icon-1024-path"></use><use href="#icon-1024-text"></use></svg><span>logger</span></a>
+<a href="_zebec_protocol_multisig.ZebecNativeTreasury.html#multisigProgram" class="tsd-index-link tsd-kind-property tsd-parent-kind-class tsd-is-inherited"><svg class="tsd-kind-icon" width="24" height="24" viewBox="0 0 24 24"><use href="#icon-1024-path"></use><use href="#icon-1024-text"></use></svg><span>multisig<wbr/>Program</span></a>
+<a href="_zebec_protocol_multisig.ZebecNativeTreasury.html#multisigProgramId" class="tsd-index-link tsd-kind-property tsd-parent-kind-class tsd-is-inherited"><svg class="tsd-kind-icon" width="24" height="24" viewBox="0 0 24 24"><use href="#icon-1024-path"></use><use href="#icon-1024-text"></use></svg><span>multisig<wbr/>Program<wbr/>Id</span></a>
+<a href="_zebec_protocol_multisig.ZebecNativeTreasury.html#streamProgram" class="tsd-index-link tsd-kind-property tsd-parent-kind-class tsd-is-inherited"><svg class="tsd-kind-icon" width="24" height="24" viewBox="0 0 24 24"><use href="#icon-1024-path"></use><use href="#icon-1024-text"></use></svg><span>stream<wbr/>Program</span></a>
+<a href="_zebec_protocol_multisig.ZebecNativeTreasury.html#streamProgramId" class="tsd-index-link tsd-kind-property tsd-parent-kind-class tsd-is-inherited"><svg class="tsd-kind-icon" width="24" height="24" viewBox="0 0 24 24"><use href="#icon-1024-path"></use><use href="#icon-1024-text"></use></svg><span>stream<wbr/>Program<wbr/>Id</span></a>
+<a href="_zebec_protocol_multisig.ZebecNativeTreasury.html#transactionBuilder" class="tsd-index-link tsd-kind-property tsd-parent-kind-class tsd-is-inherited"><svg class="tsd-kind-icon" width="24" height="24" viewBox="0 0 24 24"><use href="#icon-1024-path"></use><use href="#icon-1024-text"></use></svg><span>transaction<wbr/>Builder</span></a>
+</div></section>
+<section class="tsd-index-section">
+<h3 class="tsd-index-heading">Methods</h3>
+<div class="tsd-index-list"><a href="_zebec_protocol_multisig.ZebecNativeTreasury.html#_fetchTresholdData" class="tsd-index-link tsd-kind-method tsd-parent-kind-class tsd-is-inherited"><svg class="tsd-kind-icon" width="24" height="24" viewBox="0 0 24 24"><rect fill="var(--color-icon-background)" stroke="#FF4DB8" stroke-width="1.5" x="1" y="1" width="22" height="22" rx="12" id="icon-2048-path"></rect><path d="M9.162 16V7.24H10.578L11.514 10.072C11.602 10.328 11.674 10.584 11.73 10.84C11.794 11.088 11.842 11.28 11.874 11.416C11.906 11.28 11.954 11.088 12.018 10.84C12.082 10.584 12.154 10.324 12.234 10.06L13.122 7.24H14.538V16H13.482V12.82C13.482 12.468 13.49 12.068 13.506 11.62C13.53 11.172 13.558 10.716 13.59 10.252C13.622 9.78 13.654 9.332 13.686 8.908C13.726 8.476 13.762 8.1 13.794 7.78L12.366 12.16H11.334L9.894 7.78C9.934 8.092 9.97 8.456 10.002 8.872C10.042 9.28 10.078 9.716 10.11 10.18C10.142 10.636 10.166 11.092 10.182 11.548C10.206 12.004 10.218 12.428 10.218 12.82V16H9.162Z" fill="var(--color-text)" id="icon-2048-text"></path></svg><span>_fetch<wbr/>Treshold<wbr/>Data</span></a>
+<a href="_zebec_protocol_multisig.ZebecNativeTreasury.html#_findAssociatedTokenAddress" class="tsd-index-link tsd-kind-method tsd-parent-kind-class tsd-is-inherited"><svg class="tsd-kind-icon" width="24" height="24" viewBox="0 0 24 24"><use href="#icon-2048-path"></use><use href="#icon-2048-text"></use></svg><span>_find<wbr/>Associated<wbr/>Token<wbr/>Address</span></a>
+<a href="_zebec_protocol_multisig.ZebecNativeTreasury.html#_findFeeVaultAddress" class="tsd-index-link tsd-kind-method tsd-parent-kind-class tsd-is-inherited"><svg class="tsd-kind-icon" width="24" height="24" viewBox="0 0 24 24"><use href="#icon-2048-path"></use><use href="#icon-2048-text"></use></svg><span>_find<wbr/>Fee<wbr/>Vault<wbr/>Address</span></a>
+<a href="_zebec_protocol_multisig.ZebecNativeTreasury.html#_findFeeVaultDataAccount" class="tsd-index-link tsd-kind-method tsd-parent-kind-class tsd-is-inherited"><svg class="tsd-kind-icon" width="24" height="24" viewBox="0 0 24 24"><use href="#icon-2048-path"></use><use href="#icon-2048-text"></use></svg><span>_find<wbr/>Fee<wbr/>Vault<wbr/>Data<wbr/>Account</span></a>
+<a href="_zebec_protocol_multisig.ZebecNativeTreasury.html#_findSafeAddress" class="tsd-index-link tsd-kind-method tsd-parent-kind-class tsd-is-inherited"><svg class="tsd-kind-icon" width="24" height="24" viewBox="0 0 24 24"><use href="#icon-2048-path"></use><use href="#icon-2048-text"></use></svg><span>_find<wbr/>Safe<wbr/>Address</span></a>
+<a href="_zebec_protocol_multisig.ZebecNativeTreasury.html#_findSolWithdrawEscrowAccount" class="tsd-index-link tsd-kind-method tsd-parent-kind-class tsd-is-inherited"><svg class="tsd-kind-icon" width="24" height="24" viewBox="0 0 24 24"><use href="#icon-2048-path"></use><use href="#icon-2048-text"></use></svg><span>_find<wbr/>Sol<wbr/>Withdraw<wbr/>Escrow<wbr/>Account</span></a>
+<a href="_zebec_protocol_multisig.ZebecNativeTreasury.html#_findTokenWithdrawEscrowAccount" class="tsd-index-link tsd-kind-method tsd-parent-kind-class tsd-is-inherited"><svg class="tsd-kind-icon" width="24" height="24" viewBox="0 0 24 24"><use href="#icon-2048-path"></use><use href="#icon-2048-text"></use></svg><span>_find<wbr/>Token<wbr/>Withdraw<wbr/>Escrow<wbr/>Account</span></a>
+<a href="_zebec_protocol_multisig.ZebecNativeTreasury.html#_findZebecVaultAccount" class="tsd-index-link tsd-kind-method tsd-parent-kind-class tsd-is-inherited"><svg class="tsd-kind-icon" width="24" height="24" viewBox="0 0 24 24"><use href="#icon-2048-path"></use><use href="#icon-2048-text"></use></svg><span>_find<wbr/>Zebec<wbr/>Vault<wbr/>Account</span></a>
+<a href="_zebec_protocol_multisig.ZebecNativeTreasury.html#_getAccociatedTokenAddress" class="tsd-index-link tsd-kind-method tsd-parent-kind-class tsd-is-inherited"><svg class="tsd-kind-icon" width="24" height="24" viewBox="0 0 24 24"><use href="#icon-2048-path"></use><use href="#icon-2048-text"></use></svg><span>_get<wbr/>Accociated<wbr/>Token<wbr/>Address</span></a>
+<a href="_zebec_protocol_multisig.ZebecNativeTreasury.html#_makeTxn" class="tsd-index-link tsd-kind-method tsd-parent-kind-class tsd-is-inherited"><svg class="tsd-kind-icon" width="24" height="24" viewBox="0 0 24 24"><use href="#icon-2048-path"></use><use href="#icon-2048-text"></use></svg><span>_make<wbr/>Txn</span></a>
+<a href="_zebec_protocol_multisig.ZebecNativeTreasury.html#cancel" class="tsd-index-link tsd-kind-method tsd-parent-kind-class"><svg class="tsd-kind-icon" width="24" height="24" viewBox="0 0 24 24"><use href="#icon-2048-path"></use><use href="#icon-2048-text"></use></svg><span>cancel</span></a>
+<a href="_zebec_protocol_multisig.ZebecNativeTreasury.html#createFeeVault" class="tsd-index-link tsd-kind-method tsd-parent-kind-class tsd-is-inherited"><svg class="tsd-kind-icon" width="24" height="24" viewBox="0 0 24 24"><use href="#icon-2048-path"></use><use href="#icon-2048-text"></use></svg><span>create<wbr/>Fee<wbr/>Vault</span></a>
+<a href="_zebec_protocol_multisig.ZebecNativeTreasury.html#createSafe" class="tsd-index-link tsd-kind-method tsd-parent-kind-class tsd-is-inherited"><svg class="tsd-kind-icon" width="24" height="24" viewBox="0 0 24 24"><use href="#icon-2048-path"></use><use href="#icon-2048-text"></use></svg><span>create<wbr/>Safe</span></a>
+<a href="_zebec_protocol_multisig.ZebecNativeTreasury.html#deposit" class="tsd-index-link tsd-kind-method tsd-parent-kind-class"><svg class="tsd-kind-icon" width="24" height="24" viewBox="0 0 24 24"><use href="#icon-2048-path"></use><use href="#icon-2048-text"></use></svg><span>deposit</span></a>
+<a href="_zebec_protocol_multisig.ZebecNativeTreasury.html#depositSolToSafe" class="tsd-index-link tsd-kind-method tsd-parent-kind-class tsd-is-inherited"><svg class="tsd-kind-icon" width="24" height="24" viewBox="0 0 24 24"><use href="#icon-2048-path"></use><use href="#icon-2048-text"></use></svg><span>deposit<wbr/>Sol<wbr/>To<wbr/>Safe</span></a>
+<a href="_zebec_protocol_multisig.ZebecNativeTreasury.html#depositTokenToSafe" class="tsd-index-link tsd-kind-method tsd-parent-kind-class tsd-is-inherited"><svg class="tsd-kind-icon" width="24" height="24" viewBox="0 0 24 24"><use href="#icon-2048-path"></use><use href="#icon-2048-text"></use></svg><span>deposit<wbr/>Token<wbr/>To<wbr/>Safe</span></a>
+<a href="_zebec_protocol_multisig.ZebecNativeTreasury.html#execCancel" class="tsd-index-link tsd-kind-method tsd-parent-kind-class"><svg class="tsd-kind-icon" width="24" height="24" viewBox="0 0 24 24"><use href="#icon-2048-path"></use><use href="#icon-2048-text"></use></svg><span>exec<wbr/>Cancel</span></a>
+<a href="_zebec_protocol_multisig.ZebecNativeTreasury.html#execDespoit" class="tsd-index-link tsd-kind-method tsd-parent-kind-class"><svg class="tsd-kind-icon" width="24" height="24" viewBox="0 0 24 24"><use href="#icon-2048-path"></use><use href="#icon-2048-text"></use></svg><span>exec<wbr/>Despoit</span></a>
+<a href="_zebec_protocol_multisig.ZebecNativeTreasury.html#execInit" class="tsd-index-link tsd-kind-method tsd-parent-kind-class"><svg class="tsd-kind-icon" width="24" height="24" viewBox="0 0 24 24"><use href="#icon-2048-path"></use><use href="#icon-2048-text"></use></svg><span>exec<wbr/>Init</span></a>
+<a href="_zebec_protocol_multisig.ZebecNativeTreasury.html#execInstantTransfer" class="tsd-index-link tsd-kind-method tsd-parent-kind-class"><svg class="tsd-kind-icon" width="24" height="24" viewBox="0 0 24 24"><use href="#icon-2048-path"></use><use href="#icon-2048-text"></use></svg><span>exec<wbr/>Instant<wbr/>Transfer</span></a>
+<a href="_zebec_protocol_multisig.ZebecNativeTreasury.html#execPause" class="tsd-index-link tsd-kind-method tsd-parent-kind-class"><svg class="tsd-kind-icon" width="24" height="24" viewBox="0 0 24 24"><use href="#icon-2048-path"></use><use href="#icon-2048-text"></use></svg><span>exec<wbr/>Pause</span></a>
+<a href="_zebec_protocol_multisig.ZebecNativeTreasury.html#execResume" class="tsd-index-link tsd-kind-method tsd-parent-kind-class"><svg class="tsd-kind-icon" width="24" height="24" viewBox="0 0 24 24"><use href="#icon-2048-path"></use><use href="#icon-2048-text"></use></svg><span>exec<wbr/>Resume</span></a>
+<a href="_zebec_protocol_multisig.ZebecNativeTreasury.html#execTransferFromSafe" class="tsd-index-link tsd-kind-method tsd-parent-kind-class"><svg class="tsd-kind-icon" width="24" height="24" viewBox="0 0 24 24"><use href="#icon-2048-path"></use><use href="#icon-2048-text"></use></svg><span>exec<wbr/>Transfer<wbr/>From<wbr/>Safe</span></a>
+<a href="_zebec_protocol_multisig.ZebecNativeTreasury.html#execUpdateStream" class="tsd-index-link tsd-kind-method tsd-parent-kind-class"><svg class="tsd-kind-icon" width="24" height="24" viewBox="0 0 24 24"><use href="#icon-2048-path"></use><use href="#icon-2048-text"></use></svg><span>exec<wbr/>Update<wbr/>Stream</span></a>
+<a href="_zebec_protocol_multisig.ZebecNativeTreasury.html#fetchMultiSigStreamData" class="tsd-index-link tsd-kind-method tsd-parent-kind-class tsd-is-inherited"><svg class="tsd-kind-icon" width="24" height="24" viewBox="0 0 24 24"><use href="#icon-2048-path"></use><use href="#icon-2048-text"></use></svg><span>fetch<wbr/>Multi<wbr/>Sig<wbr/>Stream<wbr/>Data</span></a>
+<a href="_zebec_protocol_multisig.ZebecNativeTreasury.html#fetchStreamData" class="tsd-index-link tsd-kind-method tsd-parent-kind-class"><svg class="tsd-kind-icon" width="24" height="24" viewBox="0 0 24 24"><use href="#icon-2048-path"></use><use href="#icon-2048-text"></use></svg><span>fetch<wbr/>Stream<wbr/>Data</span></a>
+<a href="_zebec_protocol_multisig.ZebecNativeTreasury.html#init" class="tsd-index-link tsd-kind-method tsd-parent-kind-class"><svg class="tsd-kind-icon" width="24" height="24" viewBox="0 0 24 24"><use href="#icon-2048-path"></use><use href="#icon-2048-text"></use></svg><span>init</span></a>
+<a href="_zebec_protocol_multisig.ZebecNativeTreasury.html#instantTransfer" class="tsd-index-link tsd-kind-method tsd-parent-kind-class"><svg class="tsd-kind-icon" width="24" height="24" viewBox="0 0 24 24"><use href="#icon-2048-path"></use><use href="#icon-2048-text"></use></svg><span>instant<wbr/>Transfer</span></a>
+<a href="_zebec_protocol_multisig.ZebecNativeTreasury.html#pause" class="tsd-index-link tsd-kind-method tsd-parent-kind-class"><svg class="tsd-kind-icon" width="24" height="24" viewBox="0 0 24 24"><use href="#icon-2048-path"></use><use href="#icon-2048-text"></use></svg><span>pause</span></a>
+<a href="_zebec_protocol_multisig.ZebecNativeTreasury.html#resume" class="tsd-index-link tsd-kind-method tsd-parent-kind-class"><svg class="tsd-kind-icon" width="24" height="24" viewBox="0 0 24 24"><use href="#icon-2048-path"></use><use href="#icon-2048-text"></use></svg><span>resume</span></a>
+<a href="_zebec_protocol_multisig.ZebecNativeTreasury.html#transferFromSafe" class="tsd-index-link tsd-kind-method tsd-parent-kind-class"><svg class="tsd-kind-icon" width="24" height="24" viewBox="0 0 24 24"><use href="#icon-2048-path"></use><use href="#icon-2048-text"></use></svg><span>transfer<wbr/>From<wbr/>Safe</span></a>
+<a href="_zebec_protocol_multisig.ZebecNativeTreasury.html#updateStream" class="tsd-index-link tsd-kind-method tsd-parent-kind-class"><svg class="tsd-kind-icon" width="24" height="24" viewBox="0 0 24 24"><use href="#icon-2048-path"></use><use href="#icon-2048-text"></use></svg><span>update<wbr/>Stream</span></a>
+<a href="_zebec_protocol_multisig.ZebecNativeTreasury.html#withdraw" class="tsd-index-link tsd-kind-method tsd-parent-kind-class"><svg class="tsd-kind-icon" width="24" height="24" viewBox="0 0 24 24"><use href="#icon-2048-path"></use><use href="#icon-2048-text"></use></svg><span>withdraw</span></a>
+</div></section></div></details></section></section>
+<section class="tsd-panel-group tsd-member-group">
+<h2>Constructors</h2>
+<section class="tsd-panel tsd-member tsd-kind-constructor tsd-parent-kind-class"><a id="constructor" class="tsd-anchor"></a>
+<h3 class="tsd-anchor-link"><span>constructor</span><a href="#constructor" aria-label="Permalink" class="tsd-anchor-icon"><svg class="icon icon-tabler icon-tabler-link" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z" fill="none" id="icon-anchor-a"></path><path d="M10 14a3.5 3.5 0 0 0 5 0l4 -4a3.5 3.5 0 0 0 -5 -5l-.5 .5" id="icon-anchor-b"></path><path d="M14 10a3.5 3.5 0 0 0 -5 0l-4 4a3.5 3.5 0 0 0 5 5l.5 -.5" id="icon-anchor-c"></path></svg></a></h3>
+<ul class="tsd-signatures tsd-kind-constructor tsd-parent-kind-class">
+<li class="tsd-signature tsd-anchor-link" id="constructor.new_ZebecNativeTreasury">new <wbr/>Zebec<wbr/>Native<wbr/>Treasury<span class="tsd-signature-symbol">(</span>anchorProvider<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">AnchorProvider</span>, feeReceiver<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span>, logger<span class="tsd-signature-symbol">?: </span><span class="tsd-signature-type">boolean</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><a href="_zebec_protocol_multisig.ZebecNativeTreasury.html" class="tsd-signature-type" data-tsd-kind="Class">ZebecNativeTreasury</a><a href="#constructor.new_ZebecNativeTreasury" aria-label="Permalink" class="tsd-anchor-icon"><svg class="icon icon-tabler icon-tabler-link" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round"><use href="#icon-anchor-a"></use><use href="#icon-anchor-b"></use><use href="#icon-anchor-c"></use></svg></a></li>
+<li class="tsd-description">
+<div class="tsd-parameters">
+<h4 class="tsd-parameters-title">Parameters</h4>
+<ul class="tsd-parameter-list">
+<li>
+<h5>anchorProvider: <span class="tsd-signature-type">AnchorProvider</span></h5></li>
+<li>
+<h5>feeReceiver: <span class="tsd-signature-type">string</span></h5></li>
+<li>
+<h5>logger: <span class="tsd-signature-type">boolean</span><span class="tsd-signature-symbol"> = false</span></h5></li></ul></div>
+<h4 class="tsd-returns-title">Returns <a href="_zebec_protocol_multisig.ZebecNativeTreasury.html" class="tsd-signature-type" data-tsd-kind="Class">ZebecNativeTreasury</a></h4><aside class="tsd-sources">
+<p>Overrides <a href="_zebec_protocol_multisig.ZebecMultisig.html">ZebecMultisig</a>.<a href="_zebec_protocol_multisig.ZebecMultisig.html#constructor">constructor</a></p>
+<ul>
+<li>Defined in <a href="https://github.com/Zebec-protocol/zebec-anchor-sdk/blob/b546a3d/packages/multisig/src/services/multisig.ts#L301">multisig/src/services/multisig.ts:301</a></li></ul></aside></li></ul></section></section>
+<section class="tsd-panel-group tsd-member-group">
+<h2>Properties</h2>
+<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-class tsd-is-inherited"><a id="anchorProvider" class="tsd-anchor"></a>
+<h3 class="tsd-anchor-link"><code class="tsd-tag ts-flagReadonly">Readonly</code> <span>anchor<wbr/>Provider</span><a href="#anchorProvider" aria-label="Permalink" class="tsd-anchor-icon"><svg class="icon icon-tabler icon-tabler-link" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round"><use href="#icon-anchor-a"></use><use href="#icon-anchor-b"></use><use href="#icon-anchor-c"></use></svg></a></h3>
+<div class="tsd-signature">anchor<wbr/>Provider<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">AnchorProvider</span></div><aside class="tsd-sources">
+<p>Inherited from <a href="_zebec_protocol_multisig.ZebecMultisig.html">ZebecMultisig</a>.<a href="_zebec_protocol_multisig.ZebecMultisig.html#anchorProvider">anchorProvider</a></p>
+<ul>
+<li>Defined in <a href="https://github.com/Zebec-protocol/zebec-anchor-sdk/blob/b546a3d/packages/multisig/src/services/multisig.ts#L13">multisig/src/services/multisig.ts:13</a></li></ul></aside></section>
+<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-class tsd-is-inherited"><a id="consolelog" class="tsd-anchor"></a>
+<h3 class="tsd-anchor-link"><code class="tsd-tag ts-flagReadonly">Readonly</code> <span>consolelog</span><a href="#consolelog" aria-label="Permalink" class="tsd-anchor-icon"><svg class="icon icon-tabler icon-tabler-link" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round"><use href="#icon-anchor-a"></use><use href="#icon-anchor-b"></use><use href="#icon-anchor-c"></use></svg></a></h3>
+<div class="tsd-signature">consolelog<span class="tsd-signature-symbol">:</span> <a href="_zebec_protocol_multisig.ConsoleLog.html" class="tsd-signature-type" data-tsd-kind="Class">ConsoleLog</a></div><aside class="tsd-sources">
+<p>Inherited from <a href="_zebec_protocol_multisig.ZebecMultisig.html">ZebecMultisig</a>.<a href="_zebec_protocol_multisig.ZebecMultisig.html#consolelog">consolelog</a></p>
+<ul>
+<li>Defined in <a href="https://github.com/Zebec-protocol/zebec-anchor-sdk/blob/b546a3d/packages/multisig/src/services/multisig.ts#L21">multisig/src/services/multisig.ts:21</a></li></ul></aside></section>
+<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-class tsd-is-inherited"><a id="feeReceiverAddress" class="tsd-anchor"></a>
+<h3 class="tsd-anchor-link"><code class="tsd-tag ts-flagReadonly">Readonly</code> <span>fee<wbr/>Receiver<wbr/>Address</span><a href="#feeReceiverAddress" aria-label="Permalink" class="tsd-anchor-icon"><svg class="icon icon-tabler icon-tabler-link" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round"><use href="#icon-anchor-a"></use><use href="#icon-anchor-b"></use><use href="#icon-anchor-c"></use></svg></a></h3>
+<div class="tsd-signature">fee<wbr/>Receiver<wbr/>Address<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">PublicKey</span></div><aside class="tsd-sources">
+<p>Inherited from <a href="_zebec_protocol_multisig.ZebecMultisig.html">ZebecMultisig</a>.<a href="_zebec_protocol_multisig.ZebecMultisig.html#feeReceiverAddress">feeReceiverAddress</a></p>
+<ul>
+<li>Defined in <a href="https://github.com/Zebec-protocol/zebec-anchor-sdk/blob/b546a3d/packages/multisig/src/services/multisig.ts#L19">multisig/src/services/multisig.ts:19</a></li></ul></aside></section>
+<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-class tsd-is-inherited"><a id="logger" class="tsd-anchor"></a>
+<h3 class="tsd-anchor-link"><code class="tsd-tag ts-flagReadonly">Readonly</code> <span>logger</span><a href="#logger" aria-label="Permalink" class="tsd-anchor-icon"><svg class="icon icon-tabler icon-tabler-link" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round"><use href="#icon-anchor-a"></use><use href="#icon-anchor-b"></use><use href="#icon-anchor-c"></use></svg></a></h3>
+<div class="tsd-signature">logger<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">boolean</span></div><aside class="tsd-sources">
+<p>Inherited from <a href="_zebec_protocol_multisig.ZebecMultisig.html">ZebecMultisig</a>.<a href="_zebec_protocol_multisig.ZebecMultisig.html#logger">logger</a></p>
+<ul>
+<li>Defined in <a href="https://github.com/Zebec-protocol/zebec-anchor-sdk/blob/b546a3d/packages/multisig/src/services/multisig.ts#L20">multisig/src/services/multisig.ts:20</a></li></ul></aside></section>
+<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-class tsd-is-inherited"><a id="multisigProgram" class="tsd-anchor"></a>
+<h3 class="tsd-anchor-link"><code class="tsd-tag ts-flagReadonly">Readonly</code> <span>multisig<wbr/>Program</span><a href="#multisigProgram" aria-label="Permalink" class="tsd-anchor-icon"><svg class="icon icon-tabler icon-tabler-link" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round"><use href="#icon-anchor-a"></use><use href="#icon-anchor-b"></use><use href="#icon-anchor-c"></use></svg></a></h3>
+<div class="tsd-signature">multisig<wbr/>Program<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">Program</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">Idl</span><span class="tsd-signature-symbol">&gt;</span></div><aside class="tsd-sources">
+<p>Inherited from <a href="_zebec_protocol_multisig.ZebecMultisig.html">ZebecMultisig</a>.<a href="_zebec_protocol_multisig.ZebecMultisig.html#multisigProgram">multisigProgram</a></p>
+<ul>
+<li>Defined in <a href="https://github.com/Zebec-protocol/zebec-anchor-sdk/blob/b546a3d/packages/multisig/src/services/multisig.ts#L14">multisig/src/services/multisig.ts:14</a></li></ul></aside></section>
+<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-class tsd-is-inherited"><a id="multisigProgramId" class="tsd-anchor"></a>
+<h3 class="tsd-anchor-link"><code class="tsd-tag ts-flagReadonly">Readonly</code> <span>multisig<wbr/>Program<wbr/>Id</span><a href="#multisigProgramId" aria-label="Permalink" class="tsd-anchor-icon"><svg class="icon icon-tabler icon-tabler-link" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round"><use href="#icon-anchor-a"></use><use href="#icon-anchor-b"></use><use href="#icon-anchor-c"></use></svg></a></h3>
+<div class="tsd-signature">multisig<wbr/>Program<wbr/>Id<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">PublicKey</span><span class="tsd-signature-symbol"> = ...</span></div><aside class="tsd-sources">
+<p>Inherited from <a href="_zebec_protocol_multisig.ZebecMultisig.html">ZebecMultisig</a>.<a href="_zebec_protocol_multisig.ZebecMultisig.html#multisigProgramId">multisigProgramId</a></p>
+<ul>
+<li>Defined in <a href="https://github.com/Zebec-protocol/zebec-anchor-sdk/blob/b546a3d/packages/multisig/src/services/multisig.ts#L16">multisig/src/services/multisig.ts:16</a></li></ul></aside></section>
+<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-class tsd-is-inherited"><a id="streamProgram" class="tsd-anchor"></a>
+<h3 class="tsd-anchor-link"><code class="tsd-tag ts-flagReadonly">Readonly</code> <span>stream<wbr/>Program</span><a href="#streamProgram" aria-label="Permalink" class="tsd-anchor-icon"><svg class="icon icon-tabler icon-tabler-link" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round"><use href="#icon-anchor-a"></use><use href="#icon-anchor-b"></use><use href="#icon-anchor-c"></use></svg></a></h3>
+<div class="tsd-signature">stream<wbr/>Program<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">Program</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">Idl</span><span class="tsd-signature-symbol">&gt;</span></div><aside class="tsd-sources">
+<p>Inherited from <a href="_zebec_protocol_multisig.ZebecMultisig.html">ZebecMultisig</a>.<a href="_zebec_protocol_multisig.ZebecMultisig.html#streamProgram">streamProgram</a></p>
+<ul>
+<li>Defined in <a href="https://github.com/Zebec-protocol/zebec-anchor-sdk/blob/b546a3d/packages/multisig/src/services/multisig.ts#L15">multisig/src/services/multisig.ts:15</a></li></ul></aside></section>
+<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-class tsd-is-inherited"><a id="streamProgramId" class="tsd-anchor"></a>
+<h3 class="tsd-anchor-link"><code class="tsd-tag ts-flagReadonly">Readonly</code> <span>stream<wbr/>Program<wbr/>Id</span><a href="#streamProgramId" aria-label="Permalink" class="tsd-anchor-icon"><svg class="icon icon-tabler icon-tabler-link" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round"><use href="#icon-anchor-a"></use><use href="#icon-anchor-b"></use><use href="#icon-anchor-c"></use></svg></a></h3>
+<div class="tsd-signature">stream<wbr/>Program<wbr/>Id<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">PublicKey</span><span class="tsd-signature-symbol"> = ...</span></div><aside class="tsd-sources">
+<p>Inherited from <a href="_zebec_protocol_multisig.ZebecMultisig.html">ZebecMultisig</a>.<a href="_zebec_protocol_multisig.ZebecMultisig.html#streamProgramId">streamProgramId</a></p>
+<ul>
+<li>Defined in <a href="https://github.com/Zebec-protocol/zebec-anchor-sdk/blob/b546a3d/packages/multisig/src/services/multisig.ts#L17">multisig/src/services/multisig.ts:17</a></li></ul></aside></section>
+<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-class tsd-is-inherited"><a id="transactionBuilder" class="tsd-anchor"></a>
+<h3 class="tsd-anchor-link"><code class="tsd-tag ts-flagReadonly">Readonly</code> <span>transaction<wbr/>Builder</span><a href="#transactionBuilder" aria-label="Permalink" class="tsd-anchor-icon"><svg class="icon icon-tabler icon-tabler-link" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round"><use href="#icon-anchor-a"></use><use href="#icon-anchor-b"></use><use href="#icon-anchor-c"></use></svg></a></h3>
+<div class="tsd-signature">transaction<wbr/>Builder<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">ZebecTransactionBuilder</span></div><aside class="tsd-sources">
+<p>Inherited from <a href="_zebec_protocol_multisig.ZebecMultisig.html">ZebecMultisig</a>.<a href="_zebec_protocol_multisig.ZebecMultisig.html#transactionBuilder">transactionBuilder</a></p>
+<ul>
+<li>Defined in <a href="https://github.com/Zebec-protocol/zebec-anchor-sdk/blob/b546a3d/packages/multisig/src/services/multisig.ts#L18">multisig/src/services/multisig.ts:18</a></li></ul></aside></section></section>
+<section class="tsd-panel-group tsd-member-group">
+<h2>Methods</h2>
+<section class="tsd-panel tsd-member tsd-kind-method tsd-parent-kind-class tsd-is-inherited"><a id="_fetchTresholdData" class="tsd-anchor"></a>
+<h3 class="tsd-anchor-link"><span>_fetch<wbr/>Treshold<wbr/>Data</span><a href="#_fetchTresholdData" aria-label="Permalink" class="tsd-anchor-icon"><svg class="icon icon-tabler icon-tabler-link" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round"><use href="#icon-anchor-a"></use><use href="#icon-anchor-b"></use><use href="#icon-anchor-c"></use></svg></a></h3>
+<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class tsd-is-inherited">
+<li class="tsd-signature tsd-anchor-link" id="_fetchTresholdData._fetchTresholdData-1">_fetch<wbr/>Treshold<wbr/>Data<span class="tsd-signature-symbol">(</span>safe_data_account<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">PublicKey</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">any</span><span class="tsd-signature-symbol">&gt;</span><a href="#_fetchTresholdData._fetchTresholdData-1" aria-label="Permalink" class="tsd-anchor-icon"><svg class="icon icon-tabler icon-tabler-link" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round"><use href="#icon-anchor-a"></use><use href="#icon-anchor-b"></use><use href="#icon-anchor-c"></use></svg></a></li>
+<li class="tsd-description">
+<div class="tsd-parameters">
+<h4 class="tsd-parameters-title">Parameters</h4>
+<ul class="tsd-parameter-list">
+<li>
+<h5>safe_data_account: <span class="tsd-signature-type">PublicKey</span></h5></li></ul></div>
+<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">any</span><span class="tsd-signature-symbol">&gt;</span></h4><aside class="tsd-sources">
+<p>Inherited from <a href="_zebec_protocol_multisig.ZebecMultisig.html">ZebecMultisig</a>.<a href="_zebec_protocol_multisig.ZebecMultisig.html#_fetchTresholdData">_fetchTresholdData</a></p>
+<ul>
+<li>Defined in <a href="https://github.com/Zebec-protocol/zebec-anchor-sdk/blob/b546a3d/packages/multisig/src/services/multisig.ts#L109">multisig/src/services/multisig.ts:109</a></li></ul></aside></li></ul></section>
+<section class="tsd-panel tsd-member tsd-kind-method tsd-parent-kind-class tsd-is-inherited"><a id="_findAssociatedTokenAddress" class="tsd-anchor"></a>
+<h3 class="tsd-anchor-link"><span>_find<wbr/>Associated<wbr/>Token<wbr/>Address</span><a href="#_findAssociatedTokenAddress" aria-label="Permalink" class="tsd-anchor-icon"><svg class="icon icon-tabler icon-tabler-link" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round"><use href="#icon-anchor-a"></use><use href="#icon-anchor-b"></use><use href="#icon-anchor-c"></use></svg></a></h3>
+<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class tsd-is-inherited">
+<li class="tsd-signature tsd-anchor-link" id="_findAssociatedTokenAddress._findAssociatedTokenAddress-1">_find<wbr/>Associated<wbr/>Token<wbr/>Address<span class="tsd-signature-symbol">(</span>walletAddress<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">PublicKey</span>, tokenMintAddress<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">PublicKey</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-symbol">[</span><span class="tsd-signature-type">PublicKey</span><span class="tsd-signature-symbol">, </span><span class="tsd-signature-type">number</span><span class="tsd-signature-symbol">]</span><span class="tsd-signature-symbol">&gt;</span><a href="#_findAssociatedTokenAddress._findAssociatedTokenAddress-1" aria-label="Permalink" class="tsd-anchor-icon"><svg class="icon icon-tabler icon-tabler-link" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round"><use href="#icon-anchor-a"></use><use href="#icon-anchor-b"></use><use href="#icon-anchor-c"></use></svg></a></li>
+<li class="tsd-description">
+<div class="tsd-parameters">
+<h4 class="tsd-parameters-title">Parameters</h4>
+<ul class="tsd-parameter-list">
+<li>
+<h5>walletAddress: <span class="tsd-signature-type">PublicKey</span></h5></li>
+<li>
+<h5>tokenMintAddress: <span class="tsd-signature-type">PublicKey</span></h5></li></ul></div>
+<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-symbol">[</span><span class="tsd-signature-type">PublicKey</span><span class="tsd-signature-symbol">, </span><span class="tsd-signature-type">number</span><span class="tsd-signature-symbol">]</span><span class="tsd-signature-symbol">&gt;</span></h4><aside class="tsd-sources">
+<p>Inherited from <a href="_zebec_protocol_multisig.ZebecMultisig.html">ZebecMultisig</a>.<a href="_zebec_protocol_multisig.ZebecMultisig.html#_findAssociatedTokenAddress">_findAssociatedTokenAddress</a></p>
+<ul>
+<li>Defined in <a href="https://github.com/Zebec-protocol/zebec-anchor-sdk/blob/b546a3d/packages/multisig/src/services/multisig.ts#L86">multisig/src/services/multisig.ts:86</a></li></ul></aside></li></ul></section>
+<section class="tsd-panel tsd-member tsd-kind-method tsd-parent-kind-class tsd-is-inherited"><a id="_findFeeVaultAddress" class="tsd-anchor"></a>
+<h3 class="tsd-anchor-link"><span>_find<wbr/>Fee<wbr/>Vault<wbr/>Address</span><a href="#_findFeeVaultAddress" aria-label="Permalink" class="tsd-anchor-icon"><svg class="icon icon-tabler icon-tabler-link" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round"><use href="#icon-anchor-a"></use><use href="#icon-anchor-b"></use><use href="#icon-anchor-c"></use></svg></a></h3>
+<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class tsd-is-inherited">
+<li class="tsd-signature tsd-anchor-link" id="_findFeeVaultAddress._findFeeVaultAddress-1">_find<wbr/>Fee<wbr/>Vault<wbr/>Address<span class="tsd-signature-symbol">(</span>feeReceiverAddress<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">PublicKey</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-symbol">[</span><span class="tsd-signature-type">PublicKey</span><span class="tsd-signature-symbol">, </span><span class="tsd-signature-type">number</span><span class="tsd-signature-symbol">]</span><span class="tsd-signature-symbol">&gt;</span><a href="#_findFeeVaultAddress._findFeeVaultAddress-1" aria-label="Permalink" class="tsd-anchor-icon"><svg class="icon icon-tabler icon-tabler-link" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round"><use href="#icon-anchor-a"></use><use href="#icon-anchor-b"></use><use href="#icon-anchor-c"></use></svg></a></li>
+<li class="tsd-description">
+<div class="tsd-parameters">
+<h4 class="tsd-parameters-title">Parameters</h4>
+<ul class="tsd-parameter-list">
+<li>
+<h5>feeReceiverAddress: <span class="tsd-signature-type">PublicKey</span></h5></li></ul></div>
+<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-symbol">[</span><span class="tsd-signature-type">PublicKey</span><span class="tsd-signature-symbol">, </span><span class="tsd-signature-type">number</span><span class="tsd-signature-symbol">]</span><span class="tsd-signature-symbol">&gt;</span></h4><aside class="tsd-sources">
+<p>Inherited from <a href="_zebec_protocol_multisig.ZebecMultisig.html">ZebecMultisig</a>.<a href="_zebec_protocol_multisig.ZebecMultisig.html#_findFeeVaultAddress">_findFeeVaultAddress</a></p>
+<ul>
+<li>Defined in <a href="https://github.com/Zebec-protocol/zebec-anchor-sdk/blob/b546a3d/packages/multisig/src/services/multisig.ts#L55">multisig/src/services/multisig.ts:55</a></li></ul></aside></li></ul></section>
+<section class="tsd-panel tsd-member tsd-kind-method tsd-parent-kind-class tsd-is-inherited"><a id="_findFeeVaultDataAccount" class="tsd-anchor"></a>
+<h3 class="tsd-anchor-link"><span>_find<wbr/>Fee<wbr/>Vault<wbr/>Data<wbr/>Account</span><a href="#_findFeeVaultDataAccount" aria-label="Permalink" class="tsd-anchor-icon"><svg class="icon icon-tabler icon-tabler-link" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round"><use href="#icon-anchor-a"></use><use href="#icon-anchor-b"></use><use href="#icon-anchor-c"></use></svg></a></h3>
+<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class tsd-is-inherited">
+<li class="tsd-signature tsd-anchor-link" id="_findFeeVaultDataAccount._findFeeVaultDataAccount-1">_find<wbr/>Fee<wbr/>Vault<wbr/>Data<wbr/>Account<span class="tsd-signature-symbol">(</span>feeReceiverAddress<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">PublicKey</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-symbol">[</span><span class="tsd-signature-type">PublicKey</span><span class="tsd-signature-symbol">, </span><span class="tsd-signature-type">number</span><span class="tsd-signature-symbol">]</span><span class="tsd-signature-symbol">&gt;</span><a href="#_findFeeVaultDataAccount._findFeeVaultDataAccount-1" aria-label="Permalink" class="tsd-anchor-icon"><svg class="icon icon-tabler icon-tabler-link" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round"><use href="#icon-anchor-a"></use><use href="#icon-anchor-b"></use><use href="#icon-anchor-c"></use></svg></a></li>
+<li class="tsd-description">
+<div class="tsd-parameters">
+<h4 class="tsd-parameters-title">Parameters</h4>
+<ul class="tsd-parameter-list">
+<li>
+<h5>feeReceiverAddress: <span class="tsd-signature-type">PublicKey</span></h5></li></ul></div>
+<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-symbol">[</span><span class="tsd-signature-type">PublicKey</span><span class="tsd-signature-symbol">, </span><span class="tsd-signature-type">number</span><span class="tsd-signature-symbol">]</span><span class="tsd-signature-symbol">&gt;</span></h4><aside class="tsd-sources">
+<p>Inherited from <a href="_zebec_protocol_multisig.ZebecMultisig.html">ZebecMultisig</a>.<a href="_zebec_protocol_multisig.ZebecMultisig.html#_findFeeVaultDataAccount">_findFeeVaultDataAccount</a></p>
+<ul>
+<li>Defined in <a href="https://github.com/Zebec-protocol/zebec-anchor-sdk/blob/b546a3d/packages/multisig/src/services/multisig.ts#L64">multisig/src/services/multisig.ts:64</a></li></ul></aside></li></ul></section>
+<section class="tsd-panel tsd-member tsd-kind-method tsd-parent-kind-class tsd-is-inherited"><a id="_findSafeAddress" class="tsd-anchor"></a>
+<h3 class="tsd-anchor-link"><span>_find<wbr/>Safe<wbr/>Address</span><a href="#_findSafeAddress" aria-label="Permalink" class="tsd-anchor-icon"><svg class="icon icon-tabler icon-tabler-link" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round"><use href="#icon-anchor-a"></use><use href="#icon-anchor-b"></use><use href="#icon-anchor-c"></use></svg></a></h3>
+<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class tsd-is-inherited">
+<li class="tsd-signature tsd-anchor-link" id="_findSafeAddress._findSafeAddress-1">_find<wbr/>Safe<wbr/>Address<span class="tsd-signature-symbol">(</span>walletAddress<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">PublicKey</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-symbol">[</span><span class="tsd-signature-type">PublicKey</span><span class="tsd-signature-symbol">, </span><span class="tsd-signature-type">number</span><span class="tsd-signature-symbol">]</span><span class="tsd-signature-symbol">&gt;</span><a href="#_findSafeAddress._findSafeAddress-1" aria-label="Permalink" class="tsd-anchor-icon"><svg class="icon icon-tabler icon-tabler-link" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round"><use href="#icon-anchor-a"></use><use href="#icon-anchor-b"></use><use href="#icon-anchor-c"></use></svg></a></li>
+<li class="tsd-description">
+<div class="tsd-parameters">
+<h4 class="tsd-parameters-title">Parameters</h4>
+<ul class="tsd-parameter-list">
+<li>
+<h5>walletAddress: <span class="tsd-signature-type">PublicKey</span></h5></li></ul></div>
+<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-symbol">[</span><span class="tsd-signature-type">PublicKey</span><span class="tsd-signature-symbol">, </span><span class="tsd-signature-type">number</span><span class="tsd-signature-symbol">]</span><span class="tsd-signature-symbol">&gt;</span></h4><aside class="tsd-sources">
+<p>Inherited from <a href="_zebec_protocol_multisig.ZebecMultisig.html">ZebecMultisig</a>.<a href="_zebec_protocol_multisig.ZebecMultisig.html#_findSafeAddress">_findSafeAddress</a></p>
+<ul>
+<li>Defined in <a href="https://github.com/Zebec-protocol/zebec-anchor-sdk/blob/b546a3d/packages/multisig/src/services/multisig.ts#L51">multisig/src/services/multisig.ts:51</a></li></ul></aside></li></ul></section>
+<section class="tsd-panel tsd-member tsd-kind-method tsd-parent-kind-class tsd-is-inherited"><a id="_findSolWithdrawEscrowAccount" class="tsd-anchor"></a>
+<h3 class="tsd-anchor-link"><span>_find<wbr/>Sol<wbr/>Withdraw<wbr/>Escrow<wbr/>Account</span><a href="#_findSolWithdrawEscrowAccount" aria-label="Permalink" class="tsd-anchor-icon"><svg class="icon icon-tabler icon-tabler-link" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round"><use href="#icon-anchor-a"></use><use href="#icon-anchor-b"></use><use href="#icon-anchor-c"></use></svg></a></h3>
+<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class tsd-is-inherited">
+<li class="tsd-signature tsd-anchor-link" id="_findSolWithdrawEscrowAccount._findSolWithdrawEscrowAccount-1">_find<wbr/>Sol<wbr/>Withdraw<wbr/>Escrow<wbr/>Account<span class="tsd-signature-symbol">(</span>walletAddress<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">PublicKey</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-symbol">[</span><span class="tsd-signature-type">PublicKey</span><span class="tsd-signature-symbol">, </span><span class="tsd-signature-type">number</span><span class="tsd-signature-symbol">]</span><span class="tsd-signature-symbol">&gt;</span><a href="#_findSolWithdrawEscrowAccount._findSolWithdrawEscrowAccount-1" aria-label="Permalink" class="tsd-anchor-icon"><svg class="icon icon-tabler icon-tabler-link" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round"><use href="#icon-anchor-a"></use><use href="#icon-anchor-b"></use><use href="#icon-anchor-c"></use></svg></a></li>
+<li class="tsd-description">
+<div class="tsd-parameters">
+<h4 class="tsd-parameters-title">Parameters</h4>
+<ul class="tsd-parameter-list">
+<li>
+<h5>walletAddress: <span class="tsd-signature-type">PublicKey</span></h5></li></ul></div>
+<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-symbol">[</span><span class="tsd-signature-type">PublicKey</span><span class="tsd-signature-symbol">, </span><span class="tsd-signature-type">number</span><span class="tsd-signature-symbol">]</span><span class="tsd-signature-symbol">&gt;</span></h4><aside class="tsd-sources">
+<p>Inherited from <a href="_zebec_protocol_multisig.ZebecMultisig.html">ZebecMultisig</a>.<a href="_zebec_protocol_multisig.ZebecMultisig.html#_findSolWithdrawEscrowAccount">_findSolWithdrawEscrowAccount</a></p>
+<ul>
+<li>Defined in <a href="https://github.com/Zebec-protocol/zebec-anchor-sdk/blob/b546a3d/packages/multisig/src/services/multisig.ts#L42">multisig/src/services/multisig.ts:42</a></li></ul></aside></li></ul></section>
+<section class="tsd-panel tsd-member tsd-kind-method tsd-parent-kind-class tsd-is-inherited"><a id="_findTokenWithdrawEscrowAccount" class="tsd-anchor"></a>
+<h3 class="tsd-anchor-link"><span>_find<wbr/>Token<wbr/>Withdraw<wbr/>Escrow<wbr/>Account</span><a href="#_findTokenWithdrawEscrowAccount" aria-label="Permalink" class="tsd-anchor-icon"><svg class="icon icon-tabler icon-tabler-link" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round"><use href="#icon-anchor-a"></use><use href="#icon-anchor-b"></use><use href="#icon-anchor-c"></use></svg></a></h3>
+<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class tsd-is-inherited">
+<li class="tsd-signature tsd-anchor-link" id="_findTokenWithdrawEscrowAccount._findTokenWithdrawEscrowAccount-1">_find<wbr/>Token<wbr/>Withdraw<wbr/>Escrow<wbr/>Account<span class="tsd-signature-symbol">(</span>walletAddress<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">PublicKey</span>, tokenMintAddress<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">PublicKey</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-symbol">[</span><span class="tsd-signature-type">PublicKey</span><span class="tsd-signature-symbol">, </span><span class="tsd-signature-type">number</span><span class="tsd-signature-symbol">]</span><span class="tsd-signature-symbol">&gt;</span><a href="#_findTokenWithdrawEscrowAccount._findTokenWithdrawEscrowAccount-1" aria-label="Permalink" class="tsd-anchor-icon"><svg class="icon icon-tabler icon-tabler-link" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round"><use href="#icon-anchor-a"></use><use href="#icon-anchor-b"></use><use href="#icon-anchor-c"></use></svg></a></li>
+<li class="tsd-description">
+<div class="tsd-parameters">
+<h4 class="tsd-parameters-title">Parameters</h4>
+<ul class="tsd-parameter-list">
+<li>
+<h5>walletAddress: <span class="tsd-signature-type">PublicKey</span></h5></li>
+<li>
+<h5>tokenMintAddress: <span class="tsd-signature-type">PublicKey</span></h5></li></ul></div>
+<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-symbol">[</span><span class="tsd-signature-type">PublicKey</span><span class="tsd-signature-symbol">, </span><span class="tsd-signature-type">number</span><span class="tsd-signature-symbol">]</span><span class="tsd-signature-symbol">&gt;</span></h4><aside class="tsd-sources">
+<p>Inherited from <a href="_zebec_protocol_multisig.ZebecMultisig.html">ZebecMultisig</a>.<a href="_zebec_protocol_multisig.ZebecMultisig.html#_findTokenWithdrawEscrowAccount">_findTokenWithdrawEscrowAccount</a></p>
+<ul>
+<li>Defined in <a href="https://github.com/Zebec-protocol/zebec-anchor-sdk/blob/b546a3d/packages/multisig/src/services/multisig.ts#L74">multisig/src/services/multisig.ts:74</a></li></ul></aside></li></ul></section>
+<section class="tsd-panel tsd-member tsd-kind-method tsd-parent-kind-class tsd-is-inherited"><a id="_findZebecVaultAccount" class="tsd-anchor"></a>
+<h3 class="tsd-anchor-link"><span>_find<wbr/>Zebec<wbr/>Vault<wbr/>Account</span><a href="#_findZebecVaultAccount" aria-label="Permalink" class="tsd-anchor-icon"><svg class="icon icon-tabler icon-tabler-link" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round"><use href="#icon-anchor-a"></use><use href="#icon-anchor-b"></use><use href="#icon-anchor-c"></use></svg></a></h3>
+<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class tsd-is-inherited">
+<li class="tsd-signature tsd-anchor-link" id="_findZebecVaultAccount._findZebecVaultAccount-1">_find<wbr/>Zebec<wbr/>Vault<wbr/>Account<span class="tsd-signature-symbol">(</span>walletAddress<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">PublicKey</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-symbol">[</span><span class="tsd-signature-type">PublicKey</span><span class="tsd-signature-symbol">, </span><span class="tsd-signature-type">number</span><span class="tsd-signature-symbol">]</span><span class="tsd-signature-symbol">&gt;</span><a href="#_findZebecVaultAccount._findZebecVaultAccount-1" aria-label="Permalink" class="tsd-anchor-icon"><svg class="icon icon-tabler icon-tabler-link" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round"><use href="#icon-anchor-a"></use><use href="#icon-anchor-b"></use><use href="#icon-anchor-c"></use></svg></a></li>
+<li class="tsd-description">
+<div class="tsd-parameters">
+<h4 class="tsd-parameters-title">Parameters</h4>
+<ul class="tsd-parameter-list">
+<li>
+<h5>walletAddress: <span class="tsd-signature-type">PublicKey</span></h5></li></ul></div>
+<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-symbol">[</span><span class="tsd-signature-type">PublicKey</span><span class="tsd-signature-symbol">, </span><span class="tsd-signature-type">number</span><span class="tsd-signature-symbol">]</span><span class="tsd-signature-symbol">&gt;</span></h4><aside class="tsd-sources">
+<p>Inherited from <a href="_zebec_protocol_multisig.ZebecMultisig.html">ZebecMultisig</a>.<a href="_zebec_protocol_multisig.ZebecMultisig.html#_findZebecVaultAccount">_findZebecVaultAccount</a></p>
+<ul>
+<li>Defined in <a href="https://github.com/Zebec-protocol/zebec-anchor-sdk/blob/b546a3d/packages/multisig/src/services/multisig.ts#L33">multisig/src/services/multisig.ts:33</a></li></ul></aside></li></ul></section>
+<section class="tsd-panel tsd-member tsd-kind-method tsd-parent-kind-class tsd-is-inherited"><a id="_getAccociatedTokenAddress" class="tsd-anchor"></a>
+<h3 class="tsd-anchor-link"><span>_get<wbr/>Accociated<wbr/>Token<wbr/>Address</span><a href="#_getAccociatedTokenAddress" aria-label="Permalink" class="tsd-anchor-icon"><svg class="icon icon-tabler icon-tabler-link" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round"><use href="#icon-anchor-a"></use><use href="#icon-anchor-b"></use><use href="#icon-anchor-c"></use></svg></a></h3>
+<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class tsd-is-inherited">
+<li class="tsd-signature tsd-anchor-link" id="_getAccociatedTokenAddress._getAccociatedTokenAddress-1">_get<wbr/>Accociated<wbr/>Token<wbr/>Address<span class="tsd-signature-symbol">(</span>walletAddress<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">PublicKey</span>, tokenMintAddress<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">PublicKey</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">PublicKey</span><span class="tsd-signature-symbol">&gt;</span><a href="#_getAccociatedTokenAddress._getAccociatedTokenAddress-1" aria-label="Permalink" class="tsd-anchor-icon"><svg class="icon icon-tabler icon-tabler-link" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round"><use href="#icon-anchor-a"></use><use href="#icon-anchor-b"></use><use href="#icon-anchor-c"></use></svg></a></li>
+<li class="tsd-description">
+<div class="tsd-parameters">
+<h4 class="tsd-parameters-title">Parameters</h4>
+<ul class="tsd-parameter-list">
+<li>
+<h5>walletAddress: <span class="tsd-signature-type">PublicKey</span></h5></li>
+<li>
+<h5>tokenMintAddress: <span class="tsd-signature-type">PublicKey</span></h5></li></ul></div>
+<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">PublicKey</span><span class="tsd-signature-symbol">&gt;</span></h4><aside class="tsd-sources">
+<p>Inherited from <a href="_zebec_protocol_multisig.ZebecMultisig.html">ZebecMultisig</a>.<a href="_zebec_protocol_multisig.ZebecMultisig.html#_getAccociatedTokenAddress">_getAccociatedTokenAddress</a></p>
+<ul>
+<li>Defined in <a href="https://github.com/Zebec-protocol/zebec-anchor-sdk/blob/b546a3d/packages/multisig/src/services/multisig.ts#L98">multisig/src/services/multisig.ts:98</a></li></ul></aside></li></ul></section>
+<section class="tsd-panel tsd-member tsd-kind-method tsd-parent-kind-class tsd-is-inherited"><a id="_makeTxn" class="tsd-anchor"></a>
+<h3 class="tsd-anchor-link"><span>_make<wbr/>Txn</span><a href="#_makeTxn" aria-label="Permalink" class="tsd-anchor-icon"><svg class="icon icon-tabler icon-tabler-link" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round"><use href="#icon-anchor-a"></use><use href="#icon-anchor-b"></use><use href="#icon-anchor-c"></use></svg></a></h3>
+<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class tsd-is-inherited">
+<li class="tsd-signature tsd-anchor-link" id="_makeTxn._makeTxn-1">_make<wbr/>Txn<span class="tsd-signature-symbol">(</span>tx<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">Transaction</span>, escrow<span class="tsd-signature-symbol">?: </span><span class="tsd-signature-type">Keypair</span><span class="tsd-signature-symbol">[]</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">Transaction</span><span class="tsd-signature-symbol">&gt;</span><a href="#_makeTxn._makeTxn-1" aria-label="Permalink" class="tsd-anchor-icon"><svg class="icon icon-tabler icon-tabler-link" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round"><use href="#icon-anchor-a"></use><use href="#icon-anchor-b"></use><use href="#icon-anchor-c"></use></svg></a></li>
+<li class="tsd-description">
+<div class="tsd-parameters">
+<h4 class="tsd-parameters-title">Parameters</h4>
+<ul class="tsd-parameter-list">
+<li>
+<h5>tx: <span class="tsd-signature-type">Transaction</span></h5></li>
+<li>
+<h5>escrow: <span class="tsd-signature-type">Keypair</span><span class="tsd-signature-symbol">[]</span><span class="tsd-signature-symbol"> = null</span></h5></li></ul></div>
+<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">Transaction</span><span class="tsd-signature-symbol">&gt;</span></h4><aside class="tsd-sources">
+<p>Inherited from <a href="_zebec_protocol_multisig.ZebecMultisig.html">ZebecMultisig</a>.<a href="_zebec_protocol_multisig.ZebecMultisig.html#_makeTxn">_makeTxn</a></p>
+<ul>
+<li>Defined in <a href="https://github.com/Zebec-protocol/zebec-anchor-sdk/blob/b546a3d/packages/multisig/src/services/multisig.ts#L119">multisig/src/services/multisig.ts:119</a></li></ul></aside></li></ul></section>
+<section class="tsd-panel tsd-member tsd-kind-method tsd-parent-kind-class"><a id="cancel" class="tsd-anchor"></a>
+<h3 class="tsd-anchor-link"><span>cancel</span><a href="#cancel" aria-label="Permalink" class="tsd-anchor-icon"><svg class="icon icon-tabler icon-tabler-link" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round"><use href="#icon-anchor-a"></use><use href="#icon-anchor-b"></use><use href="#icon-anchor-c"></use></svg></a></h3>
+<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class">
+<li class="tsd-signature tsd-anchor-link" id="cancel.cancel-1">cancel<span class="tsd-signature-symbol">(</span>data<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">MPauseResumeWithdrawCancel</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">any</span><span class="tsd-signature-symbol">&gt;</span><a href="#cancel.cancel-1" aria-label="Permalink" class="tsd-anchor-icon"><svg class="icon icon-tabler icon-tabler-link" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round"><use href="#icon-anchor-a"></use><use href="#icon-anchor-b"></use><use href="#icon-anchor-c"></use></svg></a></li>
+<li class="tsd-description">
+<div class="tsd-parameters">
+<h4 class="tsd-parameters-title">Parameters</h4>
+<ul class="tsd-parameter-list">
+<li>
+<h5>data: <span class="tsd-signature-type">MPauseResumeWithdrawCancel</span></h5></li></ul></div>
+<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">any</span><span class="tsd-signature-symbol">&gt;</span></h4><aside class="tsd-sources">
+<ul>
+<li>Defined in <a href="https://github.com/Zebec-protocol/zebec-anchor-sdk/blob/b546a3d/packages/multisig/src/services/multisig.ts#L1071">multisig/src/services/multisig.ts:1071</a></li></ul></aside></li></ul></section>
+<section class="tsd-panel tsd-member tsd-kind-method tsd-parent-kind-class tsd-is-inherited"><a id="createFeeVault" class="tsd-anchor"></a>
+<h3 class="tsd-anchor-link"><span>create<wbr/>Fee<wbr/>Vault</span><a href="#createFeeVault" aria-label="Permalink" class="tsd-anchor-icon"><svg class="icon icon-tabler icon-tabler-link" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round"><use href="#icon-anchor-a"></use><use href="#icon-anchor-b"></use><use href="#icon-anchor-c"></use></svg></a></h3>
+<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class tsd-is-inherited">
+<li class="tsd-signature tsd-anchor-link" id="createFeeVault.createFeeVault-1">create<wbr/>Fee<wbr/>Vault<span class="tsd-signature-symbol">(</span>data<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">MCreateFeeVault</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">any</span><span class="tsd-signature-symbol">&gt;</span><a href="#createFeeVault.createFeeVault-1" aria-label="Permalink" class="tsd-anchor-icon"><svg class="icon icon-tabler icon-tabler-link" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round"><use href="#icon-anchor-a"></use><use href="#icon-anchor-b"></use><use href="#icon-anchor-c"></use></svg></a></li>
+<li class="tsd-description">
+<div class="tsd-parameters">
+<h4 class="tsd-parameters-title">Parameters</h4>
+<ul class="tsd-parameter-list">
+<li>
+<h5>data: <span class="tsd-signature-type">MCreateFeeVault</span></h5></li></ul></div>
+<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">any</span><span class="tsd-signature-symbol">&gt;</span></h4><aside class="tsd-sources">
+<p>Inherited from <a href="_zebec_protocol_multisig.ZebecMultisig.html">ZebecMultisig</a>.<a href="_zebec_protocol_multisig.ZebecMultisig.html#createFeeVault">createFeeVault</a></p>
+<ul>
+<li>Defined in <a href="https://github.com/Zebec-protocol/zebec-anchor-sdk/blob/b546a3d/packages/multisig/src/services/multisig.ts#L175">multisig/src/services/multisig.ts:175</a></li></ul></aside></li></ul></section>
+<section class="tsd-panel tsd-member tsd-kind-method tsd-parent-kind-class tsd-is-inherited"><a id="createSafe" class="tsd-anchor"></a>
+<h3 class="tsd-anchor-link"><span>create<wbr/>Safe</span><a href="#createSafe" aria-label="Permalink" class="tsd-anchor-icon"><svg class="icon icon-tabler icon-tabler-link" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round"><use href="#icon-anchor-a"></use><use href="#icon-anchor-b"></use><use href="#icon-anchor-c"></use></svg></a></h3>
+<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class tsd-is-inherited">
+<li class="tsd-signature tsd-anchor-link" id="createSafe.createSafe-1">create<wbr/>Safe<span class="tsd-signature-symbol">(</span>data<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">MCreateSafe</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">any</span><span class="tsd-signature-symbol">&gt;</span><a href="#createSafe.createSafe-1" aria-label="Permalink" class="tsd-anchor-icon"><svg class="icon icon-tabler icon-tabler-link" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round"><use href="#icon-anchor-a"></use><use href="#icon-anchor-b"></use><use href="#icon-anchor-c"></use></svg></a></li>
+<li class="tsd-description">
+<div class="tsd-parameters">
+<h4 class="tsd-parameters-title">Parameters</h4>
+<ul class="tsd-parameter-list">
+<li>
+<h5>data: <span class="tsd-signature-type">MCreateSafe</span></h5></li></ul></div>
+<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">any</span><span class="tsd-signature-symbol">&gt;</span></h4><aside class="tsd-sources">
+<p>Inherited from <a href="_zebec_protocol_multisig.ZebecMultisig.html">ZebecMultisig</a>.<a href="_zebec_protocol_multisig.ZebecMultisig.html#createSafe">createSafe</a></p>
+<ul>
+<li>Defined in <a href="https://github.com/Zebec-protocol/zebec-anchor-sdk/blob/b546a3d/packages/multisig/src/services/multisig.ts#L134">multisig/src/services/multisig.ts:134</a></li></ul></aside></li></ul></section>
+<section class="tsd-panel tsd-member tsd-kind-method tsd-parent-kind-class"><a id="deposit" class="tsd-anchor"></a>
+<h3 class="tsd-anchor-link"><span>deposit</span><a href="#deposit" aria-label="Permalink" class="tsd-anchor-icon"><svg class="icon icon-tabler icon-tabler-link" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round"><use href="#icon-anchor-a"></use><use href="#icon-anchor-b"></use><use href="#icon-anchor-c"></use></svg></a></h3>
+<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class">
+<li class="tsd-signature tsd-anchor-link" id="deposit.deposit-1">deposit<span class="tsd-signature-symbol">(</span>data<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">Mdeposit</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">any</span><span class="tsd-signature-symbol">&gt;</span><a href="#deposit.deposit-1" aria-label="Permalink" class="tsd-anchor-icon"><svg class="icon icon-tabler icon-tabler-link" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round"><use href="#icon-anchor-a"></use><use href="#icon-anchor-b"></use><use href="#icon-anchor-c"></use></svg></a></li>
+<li class="tsd-description">
+<div class="tsd-parameters">
+<h4 class="tsd-parameters-title">Parameters</h4>
+<ul class="tsd-parameter-list">
+<li>
+<h5>data: <span class="tsd-signature-type">Mdeposit</span></h5></li></ul></div>
+<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">any</span><span class="tsd-signature-symbol">&gt;</span></h4><aside class="tsd-sources">
+<ul>
+<li>Defined in <a href="https://github.com/Zebec-protocol/zebec-anchor-sdk/blob/b546a3d/packages/multisig/src/services/multisig.ts#L305">multisig/src/services/multisig.ts:305</a></li></ul></aside></li></ul></section>
+<section class="tsd-panel tsd-member tsd-kind-method tsd-parent-kind-class tsd-is-inherited"><a id="depositSolToSafe" class="tsd-anchor"></a>
+<h3 class="tsd-anchor-link"><span>deposit<wbr/>Sol<wbr/>To<wbr/>Safe</span><a href="#depositSolToSafe" aria-label="Permalink" class="tsd-anchor-icon"><svg class="icon icon-tabler icon-tabler-link" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round"><use href="#icon-anchor-a"></use><use href="#icon-anchor-b"></use><use href="#icon-anchor-c"></use></svg></a></h3>
+<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class tsd-is-inherited">
+<li class="tsd-signature tsd-anchor-link" id="depositSolToSafe.depositSolToSafe-1">deposit<wbr/>Sol<wbr/>To<wbr/>Safe<span class="tsd-signature-symbol">(</span>data<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">MdepositSolToSafe</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">any</span><span class="tsd-signature-symbol">&gt;</span><a href="#depositSolToSafe.depositSolToSafe-1" aria-label="Permalink" class="tsd-anchor-icon"><svg class="icon icon-tabler icon-tabler-link" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round"><use href="#icon-anchor-a"></use><use href="#icon-anchor-b"></use><use href="#icon-anchor-c"></use></svg></a></li>
+<li class="tsd-description">
+<div class="tsd-parameters">
+<h4 class="tsd-parameters-title">Parameters</h4>
+<ul class="tsd-parameter-list">
+<li>
+<h5>data: <span class="tsd-signature-type">MdepositSolToSafe</span></h5></li></ul></div>
+<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">any</span><span class="tsd-signature-symbol">&gt;</span></h4><aside class="tsd-sources">
+<p>Inherited from <a href="_zebec_protocol_multisig.ZebecMultisig.html">ZebecMultisig</a>.<a href="_zebec_protocol_multisig.ZebecMultisig.html#depositSolToSafe">depositSolToSafe</a></p>
+<ul>
+<li>Defined in <a href="https://github.com/Zebec-protocol/zebec-anchor-sdk/blob/b546a3d/packages/multisig/src/services/multisig.ts#L209">multisig/src/services/multisig.ts:209</a></li></ul></aside></li></ul></section>
+<section class="tsd-panel tsd-member tsd-kind-method tsd-parent-kind-class tsd-is-inherited"><a id="depositTokenToSafe" class="tsd-anchor"></a>
+<h3 class="tsd-anchor-link"><span>deposit<wbr/>Token<wbr/>To<wbr/>Safe</span><a href="#depositTokenToSafe" aria-label="Permalink" class="tsd-anchor-icon"><svg class="icon icon-tabler icon-tabler-link" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round"><use href="#icon-anchor-a"></use><use href="#icon-anchor-b"></use><use href="#icon-anchor-c"></use></svg></a></h3>
+<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class tsd-is-inherited">
+<li class="tsd-signature tsd-anchor-link" id="depositTokenToSafe.depositTokenToSafe-1">deposit<wbr/>Token<wbr/>To<wbr/>Safe<span class="tsd-signature-symbol">(</span>data<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">MdepositSolToSafe</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">any</span><span class="tsd-signature-symbol">&gt;</span><a href="#depositTokenToSafe.depositTokenToSafe-1" aria-label="Permalink" class="tsd-anchor-icon"><svg class="icon icon-tabler icon-tabler-link" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round"><use href="#icon-anchor-a"></use><use href="#icon-anchor-b"></use><use href="#icon-anchor-c"></use></svg></a></li>
+<li class="tsd-description">
+<div class="tsd-parameters">
+<h4 class="tsd-parameters-title">Parameters</h4>
+<ul class="tsd-parameter-list">
+<li>
+<h5>data: <span class="tsd-signature-type">MdepositSolToSafe</span></h5></li></ul></div>
+<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">any</span><span class="tsd-signature-symbol">&gt;</span></h4><aside class="tsd-sources">
+<p>Inherited from <a href="_zebec_protocol_multisig.ZebecMultisig.html">ZebecMultisig</a>.<a href="_zebec_protocol_multisig.ZebecMultisig.html#depositTokenToSafe">depositTokenToSafe</a></p>
+<ul>
+<li>Defined in <a href="https://github.com/Zebec-protocol/zebec-anchor-sdk/blob/b546a3d/packages/multisig/src/services/multisig.ts#L249">multisig/src/services/multisig.ts:249</a></li></ul></aside></li></ul></section>
+<section class="tsd-panel tsd-member tsd-kind-method tsd-parent-kind-class"><a id="execCancel" class="tsd-anchor"></a>
+<h3 class="tsd-anchor-link"><span>exec<wbr/>Cancel</span><a href="#execCancel" aria-label="Permalink" class="tsd-anchor-icon"><svg class="icon icon-tabler icon-tabler-link" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round"><use href="#icon-anchor-a"></use><use href="#icon-anchor-b"></use><use href="#icon-anchor-c"></use></svg></a></h3>
+<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class">
+<li class="tsd-signature tsd-anchor-link" id="execCancel.execCancel-1">exec<wbr/>Cancel<span class="tsd-signature-symbol">(</span>data<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">MExecPauseResumeWithdrawCancel</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">any</span><span class="tsd-signature-symbol">&gt;</span><a href="#execCancel.execCancel-1" aria-label="Permalink" class="tsd-anchor-icon"><svg class="icon icon-tabler icon-tabler-link" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round"><use href="#icon-anchor-a"></use><use href="#icon-anchor-b"></use><use href="#icon-anchor-c"></use></svg></a></li>
+<li class="tsd-description">
+<div class="tsd-parameters">
+<h4 class="tsd-parameters-title">Parameters</h4>
+<ul class="tsd-parameter-list">
+<li>
+<h5>data: <span class="tsd-signature-type">MExecPauseResumeWithdrawCancel</span></h5></li></ul></div>
+<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">any</span><span class="tsd-signature-symbol">&gt;</span></h4><aside class="tsd-sources">
+<ul>
+<li>Defined in <a href="https://github.com/Zebec-protocol/zebec-anchor-sdk/blob/b546a3d/packages/multisig/src/services/multisig.ts#L1122">multisig/src/services/multisig.ts:1122</a></li></ul></aside></li></ul></section>
+<section class="tsd-panel tsd-member tsd-kind-method tsd-parent-kind-class"><a id="execDespoit" class="tsd-anchor"></a>
+<h3 class="tsd-anchor-link"><span>exec<wbr/>Despoit</span><a href="#execDespoit" aria-label="Permalink" class="tsd-anchor-icon"><svg class="icon icon-tabler icon-tabler-link" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round"><use href="#icon-anchor-a"></use><use href="#icon-anchor-b"></use><use href="#icon-anchor-c"></use></svg></a></h3>
+<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class">
+<li class="tsd-signature tsd-anchor-link" id="execDespoit.execDespoit-1">exec<wbr/>Despoit<span class="tsd-signature-symbol">(</span>data<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">MExecDeposit</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">any</span><span class="tsd-signature-symbol">&gt;</span><a href="#execDespoit.execDespoit-1" aria-label="Permalink" class="tsd-anchor-icon"><svg class="icon icon-tabler icon-tabler-link" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round"><use href="#icon-anchor-a"></use><use href="#icon-anchor-b"></use><use href="#icon-anchor-c"></use></svg></a></li>
+<li class="tsd-description">
+<div class="tsd-parameters">
+<h4 class="tsd-parameters-title">Parameters</h4>
+<ul class="tsd-parameter-list">
+<li>
+<h5>data: <span class="tsd-signature-type">MExecDeposit</span></h5></li></ul></div>
+<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">any</span><span class="tsd-signature-symbol">&gt;</span></h4><aside class="tsd-sources">
+<ul>
+<li>Defined in <a href="https://github.com/Zebec-protocol/zebec-anchor-sdk/blob/b546a3d/packages/multisig/src/services/multisig.ts#L351">multisig/src/services/multisig.ts:351</a></li></ul></aside></li></ul></section>
+<section class="tsd-panel tsd-member tsd-kind-method tsd-parent-kind-class"><a id="execInit" class="tsd-anchor"></a>
+<h3 class="tsd-anchor-link"><span>exec<wbr/>Init</span><a href="#execInit" aria-label="Permalink" class="tsd-anchor-icon"><svg class="icon icon-tabler icon-tabler-link" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round"><use href="#icon-anchor-a"></use><use href="#icon-anchor-b"></use><use href="#icon-anchor-c"></use></svg></a></h3>
+<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class">
+<li class="tsd-signature tsd-anchor-link" id="execInit.execInit-1">exec<wbr/>Init<span class="tsd-signature-symbol">(</span>data<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">MExecInit</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">any</span><span class="tsd-signature-symbol">&gt;</span><a href="#execInit.execInit-1" aria-label="Permalink" class="tsd-anchor-icon"><svg class="icon icon-tabler icon-tabler-link" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round"><use href="#icon-anchor-a"></use><use href="#icon-anchor-b"></use><use href="#icon-anchor-c"></use></svg></a></li>
+<li class="tsd-description">
+<div class="tsd-parameters">
+<h4 class="tsd-parameters-title">Parameters</h4>
+<ul class="tsd-parameter-list">
+<li>
+<h5>data: <span class="tsd-signature-type">MExecInit</span></h5></li></ul></div>
+<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">any</span><span class="tsd-signature-symbol">&gt;</span></h4><aside class="tsd-sources">
+<ul>
+<li>Defined in <a href="https://github.com/Zebec-protocol/zebec-anchor-sdk/blob/b546a3d/packages/multisig/src/services/multisig.ts#L507">multisig/src/services/multisig.ts:507</a></li></ul></aside></li></ul></section>
+<section class="tsd-panel tsd-member tsd-kind-method tsd-parent-kind-class"><a id="execInstantTransfer" class="tsd-anchor"></a>
+<h3 class="tsd-anchor-link"><span>exec<wbr/>Instant<wbr/>Transfer</span><a href="#execInstantTransfer" aria-label="Permalink" class="tsd-anchor-icon"><svg class="icon icon-tabler icon-tabler-link" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round"><use href="#icon-anchor-a"></use><use href="#icon-anchor-b"></use><use href="#icon-anchor-c"></use></svg></a></h3>
+<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class">
+<li class="tsd-signature tsd-anchor-link" id="execInstantTransfer.execInstantTransfer-1">exec<wbr/>Instant<wbr/>Transfer<span class="tsd-signature-symbol">(</span>data<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">MExecInstantTransfer</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">any</span><span class="tsd-signature-symbol">&gt;</span><a href="#execInstantTransfer.execInstantTransfer-1" aria-label="Permalink" class="tsd-anchor-icon"><svg class="icon icon-tabler icon-tabler-link" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round"><use href="#icon-anchor-a"></use><use href="#icon-anchor-b"></use><use href="#icon-anchor-c"></use></svg></a></li>
+<li class="tsd-description">
+<div class="tsd-parameters">
+<h4 class="tsd-parameters-title">Parameters</h4>
+<ul class="tsd-parameter-list">
+<li>
+<h5>data: <span class="tsd-signature-type">MExecInstantTransfer</span></h5></li></ul></div>
+<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">any</span><span class="tsd-signature-symbol">&gt;</span></h4><aside class="tsd-sources">
+<ul>
+<li>Defined in <a href="https://github.com/Zebec-protocol/zebec-anchor-sdk/blob/b546a3d/packages/multisig/src/services/multisig.ts#L1282">multisig/src/services/multisig.ts:1282</a></li></ul></aside></li></ul></section>
+<section class="tsd-panel tsd-member tsd-kind-method tsd-parent-kind-class"><a id="execPause" class="tsd-anchor"></a>
+<h3 class="tsd-anchor-link"><span>exec<wbr/>Pause</span><a href="#execPause" aria-label="Permalink" class="tsd-anchor-icon"><svg class="icon icon-tabler icon-tabler-link" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round"><use href="#icon-anchor-a"></use><use href="#icon-anchor-b"></use><use href="#icon-anchor-c"></use></svg></a></h3>
+<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class">
+<li class="tsd-signature tsd-anchor-link" id="execPause.execPause-1">exec<wbr/>Pause<span class="tsd-signature-symbol">(</span>data<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">MExecPauseResumeWithdrawCancel</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">any</span><span class="tsd-signature-symbol">&gt;</span><a href="#execPause.execPause-1" aria-label="Permalink" class="tsd-anchor-icon"><svg class="icon icon-tabler icon-tabler-link" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round"><use href="#icon-anchor-a"></use><use href="#icon-anchor-b"></use><use href="#icon-anchor-c"></use></svg></a></li>
+<li class="tsd-description">
+<div class="tsd-parameters">
+<h4 class="tsd-parameters-title">Parameters</h4>
+<ul class="tsd-parameter-list">
+<li>
+<h5>data: <span class="tsd-signature-type">MExecPauseResumeWithdrawCancel</span></h5></li></ul></div>
+<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">any</span><span class="tsd-signature-symbol">&gt;</span></h4><aside class="tsd-sources">
+<ul>
+<li>Defined in <a href="https://github.com/Zebec-protocol/zebec-anchor-sdk/blob/b546a3d/packages/multisig/src/services/multisig.ts#L825">multisig/src/services/multisig.ts:825</a></li></ul></aside></li></ul></section>
+<section class="tsd-panel tsd-member tsd-kind-method tsd-parent-kind-class"><a id="execResume" class="tsd-anchor"></a>
+<h3 class="tsd-anchor-link"><span>exec<wbr/>Resume</span><a href="#execResume" aria-label="Permalink" class="tsd-anchor-icon"><svg class="icon icon-tabler icon-tabler-link" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round"><use href="#icon-anchor-a"></use><use href="#icon-anchor-b"></use><use href="#icon-anchor-c"></use></svg></a></h3>
+<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class">
+<li class="tsd-signature tsd-anchor-link" id="execResume.execResume-1">exec<wbr/>Resume<span class="tsd-signature-symbol">(</span>data<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">MExecPauseResumeWithdrawCancel</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">any</span><span class="tsd-signature-symbol">&gt;</span><a href="#execResume.execResume-1" aria-label="Permalink" class="tsd-anchor-icon"><svg class="icon icon-tabler icon-tabler-link" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round"><use href="#icon-anchor-a"></use><use href="#icon-anchor-b"></use><use href="#icon-anchor-c"></use></svg></a></li>
+<li class="tsd-description">
+<div class="tsd-parameters">
+<h4 class="tsd-parameters-title">Parameters</h4>
+<ul class="tsd-parameter-list">
+<li>
+<h5>data: <span class="tsd-signature-type">MExecPauseResumeWithdrawCancel</span></h5></li></ul></div>
+<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">any</span><span class="tsd-signature-symbol">&gt;</span></h4><aside class="tsd-sources">
+<ul>
+<li>Defined in <a href="https://github.com/Zebec-protocol/zebec-anchor-sdk/blob/b546a3d/packages/multisig/src/services/multisig.ts#L974">multisig/src/services/multisig.ts:974</a></li></ul></aside></li></ul></section>
+<section class="tsd-panel tsd-member tsd-kind-method tsd-parent-kind-class"><a id="execTransferFromSafe" class="tsd-anchor"></a>
+<h3 class="tsd-anchor-link"><span>exec<wbr/>Transfer<wbr/>From<wbr/>Safe</span><a href="#execTransferFromSafe" aria-label="Permalink" class="tsd-anchor-icon"><svg class="icon icon-tabler icon-tabler-link" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round"><use href="#icon-anchor-a"></use><use href="#icon-anchor-b"></use><use href="#icon-anchor-c"></use></svg></a></h3>
+<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class">
+<li class="tsd-signature tsd-anchor-link" id="execTransferFromSafe.execTransferFromSafe-1">exec<wbr/>Transfer<wbr/>From<wbr/>Safe<span class="tsd-signature-symbol">(</span>data<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">MExecTransferFromSafe</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">any</span><span class="tsd-signature-symbol">&gt;</span><a href="#execTransferFromSafe.execTransferFromSafe-1" aria-label="Permalink" class="tsd-anchor-icon"><svg class="icon icon-tabler icon-tabler-link" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round"><use href="#icon-anchor-a"></use><use href="#icon-anchor-b"></use><use href="#icon-anchor-c"></use></svg></a></li>
+<li class="tsd-description">
+<div class="tsd-parameters">
+<h4 class="tsd-parameters-title">Parameters</h4>
+<ul class="tsd-parameter-list">
+<li>
+<h5>data: <span class="tsd-signature-type">MExecTransferFromSafe</span></h5></li></ul></div>
+<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">any</span><span class="tsd-signature-symbol">&gt;</span></h4><aside class="tsd-sources">
+<ul>
+<li>Defined in <a href="https://github.com/Zebec-protocol/zebec-anchor-sdk/blob/b546a3d/packages/multisig/src/services/multisig.ts#L1432">multisig/src/services/multisig.ts:1432</a></li></ul></aside></li></ul></section>
+<section class="tsd-panel tsd-member tsd-kind-method tsd-parent-kind-class"><a id="execUpdateStream" class="tsd-anchor"></a>
+<h3 class="tsd-anchor-link"><span>exec<wbr/>Update<wbr/>Stream</span><a href="#execUpdateStream" aria-label="Permalink" class="tsd-anchor-icon"><svg class="icon icon-tabler icon-tabler-link" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round"><use href="#icon-anchor-a"></use><use href="#icon-anchor-b"></use><use href="#icon-anchor-c"></use></svg></a></h3>
+<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class">
+<li class="tsd-signature tsd-anchor-link" id="execUpdateStream.execUpdateStream-1">exec<wbr/>Update<wbr/>Stream<span class="tsd-signature-symbol">(</span>data<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">MExecUpdateStream</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">any</span><span class="tsd-signature-symbol">&gt;</span><a href="#execUpdateStream.execUpdateStream-1" aria-label="Permalink" class="tsd-anchor-icon"><svg class="icon icon-tabler icon-tabler-link" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round"><use href="#icon-anchor-a"></use><use href="#icon-anchor-b"></use><use href="#icon-anchor-c"></use></svg></a></li>
+<li class="tsd-description">
+<div class="tsd-parameters">
+<h4 class="tsd-parameters-title">Parameters</h4>
+<ul class="tsd-parameter-list">
+<li>
+<h5>data: <span class="tsd-signature-type">MExecUpdateStream</span></h5></li></ul></div>
+<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">any</span><span class="tsd-signature-symbol">&gt;</span></h4><aside class="tsd-sources">
+<ul>
+<li>Defined in <a href="https://github.com/Zebec-protocol/zebec-anchor-sdk/blob/b546a3d/packages/multisig/src/services/multisig.ts#L673">multisig/src/services/multisig.ts:673</a></li></ul></aside></li></ul></section>
+<section class="tsd-panel tsd-member tsd-kind-method tsd-parent-kind-class tsd-is-inherited"><a id="fetchMultiSigStreamData" class="tsd-anchor"></a>
+<h3 class="tsd-anchor-link"><span>fetch<wbr/>Multi<wbr/>Sig<wbr/>Stream<wbr/>Data</span><a href="#fetchMultiSigStreamData" aria-label="Permalink" class="tsd-anchor-icon"><svg class="icon icon-tabler icon-tabler-link" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round"><use href="#icon-anchor-a"></use><use href="#icon-anchor-b"></use><use href="#icon-anchor-c"></use></svg></a></h3>
+<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class tsd-is-inherited">
+<li class="tsd-signature tsd-anchor-link" id="fetchMultiSigStreamData.fetchMultiSigStreamData-1">fetch<wbr/>Multi<wbr/>Sig<wbr/>Stream<wbr/>Data<span class="tsd-signature-symbol">(</span>stream_data_account<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">PublicKey</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">any</span><span class="tsd-signature-symbol">&gt;</span><a href="#fetchMultiSigStreamData.fetchMultiSigStreamData-1" aria-label="Permalink" class="tsd-anchor-icon"><svg class="icon icon-tabler icon-tabler-link" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round"><use href="#icon-anchor-a"></use><use href="#icon-anchor-b"></use><use href="#icon-anchor-c"></use></svg></a></li>
+<li class="tsd-description">
+<div class="tsd-parameters">
+<h4 class="tsd-parameters-title">Parameters</h4>
+<ul class="tsd-parameter-list">
+<li>
+<h5>stream_data_account: <span class="tsd-signature-type">PublicKey</span></h5></li></ul></div>
+<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">any</span><span class="tsd-signature-symbol">&gt;</span></h4><aside class="tsd-sources">
+<p>Inherited from <a href="_zebec_protocol_multisig.ZebecMultisig.html">ZebecMultisig</a>.<a href="_zebec_protocol_multisig.ZebecMultisig.html#fetchMultiSigStreamData">fetchMultiSigStreamData</a></p>
+<ul>
+<li>Defined in <a href="https://github.com/Zebec-protocol/zebec-anchor-sdk/blob/b546a3d/packages/multisig/src/services/multisig.ts#L114">multisig/src/services/multisig.ts:114</a></li></ul></aside></li></ul></section>
+<section class="tsd-panel tsd-member tsd-kind-method tsd-parent-kind-class"><a id="fetchStreamData" class="tsd-anchor"></a>
+<h3 class="tsd-anchor-link"><span>fetch<wbr/>Stream<wbr/>Data</span><a href="#fetchStreamData" aria-label="Permalink" class="tsd-anchor-icon"><svg class="icon icon-tabler icon-tabler-link" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round"><use href="#icon-anchor-a"></use><use href="#icon-anchor-b"></use><use href="#icon-anchor-c"></use></svg></a></h3>
+<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class">
+<li class="tsd-signature tsd-anchor-link" id="fetchStreamData.fetchStreamData-1">fetch<wbr/>Stream<wbr/>Data<span class="tsd-signature-symbol">(</span>stream_data_account<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">PublicKey</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">any</span><span class="tsd-signature-symbol">&gt;</span><a href="#fetchStreamData.fetchStreamData-1" aria-label="Permalink" class="tsd-anchor-icon"><svg class="icon icon-tabler icon-tabler-link" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round"><use href="#icon-anchor-a"></use><use href="#icon-anchor-b"></use><use href="#icon-anchor-c"></use></svg></a></li>
+<li class="tsd-description">
+<div class="tsd-parameters">
+<h4 class="tsd-parameters-title">Parameters</h4>
+<ul class="tsd-parameter-list">
+<li>
+<h5>stream_data_account: <span class="tsd-signature-type">PublicKey</span></h5></li></ul></div>
+<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">any</span><span class="tsd-signature-symbol">&gt;</span></h4><aside class="tsd-sources">
+<ul>
+<li>Defined in <a href="https://github.com/Zebec-protocol/zebec-anchor-sdk/blob/b546a3d/packages/multisig/src/services/multisig.ts#L1574">multisig/src/services/multisig.ts:1574</a></li></ul></aside></li></ul></section>
+<section class="tsd-panel tsd-member tsd-kind-method tsd-parent-kind-class"><a id="init" class="tsd-anchor"></a>
+<h3 class="tsd-anchor-link"><span>init</span><a href="#init" aria-label="Permalink" class="tsd-anchor-icon"><svg class="icon icon-tabler icon-tabler-link" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round"><use href="#icon-anchor-a"></use><use href="#icon-anchor-b"></use><use href="#icon-anchor-c"></use></svg></a></h3>
+<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class">
+<li class="tsd-signature tsd-anchor-link" id="init.init-1">init<span class="tsd-signature-symbol">(</span>data<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">MInitStream</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">any</span><span class="tsd-signature-symbol">&gt;</span><a href="#init.init-1" aria-label="Permalink" class="tsd-anchor-icon"><svg class="icon icon-tabler icon-tabler-link" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round"><use href="#icon-anchor-a"></use><use href="#icon-anchor-b"></use><use href="#icon-anchor-c"></use></svg></a></li>
+<li class="tsd-description">
+<div class="tsd-parameters">
+<h4 class="tsd-parameters-title">Parameters</h4>
+<ul class="tsd-parameter-list">
+<li>
+<h5>data: <span class="tsd-signature-type">MInitStream</span></h5></li></ul></div>
+<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">any</span><span class="tsd-signature-symbol">&gt;</span></h4><aside class="tsd-sources">
+<ul>
+<li>Defined in <a href="https://github.com/Zebec-protocol/zebec-anchor-sdk/blob/b546a3d/packages/multisig/src/services/multisig.ts#L446">multisig/src/services/multisig.ts:446</a></li></ul></aside></li></ul></section>
+<section class="tsd-panel tsd-member tsd-kind-method tsd-parent-kind-class"><a id="instantTransfer" class="tsd-anchor"></a>
+<h3 class="tsd-anchor-link"><span>instant<wbr/>Transfer</span><a href="#instantTransfer" aria-label="Permalink" class="tsd-anchor-icon"><svg class="icon icon-tabler icon-tabler-link" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round"><use href="#icon-anchor-a"></use><use href="#icon-anchor-b"></use><use href="#icon-anchor-c"></use></svg></a></h3>
+<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class">
+<li class="tsd-signature tsd-anchor-link" id="instantTransfer.instantTransfer-1">instant<wbr/>Transfer<span class="tsd-signature-symbol">(</span>data<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">MInstantTransfer</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">any</span><span class="tsd-signature-symbol">&gt;</span><a href="#instantTransfer.instantTransfer-1" aria-label="Permalink" class="tsd-anchor-icon"><svg class="icon icon-tabler icon-tabler-link" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round"><use href="#icon-anchor-a"></use><use href="#icon-anchor-b"></use><use href="#icon-anchor-c"></use></svg></a></li>
+<li class="tsd-description">
+<div class="tsd-parameters">
+<h4 class="tsd-parameters-title">Parameters</h4>
+<ul class="tsd-parameter-list">
+<li>
+<h5>data: <span class="tsd-signature-type">MInstantTransfer</span></h5></li></ul></div>
+<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">any</span><span class="tsd-signature-symbol">&gt;</span></h4><aside class="tsd-sources">
+<ul>
+<li>Defined in <a href="https://github.com/Zebec-protocol/zebec-anchor-sdk/blob/b546a3d/packages/multisig/src/services/multisig.ts#L1232">multisig/src/services/multisig.ts:1232</a></li></ul></aside></li></ul></section>
+<section class="tsd-panel tsd-member tsd-kind-method tsd-parent-kind-class"><a id="pause" class="tsd-anchor"></a>
+<h3 class="tsd-anchor-link"><span>pause</span><a href="#pause" aria-label="Permalink" class="tsd-anchor-icon"><svg class="icon icon-tabler icon-tabler-link" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round"><use href="#icon-anchor-a"></use><use href="#icon-anchor-b"></use><use href="#icon-anchor-c"></use></svg></a></h3>
+<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class">
+<li class="tsd-signature tsd-anchor-link" id="pause.pause-1">pause<span class="tsd-signature-symbol">(</span>data<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">MPauseResumeWithdrawCancel</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">any</span><span class="tsd-signature-symbol">&gt;</span><a href="#pause.pause-1" aria-label="Permalink" class="tsd-anchor-icon"><svg class="icon icon-tabler icon-tabler-link" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round"><use href="#icon-anchor-a"></use><use href="#icon-anchor-b"></use><use href="#icon-anchor-c"></use></svg></a></li>
+<li class="tsd-description">
+<div class="tsd-parameters">
+<h4 class="tsd-parameters-title">Parameters</h4>
+<ul class="tsd-parameter-list">
+<li>
+<h5>data: <span class="tsd-signature-type">MPauseResumeWithdrawCancel</span></h5></li></ul></div>
+<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">any</span><span class="tsd-signature-symbol">&gt;</span></h4><aside class="tsd-sources">
+<ul>
+<li>Defined in <a href="https://github.com/Zebec-protocol/zebec-anchor-sdk/blob/b546a3d/packages/multisig/src/services/multisig.ts#L778">multisig/src/services/multisig.ts:778</a></li></ul></aside></li></ul></section>
+<section class="tsd-panel tsd-member tsd-kind-method tsd-parent-kind-class"><a id="resume" class="tsd-anchor"></a>
+<h3 class="tsd-anchor-link"><span>resume</span><a href="#resume" aria-label="Permalink" class="tsd-anchor-icon"><svg class="icon icon-tabler icon-tabler-link" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round"><use href="#icon-anchor-a"></use><use href="#icon-anchor-b"></use><use href="#icon-anchor-c"></use></svg></a></h3>
+<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class">
+<li class="tsd-signature tsd-anchor-link" id="resume.resume-1">resume<span class="tsd-signature-symbol">(</span>data<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">MPauseResumeWithdrawCancel</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">any</span><span class="tsd-signature-symbol">&gt;</span><a href="#resume.resume-1" aria-label="Permalink" class="tsd-anchor-icon"><svg class="icon icon-tabler icon-tabler-link" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round"><use href="#icon-anchor-a"></use><use href="#icon-anchor-b"></use><use href="#icon-anchor-c"></use></svg></a></li>
+<li class="tsd-description">
+<div class="tsd-parameters">
+<h4 class="tsd-parameters-title">Parameters</h4>
+<ul class="tsd-parameter-list">
+<li>
+<h5>data: <span class="tsd-signature-type">MPauseResumeWithdrawCancel</span></h5></li></ul></div>
+<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">any</span><span class="tsd-signature-symbol">&gt;</span></h4><aside class="tsd-sources">
+<ul>
+<li>Defined in <a href="https://github.com/Zebec-protocol/zebec-anchor-sdk/blob/b546a3d/packages/multisig/src/services/multisig.ts#L925">multisig/src/services/multisig.ts:925</a></li></ul></aside></li></ul></section>
+<section class="tsd-panel tsd-member tsd-kind-method tsd-parent-kind-class"><a id="transferFromSafe" class="tsd-anchor"></a>
+<h3 class="tsd-anchor-link"><span>transfer<wbr/>From<wbr/>Safe</span><a href="#transferFromSafe" aria-label="Permalink" class="tsd-anchor-icon"><svg class="icon icon-tabler icon-tabler-link" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round"><use href="#icon-anchor-a"></use><use href="#icon-anchor-b"></use><use href="#icon-anchor-c"></use></svg></a></h3>
+<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class">
+<li class="tsd-signature tsd-anchor-link" id="transferFromSafe.transferFromSafe-1">transfer<wbr/>From<wbr/>Safe<span class="tsd-signature-symbol">(</span>data<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">MTransferFromSafe</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">any</span><span class="tsd-signature-symbol">&gt;</span><a href="#transferFromSafe.transferFromSafe-1" aria-label="Permalink" class="tsd-anchor-icon"><svg class="icon icon-tabler icon-tabler-link" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round"><use href="#icon-anchor-a"></use><use href="#icon-anchor-b"></use><use href="#icon-anchor-c"></use></svg></a></li>
+<li class="tsd-description">
+<div class="tsd-parameters">
+<h4 class="tsd-parameters-title">Parameters</h4>
+<ul class="tsd-parameter-list">
+<li>
+<h5>data: <span class="tsd-signature-type">MTransferFromSafe</span></h5></li></ul></div>
+<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">any</span><span class="tsd-signature-symbol">&gt;</span></h4><aside class="tsd-sources">
+<ul>
+<li>Defined in <a href="https://github.com/Zebec-protocol/zebec-anchor-sdk/blob/b546a3d/packages/multisig/src/services/multisig.ts#L1386">multisig/src/services/multisig.ts:1386</a></li></ul></aside></li></ul></section>
+<section class="tsd-panel tsd-member tsd-kind-method tsd-parent-kind-class"><a id="updateStream" class="tsd-anchor"></a>
+<h3 class="tsd-anchor-link"><span>update<wbr/>Stream</span><a href="#updateStream" aria-label="Permalink" class="tsd-anchor-icon"><svg class="icon icon-tabler icon-tabler-link" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round"><use href="#icon-anchor-a"></use><use href="#icon-anchor-b"></use><use href="#icon-anchor-c"></use></svg></a></h3>
+<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class">
+<li class="tsd-signature tsd-anchor-link" id="updateStream.updateStream-1">update<wbr/>Stream<span class="tsd-signature-symbol">(</span>data<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">MUpdateStream</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">any</span><span class="tsd-signature-symbol">&gt;</span><a href="#updateStream.updateStream-1" aria-label="Permalink" class="tsd-anchor-icon"><svg class="icon icon-tabler icon-tabler-link" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round"><use href="#icon-anchor-a"></use><use href="#icon-anchor-b"></use><use href="#icon-anchor-c"></use></svg></a></li>
+<li class="tsd-description">
+<div class="tsd-parameters">
+<h4 class="tsd-parameters-title">Parameters</h4>
+<ul class="tsd-parameter-list">
+<li>
+<h5>data: <span class="tsd-signature-type">MUpdateStream</span></h5></li></ul></div>
+<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">any</span><span class="tsd-signature-symbol">&gt;</span></h4><aside class="tsd-sources">
+<ul>
+<li>Defined in <a href="https://github.com/Zebec-protocol/zebec-anchor-sdk/blob/b546a3d/packages/multisig/src/services/multisig.ts#L618">multisig/src/services/multisig.ts:618</a></li></ul></aside></li></ul></section>
+<section class="tsd-panel tsd-member tsd-kind-method tsd-parent-kind-class"><a id="withdraw" class="tsd-anchor"></a>
+<h3 class="tsd-anchor-link"><span>withdraw</span><a href="#withdraw" aria-label="Permalink" class="tsd-anchor-icon"><svg class="icon icon-tabler icon-tabler-link" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round"><use href="#icon-anchor-a"></use><use href="#icon-anchor-b"></use><use href="#icon-anchor-c"></use></svg></a></h3>
+<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class">
+<li class="tsd-signature tsd-anchor-link" id="withdraw.withdraw-1">withdraw<span class="tsd-signature-symbol">(</span>data<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">MWithdraw</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">any</span><span class="tsd-signature-symbol">&gt;</span><a href="#withdraw.withdraw-1" aria-label="Permalink" class="tsd-anchor-icon"><svg class="icon icon-tabler icon-tabler-link" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round"><use href="#icon-anchor-a"></use><use href="#icon-anchor-b"></use><use href="#icon-anchor-c"></use></svg></a></li>
+<li class="tsd-description">
+<div class="tsd-parameters">
+<h4 class="tsd-parameters-title">Parameters</h4>
+<ul class="tsd-parameter-list">
+<li>
+<h5>data: <span class="tsd-signature-type">MWithdraw</span></h5></li></ul></div>
+<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">any</span><span class="tsd-signature-symbol">&gt;</span></h4><aside class="tsd-sources">
+<ul>
+<li>Defined in <a href="https://github.com/Zebec-protocol/zebec-anchor-sdk/blob/b546a3d/packages/multisig/src/services/multisig.ts#L1529">multisig/src/services/multisig.ts:1529</a></li></ul></aside></li></ul></section></section></div>
+<div class="col-4 col-menu menu-sticky-wrap menu-highlight">
+<div class="tsd-navigation settings">
+<details class="tsd-index-accordion"><summary class="tsd-accordion-summary">
+<h3><svg width="20" height="20" viewBox="0 0 24 24" fill="none"><path d="M4.93896 8.531L12 15.591L19.061 8.531L16.939 6.409L12 11.349L7.06098 6.409L4.93896 8.531Z" fill="var(--color-text)"></path></svg> Settings</h3></summary>
+<div class="tsd-accordion-details">
+<div class="tsd-filter-visibility">
+<h4 class="uppercase">Member Visibility</h4><form>
+<ul id="tsd-filter-options">
+<li class="tsd-filter-item"><label class="tsd-filter-input"><input type="checkbox" id="tsd-filter-protected" name="protected"/><svg width="32" height="32" viewBox="0 0 32 32" aria-hidden="true"><rect class="tsd-checkbox-background" width="30" height="30" x="1" y="1" rx="6" fill="none"></rect><path class="tsd-checkbox-checkmark" d="M8.35422 16.8214L13.2143 21.75L24.6458 10.25" stroke="none" stroke-width="3.5" stroke-linejoin="round" fill="none"></path></svg><span>Protected</span></label></li>
+<li class="tsd-filter-item"><label class="tsd-filter-input"><input type="checkbox" id="tsd-filter-private" name="private"/><svg width="32" height="32" viewBox="0 0 32 32" aria-hidden="true"><rect class="tsd-checkbox-background" width="30" height="30" x="1" y="1" rx="6" fill="none"></rect><path class="tsd-checkbox-checkmark" d="M8.35422 16.8214L13.2143 21.75L24.6458 10.25" stroke="none" stroke-width="3.5" stroke-linejoin="round" fill="none"></path></svg><span>Private</span></label></li>
+<li class="tsd-filter-item"><label class="tsd-filter-input"><input type="checkbox" id="tsd-filter-inherited" name="inherited" checked/><svg width="32" height="32" viewBox="0 0 32 32" aria-hidden="true"><rect class="tsd-checkbox-background" width="30" height="30" x="1" y="1" rx="6" fill="none"></rect><path class="tsd-checkbox-checkmark" d="M8.35422 16.8214L13.2143 21.75L24.6458 10.25" stroke="none" stroke-width="3.5" stroke-linejoin="round" fill="none"></path></svg><span>Inherited</span></label></li>
+<li class="tsd-filter-item"><label class="tsd-filter-input"><input type="checkbox" id="tsd-filter-external" name="external"/><svg width="32" height="32" viewBox="0 0 32 32" aria-hidden="true"><rect class="tsd-checkbox-background" width="30" height="30" x="1" y="1" rx="6" fill="none"></rect><path class="tsd-checkbox-checkmark" d="M8.35422 16.8214L13.2143 21.75L24.6458 10.25" stroke="none" stroke-width="3.5" stroke-linejoin="round" fill="none"></path></svg><span>External</span></label></li></ul></form></div>
+<div class="tsd-theme-toggle">
+<h4 class="uppercase">Theme</h4><select id="theme"><option value="os">OS</option><option value="light">Light</option><option value="dark">Dark</option></select></div></div></details></div>
+<nav class="tsd-navigation primary">
+<details class="tsd-index-accordion" open><summary class="tsd-accordion-summary">
+<h3><svg width="20" height="20" viewBox="0 0 24 24" fill="none"><path d="M4.93896 8.531L12 15.591L19.061 8.531L16.939 6.409L12 11.349L7.06098 6.409L4.93896 8.531Z" fill="var(--color-text)"></path></svg> Modules</h3></summary>
+<div class="tsd-accordion-details">
+<ul>
+<li class="current"><a href="../modules.html">Zebec <wbr/>Protocol -<wbr/> v1.0.0</a>
+<ul>
+<li class="tsd-kind-module"><a href="../modules/_zebec_protocol_bulk_transfer.html">@zebec-<wbr/>protocol/bulk-<wbr/>transfer -<wbr/> v1.0.0</a></li>
+<li class="current tsd-kind-module"><a href="../modules/_zebec_protocol_multisig.html">@zebec-<wbr/>protocol/multisig -<wbr/> v1.0.0</a></li>
+<li class="tsd-kind-module"><a href="../modules/_zebec_protocol_stream.html">@zebec-<wbr/>protocol/stream -<wbr/> v1.0.0</a></li></ul></li></ul></div></details></nav>
+<nav class="tsd-navigation secondary menu-sticky">
+<ul>
+<li class="current tsd-kind-class tsd-parent-kind-module"><a href="_zebec_protocol_multisig.ZebecNativeTreasury.html" class="tsd-index-link"><svg class="tsd-kind-icon" width="24" height="24" viewBox="0 0 24 24"><rect fill="var(--color-icon-background)" stroke="var(--color-ts-class)" stroke-width="1.5" x="1" y="1" width="22" height="22" rx="6" id="icon-128-path"></rect><path d="M11.898 16.1201C11.098 16.1201 10.466 15.8961 10.002 15.4481C9.53803 15.0001 9.30603 14.3841 9.30603 13.6001V9.64012C9.30603 8.85612 9.53803 8.24012 10.002 7.79212C10.466 7.34412 11.098 7.12012 11.898 7.12012C12.682 7.12012 13.306 7.34812 13.77 7.80412C14.234 8.25212 14.466 8.86412 14.466 9.64012H13.386C13.386 9.14412 13.254 8.76412 12.99 8.50012C12.734 8.22812 12.37 8.09212 11.898 8.09212C11.426 8.09212 11.054 8.22412 10.782 8.48812C10.518 8.75212 10.386 9.13212 10.386 9.62812V13.6001C10.386 14.0961 10.518 14.4801 10.782 14.7521C11.054 15.0161 11.426 15.1481 11.898 15.1481C12.37 15.1481 12.734 15.0161 12.99 14.7521C13.254 14.4801 13.386 14.0961 13.386 13.6001H14.466C14.466 14.3761 14.234 14.9921 13.77 15.4481C13.306 15.8961 12.682 16.1201 11.898 16.1201Z" fill="var(--color-text)" id="icon-128-text"></path></svg><span>Zebec<wbr/>Native<wbr/>Treasury</span></a>
+<ul>
+<li class="tsd-kind-constructor tsd-parent-kind-class"><a href="_zebec_protocol_multisig.ZebecNativeTreasury.html#constructor" class="tsd-index-link"><svg class="tsd-kind-icon" width="24" height="24" viewBox="0 0 24 24"><use href="#icon-512-path"></use><use href="#icon-512-text"></use></svg>constructor</a></li>
+<li class="tsd-kind-property tsd-parent-kind-class tsd-is-inherited"><a href="_zebec_protocol_multisig.ZebecNativeTreasury.html#anchorProvider" class="tsd-index-link"><svg class="tsd-kind-icon" width="24" height="24" viewBox="0 0 24 24"><use href="#icon-1024-path"></use><use href="#icon-1024-text"></use></svg>anchor<wbr/>Provider</a></li>
+<li class="tsd-kind-property tsd-parent-kind-class tsd-is-inherited"><a href="_zebec_protocol_multisig.ZebecNativeTreasury.html#consolelog" class="tsd-index-link"><svg class="tsd-kind-icon" width="24" height="24" viewBox="0 0 24 24"><use href="#icon-1024-path"></use><use href="#icon-1024-text"></use></svg>consolelog</a></li>
+<li class="tsd-kind-property tsd-parent-kind-class tsd-is-inherited"><a href="_zebec_protocol_multisig.ZebecNativeTreasury.html#feeReceiverAddress" class="tsd-index-link"><svg class="tsd-kind-icon" width="24" height="24" viewBox="0 0 24 24"><use href="#icon-1024-path"></use><use href="#icon-1024-text"></use></svg>fee<wbr/>Receiver<wbr/>Address</a></li>
+<li class="tsd-kind-property tsd-parent-kind-class tsd-is-inherited"><a href="_zebec_protocol_multisig.ZebecNativeTreasury.html#logger" class="tsd-index-link"><svg class="tsd-kind-icon" width="24" height="24" viewBox="0 0 24 24"><use href="#icon-1024-path"></use><use href="#icon-1024-text"></use></svg>logger</a></li>
+<li class="tsd-kind-property tsd-parent-kind-class tsd-is-inherited"><a href="_zebec_protocol_multisig.ZebecNativeTreasury.html#multisigProgram" class="tsd-index-link"><svg class="tsd-kind-icon" width="24" height="24" viewBox="0 0 24 24"><use href="#icon-1024-path"></use><use href="#icon-1024-text"></use></svg>multisig<wbr/>Program</a></li>
+<li class="tsd-kind-property tsd-parent-kind-class tsd-is-inherited"><a href="_zebec_protocol_multisig.ZebecNativeTreasury.html#multisigProgramId" class="tsd-index-link"><svg class="tsd-kind-icon" width="24" height="24" viewBox="0 0 24 24"><use href="#icon-1024-path"></use><use href="#icon-1024-text"></use></svg>multisig<wbr/>Program<wbr/>Id</a></li>
+<li class="tsd-kind-property tsd-parent-kind-class tsd-is-inherited"><a href="_zebec_protocol_multisig.ZebecNativeTreasury.html#streamProgram" class="tsd-index-link"><svg class="tsd-kind-icon" width="24" height="24" viewBox="0 0 24 24"><use href="#icon-1024-path"></use><use href="#icon-1024-text"></use></svg>stream<wbr/>Program</a></li>
+<li class="tsd-kind-property tsd-parent-kind-class tsd-is-inherited"><a href="_zebec_protocol_multisig.ZebecNativeTreasury.html#streamProgramId" class="tsd-index-link"><svg class="tsd-kind-icon" width="24" height="24" viewBox="0 0 24 24"><use href="#icon-1024-path"></use><use href="#icon-1024-text"></use></svg>stream<wbr/>Program<wbr/>Id</a></li>
+<li class="tsd-kind-property tsd-parent-kind-class tsd-is-inherited"><a href="_zebec_protocol_multisig.ZebecNativeTreasury.html#transactionBuilder" class="tsd-index-link"><svg class="tsd-kind-icon" width="24" height="24" viewBox="0 0 24 24"><use href="#icon-1024-path"></use><use href="#icon-1024-text"></use></svg>transaction<wbr/>Builder</a></li>
+<li class="tsd-kind-method tsd-parent-kind-class tsd-is-inherited"><a href="_zebec_protocol_multisig.ZebecNativeTreasury.html#_fetchTresholdData" class="tsd-index-link"><svg class="tsd-kind-icon" width="24" height="24" viewBox="0 0 24 24"><use href="#icon-2048-path"></use><use href="#icon-2048-text"></use></svg>_fetch<wbr/>Treshold<wbr/>Data</a></li>
+<li class="tsd-kind-method tsd-parent-kind-class tsd-is-inherited"><a href="_zebec_protocol_multisig.ZebecNativeTreasury.html#_findAssociatedTokenAddress" class="tsd-index-link"><svg class="tsd-kind-icon" width="24" height="24" viewBox="0 0 24 24"><use href="#icon-2048-path"></use><use href="#icon-2048-text"></use></svg>_find<wbr/>Associated<wbr/>Token<wbr/>Address</a></li>
+<li class="tsd-kind-method tsd-parent-kind-class tsd-is-inherited"><a href="_zebec_protocol_multisig.ZebecNativeTreasury.html#_findFeeVaultAddress" class="tsd-index-link"><svg class="tsd-kind-icon" width="24" height="24" viewBox="0 0 24 24"><use href="#icon-2048-path"></use><use href="#icon-2048-text"></use></svg>_find<wbr/>Fee<wbr/>Vault<wbr/>Address</a></li>
+<li class="tsd-kind-method tsd-parent-kind-class tsd-is-inherited"><a href="_zebec_protocol_multisig.ZebecNativeTreasury.html#_findFeeVaultDataAccount" class="tsd-index-link"><svg class="tsd-kind-icon" width="24" height="24" viewBox="0 0 24 24"><use href="#icon-2048-path"></use><use href="#icon-2048-text"></use></svg>_find<wbr/>Fee<wbr/>Vault<wbr/>Data<wbr/>Account</a></li>
+<li class="tsd-kind-method tsd-parent-kind-class tsd-is-inherited"><a href="_zebec_protocol_multisig.ZebecNativeTreasury.html#_findSafeAddress" class="tsd-index-link"><svg class="tsd-kind-icon" width="24" height="24" viewBox="0 0 24 24"><use href="#icon-2048-path"></use><use href="#icon-2048-text"></use></svg>_find<wbr/>Safe<wbr/>Address</a></li>
+<li class="tsd-kind-method tsd-parent-kind-class tsd-is-inherited"><a href="_zebec_protocol_multisig.ZebecNativeTreasury.html#_findSolWithdrawEscrowAccount" class="tsd-index-link"><svg class="tsd-kind-icon" width="24" height="24" viewBox="0 0 24 24"><use href="#icon-2048-path"></use><use href="#icon-2048-text"></use></svg>_find<wbr/>Sol<wbr/>Withdraw<wbr/>Escrow<wbr/>Account</a></li>
+<li class="tsd-kind-method tsd-parent-kind-class tsd-is-inherited"><a href="_zebec_protocol_multisig.ZebecNativeTreasury.html#_findTokenWithdrawEscrowAccount" class="tsd-index-link"><svg class="tsd-kind-icon" width="24" height="24" viewBox="0 0 24 24"><use href="#icon-2048-path"></use><use href="#icon-2048-text"></use></svg>_find<wbr/>Token<wbr/>Withdraw<wbr/>Escrow<wbr/>Account</a></li>
+<li class="tsd-kind-method tsd-parent-kind-class tsd-is-inherited"><a href="_zebec_protocol_multisig.ZebecNativeTreasury.html#_findZebecVaultAccount" class="tsd-index-link"><svg class="tsd-kind-icon" width="24" height="24" viewBox="0 0 24 24"><use href="#icon-2048-path"></use><use href="#icon-2048-text"></use></svg>_find<wbr/>Zebec<wbr/>Vault<wbr/>Account</a></li>
+<li class="tsd-kind-method tsd-parent-kind-class tsd-is-inherited"><a href="_zebec_protocol_multisig.ZebecNativeTreasury.html#_getAccociatedTokenAddress" class="tsd-index-link"><svg class="tsd-kind-icon" width="24" height="24" viewBox="0 0 24 24"><use href="#icon-2048-path"></use><use href="#icon-2048-text"></use></svg>_get<wbr/>Accociated<wbr/>Token<wbr/>Address</a></li>
+<li class="tsd-kind-method tsd-parent-kind-class tsd-is-inherited"><a href="_zebec_protocol_multisig.ZebecNativeTreasury.html#_makeTxn" class="tsd-index-link"><svg class="tsd-kind-icon" width="24" height="24" viewBox="0 0 24 24"><use href="#icon-2048-path"></use><use href="#icon-2048-text"></use></svg>_make<wbr/>Txn</a></li>
+<li class="tsd-kind-method tsd-parent-kind-class"><a href="_zebec_protocol_multisig.ZebecNativeTreasury.html#cancel" class="tsd-index-link"><svg class="tsd-kind-icon" width="24" height="24" viewBox="0 0 24 24"><use href="#icon-2048-path"></use><use href="#icon-2048-text"></use></svg>cancel</a></li>
+<li class="tsd-kind-method tsd-parent-kind-class tsd-is-inherited"><a href="_zebec_protocol_multisig.ZebecNativeTreasury.html#createFeeVault" class="tsd-index-link"><svg class="tsd-kind-icon" width="24" height="24" viewBox="0 0 24 24"><use href="#icon-2048-path"></use><use href="#icon-2048-text"></use></svg>create<wbr/>Fee<wbr/>Vault</a></li>
+<li class="tsd-kind-method tsd-parent-kind-class tsd-is-inherited"><a href="_zebec_protocol_multisig.ZebecNativeTreasury.html#createSafe" class="tsd-index-link"><svg class="tsd-kind-icon" width="24" height="24" viewBox="0 0 24 24"><use href="#icon-2048-path"></use><use href="#icon-2048-text"></use></svg>create<wbr/>Safe</a></li>
+<li class="tsd-kind-method tsd-parent-kind-class"><a href="_zebec_protocol_multisig.ZebecNativeTreasury.html#deposit" class="tsd-index-link"><svg class="tsd-kind-icon" width="24" height="24" viewBox="0 0 24 24"><use href="#icon-2048-path"></use><use href="#icon-2048-text"></use></svg>deposit</a></li>
+<li class="tsd-kind-method tsd-parent-kind-class tsd-is-inherited"><a href="_zebec_protocol_multisig.ZebecNativeTreasury.html#depositSolToSafe" class="tsd-index-link"><svg class="tsd-kind-icon" width="24" height="24" viewBox="0 0 24 24"><use href="#icon-2048-path"></use><use href="#icon-2048-text"></use></svg>deposit<wbr/>Sol<wbr/>To<wbr/>Safe</a></li>
+<li class="tsd-kind-method tsd-parent-kind-class tsd-is-inherited"><a href="_zebec_protocol_multisig.ZebecNativeTreasury.html#depositTokenToSafe" class="tsd-index-link"><svg class="tsd-kind-icon" width="24" height="24" viewBox="0 0 24 24"><use href="#icon-2048-path"></use><use href="#icon-2048-text"></use></svg>deposit<wbr/>Token<wbr/>To<wbr/>Safe</a></li>
+<li class="tsd-kind-method tsd-parent-kind-class"><a href="_zebec_protocol_multisig.ZebecNativeTreasury.html#execCancel" class="tsd-index-link"><svg class="tsd-kind-icon" width="24" height="24" viewBox="0 0 24 24"><use href="#icon-2048-path"></use><use href="#icon-2048-text"></use></svg>exec<wbr/>Cancel</a></li>
+<li class="tsd-kind-method tsd-parent-kind-class"><a href="_zebec_protocol_multisig.ZebecNativeTreasury.html#execDespoit" class="tsd-index-link"><svg class="tsd-kind-icon" width="24" height="24" viewBox="0 0 24 24"><use href="#icon-2048-path"></use><use href="#icon-2048-text"></use></svg>exec<wbr/>Despoit</a></li>
+<li class="tsd-kind-method tsd-parent-kind-class"><a href="_zebec_protocol_multisig.ZebecNativeTreasury.html#execInit" class="tsd-index-link"><svg class="tsd-kind-icon" width="24" height="24" viewBox="0 0 24 24"><use href="#icon-2048-path"></use><use href="#icon-2048-text"></use></svg>exec<wbr/>Init</a></li>
+<li class="tsd-kind-method tsd-parent-kind-class"><a href="_zebec_protocol_multisig.ZebecNativeTreasury.html#execInstantTransfer" class="tsd-index-link"><svg class="tsd-kind-icon" width="24" height="24" viewBox="0 0 24 24"><use href="#icon-2048-path"></use><use href="#icon-2048-text"></use></svg>exec<wbr/>Instant<wbr/>Transfer</a></li>
+<li class="tsd-kind-method tsd-parent-kind-class"><a href="_zebec_protocol_multisig.ZebecNativeTreasury.html#execPause" class="tsd-index-link"><svg class="tsd-kind-icon" width="24" height="24" viewBox="0 0 24 24"><use href="#icon-2048-path"></use><use href="#icon-2048-text"></use></svg>exec<wbr/>Pause</a></li>
+<li class="tsd-kind-method tsd-parent-kind-class"><a href="_zebec_protocol_multisig.ZebecNativeTreasury.html#execResume" class="tsd-index-link"><svg class="tsd-kind-icon" width="24" height="24" viewBox="0 0 24 24"><use href="#icon-2048-path"></use><use href="#icon-2048-text"></use></svg>exec<wbr/>Resume</a></li>
+<li class="tsd-kind-method tsd-parent-kind-class"><a href="_zebec_protocol_multisig.ZebecNativeTreasury.html#execTransferFromSafe" class="tsd-index-link"><svg class="tsd-kind-icon" width="24" height="24" viewBox="0 0 24 24"><use href="#icon-2048-path"></use><use href="#icon-2048-text"></use></svg>exec<wbr/>Transfer<wbr/>From<wbr/>Safe</a></li>
+<li class="tsd-kind-method tsd-parent-kind-class"><a href="_zebec_protocol_multisig.ZebecNativeTreasury.html#execUpdateStream" class="tsd-index-link"><svg class="tsd-kind-icon" width="24" height="24" viewBox="0 0 24 24"><use href="#icon-2048-path"></use><use href="#icon-2048-text"></use></svg>exec<wbr/>Update<wbr/>Stream</a></li>
+<li class="tsd-kind-method tsd-parent-kind-class tsd-is-inherited"><a href="_zebec_protocol_multisig.ZebecNativeTreasury.html#fetchMultiSigStreamData" class="tsd-index-link"><svg class="tsd-kind-icon" width="24" height="24" viewBox="0 0 24 24"><use href="#icon-2048-path"></use><use href="#icon-2048-text"></use></svg>fetch<wbr/>Multi<wbr/>Sig<wbr/>Stream<wbr/>Data</a></li>
+<li class="tsd-kind-method tsd-parent-kind-class"><a href="_zebec_protocol_multisig.ZebecNativeTreasury.html#fetchStreamData" class="tsd-index-link"><svg class="tsd-kind-icon" width="24" height="24" viewBox="0 0 24 24"><use href="#icon-2048-path"></use><use href="#icon-2048-text"></use></svg>fetch<wbr/>Stream<wbr/>Data</a></li>
+<li class="tsd-kind-method tsd-parent-kind-class"><a href="_zebec_protocol_multisig.ZebecNativeTreasury.html#init" class="tsd-index-link"><svg class="tsd-kind-icon" width="24" height="24" viewBox="0 0 24 24"><use href="#icon-2048-path"></use><use href="#icon-2048-text"></use></svg>init</a></li>
+<li class="tsd-kind-method tsd-parent-kind-class"><a href="_zebec_protocol_multisig.ZebecNativeTreasury.html#instantTransfer" class="tsd-index-link"><svg class="tsd-kind-icon" width="24" height="24" viewBox="0 0 24 24"><use href="#icon-2048-path"></use><use href="#icon-2048-text"></use></svg>instant<wbr/>Transfer</a></li>
+<li class="tsd-kind-method tsd-parent-kind-class"><a href="_zebec_protocol_multisig.ZebecNativeTreasury.html#pause" class="tsd-index-link"><svg class="tsd-kind-icon" width="24" height="24" viewBox="0 0 24 24"><use href="#icon-2048-path"></use><use href="#icon-2048-text"></use></svg>pause</a></li>
+<li class="tsd-kind-method tsd-parent-kind-class"><a href="_zebec_protocol_multisig.ZebecNativeTreasury.html#resume" class="tsd-index-link"><svg class="tsd-kind-icon" width="24" height="24" viewBox="0 0 24 24"><use href="#icon-2048-path"></use><use href="#icon-2048-text"></use></svg>resume</a></li>
+<li class="tsd-kind-method tsd-parent-kind-class"><a href="_zebec_protocol_multisig.ZebecNativeTreasury.html#transferFromSafe" class="tsd-index-link"><svg class="tsd-kind-icon" width="24" height="24" viewBox="0 0 24 24"><use href="#icon-2048-path"></use><use href="#icon-2048-text"></use></svg>transfer<wbr/>From<wbr/>Safe</a></li>
+<li class="tsd-kind-method tsd-parent-kind-class"><a href="_zebec_protocol_multisig.ZebecNativeTreasury.html#updateStream" class="tsd-index-link"><svg class="tsd-kind-icon" width="24" height="24" viewBox="0 0 24 24"><use href="#icon-2048-path"></use><use href="#icon-2048-text"></use></svg>update<wbr/>Stream</a></li>
+<li class="tsd-kind-method tsd-parent-kind-class"><a href="_zebec_protocol_multisig.ZebecNativeTreasury.html#withdraw" class="tsd-index-link"><svg class="tsd-kind-icon" width="24" height="24" viewBox="0 0 24 24"><use href="#icon-2048-path"></use><use href="#icon-2048-text"></use></svg>withdraw</a></li></ul></li></ul></nav></div></div>
+<div class="container tsd-generator">
+<p>Generated using <a href="https://typedoc.org/" target="_blank">TypeDoc</a></p></div>
+<div class="overlay"></div><script src="../assets/main.js"></script></body></html>

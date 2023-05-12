@@ -7,10 +7,6 @@ export enum SC_CONSTANT {
     SPL_ASSOCIATED_TOKEN_ACCOUNT_PROGRAM_ID = "ATokenGPvbdGVxr1b2hvZbsiqW5xWH25efTNsLJA8knL",
 }
 
-// ajay pid --> 5BU6x2H7WXeyaP75D7daNJQAipZfVUr5FM9zdhzajK6p
-
-//samundra pid --> b6ZPysThkApNx2YDiGsPUiYPE7Ub1kTRdCWp7gBkzbr
-
 export enum ZEBEC_PROGRAM_ID {
     MULTISIG = "b6ZPysThkApNx2YDiGsPUiYPE7Ub1kTRdCWp7gBkzbr",
     STREAM = "zbcKGdAmXfthXY3rEPBzexVByT2cqRqCZb9NwWdGQ2T"

@@ -1,20 +1,21 @@
 {
-  "compilerOptions": {
-    "module": "commonjs",
-    "target": "es6",
-    "lib": ["es6", "dom", "dom.iterable", "esnext"],
-    "removeComments": true,
-    "preserveConstEnums": true,
-    "sourceMap": false,
-    "allowJs": true,
-    "outDir": "dist/esm",
-    "moduleResolution": "Node",
-    "declaration": true,
-    "declarationDir": "dist/types",
-    "strict": false,
-    "esModuleInterop": true,
-    "resolveJsonModule": true
-  },
-  "include": ["src/**/*"],
-  "exclude": ["node_modules", "**/*.test.js"]
-}
+    "extends": "../../tsconfig.json",
+    "compilerOptions": {
+      "declaration": true,
+      "declarationDir": "dist/types",
+      "module": "commonjs",
+      "moduleResolution": "Node",
+      "outDir": "dist/esm",
+      "rootDir": "src",
+      "sourceMap": true,
+      "target": "es6"
+    },
+    "exclude": [
+      "node_modules",
+      "**/*.test.js",
+      "**/*.spec.ts"
+    ],
+    "include": [
+      "src/**/*"
+    ]
+  }

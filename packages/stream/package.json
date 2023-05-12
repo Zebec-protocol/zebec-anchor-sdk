@@ -1,6 +1,6 @@
 {
   "name": "@zebec-protocol/stream",
-  "version": "0.0.0-development",
+  "version": "1.0.0",
   "description": "Zebec Protocol SDK - Stream",
   "types": "./dist/types/index.d.ts",
   "main": "./dist/esm/index.js",

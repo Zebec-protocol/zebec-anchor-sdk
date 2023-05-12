@@ -239,4 +239,17 @@ export class BatchTransferInstruction implements IBatchTransferInstruction {
 			})
 			.instruction();
 	}
+
+	async getMultisigBatchSolTransferInstruction(sender: anchor.web3.PublicKey, amounts: anchor.BN[]) {
+		const remainingAccounts: anchor.web3.AccountMeta[] = [];
+
+		return this.program.methods
+			.multisigBatchSolTransfer(amounts)
+			.accounts({
+				sender,
+				systemProgram: anchor.web3.SystemProgram.programId,
+			})
+			.remainingAccounts(remainingAccounts)
+			.instruction();
+	}
 }

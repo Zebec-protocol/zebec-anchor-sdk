@@ -52,7 +52,7 @@ const getErrorForTransaction = async (connection: Connection, txid: TransactionS
 }
 
 export const sendTx = async(tx: Transaction, provider: AnchorProvider): Promise<TransactionSignature> => {
-    // tx.instructions.map(i => i.keys.map(k => console.log(k.pubkey.toBase58(), k.isSigner, k.isWritable)))
+
     const connection = provider.connection;
     const rawTxn = tx.serialize();
 
@@ -202,3 +202,4 @@ export const getTxSize = (
       4; //Owner set sequence number.
     return txSize;
   };
+  

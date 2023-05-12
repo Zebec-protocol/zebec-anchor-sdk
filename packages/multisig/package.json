@@ -1,6 +1,6 @@
 {
-  "name": "@zebec-io/multisig",
-  "version": "0.0.1",
+  "name": "@zebec-protocol/multisig",
+  "version": "1.0.0",
   "description": "Zebec Procotol SDK - Multisig",
   "types": "./dist/types/index.d.ts",
   "main": "./dist/esm/index.js",

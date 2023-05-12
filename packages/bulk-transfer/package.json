@@ -1,5 +1,5 @@
 {
-  "name": "bulk-transfer",
+  "name": "@zebec-protocol/bulk-transfer",
   "version": "1.0.0",
   "main": "./dist/esm/index.js",
   "types": "./dist/types/index.d.ts",

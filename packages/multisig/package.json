@@ -1,6 +1,6 @@
 {
   "name": "@zebec-protocol/treasury",
-  "version": "1.8.0-dev.1",
+  "version": "1.8.0-dev.2",
   "description": "Zebec Procotol SDK - Treasury",
   "types": "./dist/types/index.d.ts",
   "main": "./dist/esm/index.js",

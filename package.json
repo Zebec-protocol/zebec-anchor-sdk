@@ -1,8 +1,8 @@
 {
-	"name": "@zebec-protocol/all",
+	"name": "zebec-protocol",
 	"version": "1.0.0",
 	"description": "Typescript SDKs for the Zebec Protocol",
-	"private": false,
+	"private": true,
 	"repository": {
 		"type": "git",
 		"url": "git+https://github.com/Zebec-protocol/zebec-sdk-v2.git"
@@ -13,18 +13,23 @@
 		"token streaming",
 		"zebec"
 	],
+	"workspaces": [
+		"packages/*"
+	],
 	"license": "ISC",
 	"bugs": {
 		"url": "https://github.com/Zebec-protocol/zebec-sdk-v2/issues"
 	},
 	"homepage": "https://github.com/Zebec-protocol/zebec-sdk-v2/#readme",
-	"files": [],
+	"files": [
+		"packages/**/dist"
+	],
 	"scripts": {
 		"build": "tsc -b ./packages/**/tsconfig.json",
-		"clean": "rm -R ./packages/**/dist",
+		"clean": "rimraf ./packages/**/dist",
 		"clean:win": "rmdir /s packages/**/dist",
-		"publish": "npm publish --access public",
-		"install:stream": "cd ../../../ && npm i -S @zebec-io/stream"
+		"install:stream": "cd ../../../ && npm i -S @zebec-io/stream",
+		"docs": "typedoc"
 	},
 	"publishConfig": {
 		"access": "public"

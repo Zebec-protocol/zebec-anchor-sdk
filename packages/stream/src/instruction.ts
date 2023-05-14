@@ -36,7 +36,6 @@ export class ZebecTransactionBuilder {
   ): Promise<Transaction> {
     // calculate Fee percentage here.
     // Fee Percentage must have atmost 2 digits after decimal.
-    // Eg. 0.25% is acceptable but 0.255% is not ?????? DISCUSS IT WITH THE TEAM, TODO
     const calculatedFeePercentage = new BN(feePercentage * 100)
 
     const tx = await this._program.methods
@@ -61,7 +60,6 @@ export class ZebecTransactionBuilder {
   ): Promise<Transaction> {
     // calculate Fee percentage here.
     // Fee Percentage must have atmost 2 digits after decimal.
-    // Eg. 0.25% is acceptable but 0.255% is not ?????? DISCUSS IT WITH THE TEAM, TODO
     const calculatedFeePercentage = new BN(feePercentage * 100)
 
     const tx = await this._program.methods

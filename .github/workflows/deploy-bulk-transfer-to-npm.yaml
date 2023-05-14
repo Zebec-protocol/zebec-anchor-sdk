@@ -1,0 +1,39 @@
+name: Deploy Bulk Transfer to NPM Registry
+
+on:
+  push:
+    branches:
+      - dev
+      - master
+    paths:
+      - "packages/bulk-transfer/**"
+
+jobs:
+  build-and-push-packages:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v3
+
+      - name: Setup NodeJS
+        uses: actions/setup-node@v3
+        with:
+          node-version: 16
+
+      - name: Install Dependencies
+        run: npm install
+        working-directory: ./packages/bulk-transfer
+
+      - name: Build Library
+        run: npm run build
+        working-directory: ./packages/bulk-transfer
+
+      - name: Semantic Release
+        uses: cycjimmy/semantic-release-action@v3
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
+        with:
+          working_directory: ./packages/bulk-transfer
+          tag_format: "bulk-transfer-v${version}"

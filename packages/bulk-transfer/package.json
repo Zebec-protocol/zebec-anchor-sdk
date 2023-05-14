@@ -1,6 +1,6 @@
 {
   "name": "@zebec-protocol/bulk-transfer",
-  "version": "1.0.0",
+  "version": "1.0.0-dev.2",
   "main": "./dist/esm/index.js",
   "types": "./dist/types/index.d.ts",
   "author": "Ashish Sapkota | Raghib Islam | Zebec Protocol",
@@ -10,15 +10,12 @@
     "@solana/spl-token": "^0.3.7",
     "bignumber.js": "^9.1.1"
   },
-  "files": [
-    "dist/"
-  ],
   "scripts": {
     "build": "npm run clean && tsc",
     "clean": "rimraf ./dist",
     "start": "npm run format && ts-node src",
     "format": "prettier --write .",
-    "test:single": "export SDK_ENV=test; mocha --bail --timeout=300000 --check-leaks -r ts-node/register"
+    "test:single": "export SDK_ENV=test; mocha --bail --timeout=30000 --check-leaks -r ts-node/register"
   },
   "devDependencies": {
     "@types/bn.js": "^5.1.1",
@@ -31,5 +28,29 @@
     "rimraf": "^4.4.1",
     "ts-node": "^10.9.1",
     "typescript": "^5.0.2"
+  },
+  "publishConfig": {
+    "access": "public"
+  },
+  "release": {
+    "plugins": [
+      "@semantic-release/commit-analyzer",
+      "@semantic-release/changelog",
+      "@semantic-release/npm",
+      "@semantic-release/git",
+      "@semantic-release/github"
+    ],
+    "branches": [
+      "master",
+      {
+        "name": "dev",
+        "prerelease": true
+      }
+    ]
+  },
+  "config": {
+    "commitizen": {
+      "path": "./node_modules/cz-conventional-changelog"
+    }
   }
 }

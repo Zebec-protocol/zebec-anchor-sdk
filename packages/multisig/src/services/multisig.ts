@@ -355,9 +355,6 @@ export class ZebecNativeTreasury extends ZebecMultisig {
     const [zebecVaultAddress] = await this._findZebecVaultAccount(safeAddress)
     const safeDataAccountAddress = new PublicKey(safe_data_account)
     const depositAccountAddress = new PublicKey(transaction_account)
-    // how to automate this transaction, trigger this transaction
-    // what happens to withdrawData (Since ownerA might start transaction) and has withdrawData accoridingly
-    // what if ownerB exec this function
     const safe_details = await this._fetchTresholdData(safeDataAccountAddress)
     const transaction_details = await this.fetchMultiSigStreamData(depositAccountAddress)
     const ownerarray = safe_details.owners
@@ -515,9 +512,6 @@ export class ZebecNativeTreasury extends ZebecMultisig {
     const safeAddress = new PublicKey(safe_address)
     const safeDataAccountAddress = new PublicKey(safe_data_account)
     const initTransactionAccountAddress = new PublicKey(transaction_account)
-    // how to automate this transaction, trigger this transaction
-    // what happens to withdrawData (Since ownerA might start transaction) and has withdrawData accoridingly
-    // what if ownerB exec this function
     const [withdrawDataAccountAddress] = await this._findSolWithdrawEscrowAccount(safeAddress)
     const safe_details = await this._fetchTresholdData(safeDataAccountAddress)
     const transaction_details = await this.fetchMultiSigStreamData(initTransactionAccountAddress)
@@ -679,9 +673,6 @@ export class ZebecNativeTreasury extends ZebecMultisig {
     const safeAddress = new PublicKey(safe_address)
     const safeDataAccountAddress = new PublicKey(safe_data_account)
     const initTransactionAccountAddress = new PublicKey(transaction_account)
-    // how to automate this transaction, trigger this transaction
-    // what happens to withdrawData (Since ownerA might start transaction) and has withdrawData accoridingly
-    // what if ownerB exec this function
     const [withdrawDataAccountAddress] = await this._findSolWithdrawEscrowAccount(safeAddress)
     const safe_details = await this._fetchTresholdData(safeDataAccountAddress)
     const transaction_details = await this.fetchMultiSigStreamData(initTransactionAccountAddress)
@@ -831,9 +822,6 @@ export class ZebecNativeTreasury extends ZebecMultisig {
     const [withdrawDataAccountAddress] = await this._findSolWithdrawEscrowAccount(safeAddress)
     const safeDataAccountAddress = new PublicKey(safe_data_account)
     const pauseTransactionAccountAddress = new PublicKey(transaction_account)
-    // how to automate this transaction, trigger this transaction
-    // what happens to withdrawData (Since ownerA might start transaction) and has withdrawData accoridingly
-    // what if ownerB exec this function
     const safe_details = await this._fetchTresholdData(safeDataAccountAddress)
     const transaction_details = await this.fetchMultiSigStreamData(pauseTransactionAccountAddress)
 
@@ -980,9 +968,6 @@ export class ZebecNativeTreasury extends ZebecMultisig {
     const safeDataAccountAddress = new PublicKey(safe_data_account)
     const pauseTransactionAccountAddress = new PublicKey(transaction_account)
     const [withdrawDataAccountAddress] = await this._findSolWithdrawEscrowAccount(safeAddress)
-    // how to automate this transaction, trigger this transaction
-    // what happens to withdrawData (Since ownerA might start transaction) and has withdrawData accoridingly
-    // what if ownerB exec this function
     const safe_details = await this._fetchTresholdData(safeDataAccountAddress)
     const transaction_details = await this.fetchMultiSigStreamData(pauseTransactionAccountAddress)
 
@@ -1130,9 +1115,6 @@ export class ZebecNativeTreasury extends ZebecMultisig {
     const [feeVaultDataAddress] = await this._findFeeVaultDataAccount(this.feeReceiverAddress)
     const safeDataAccountAddress = new PublicKey(safe_data_account)
     const cancelTransactionAccountAddress = new PublicKey(transaction_account)
-    // how to automate this transaction, trigger this transaction
-    // what happens to withdrawData (Since ownerA might start transaction) and has withdrawData accoridingly
-    // what if ownerB exec this function
     const [withdrawDataAccountAddress] = await this._findSolWithdrawEscrowAccount(safeAddress)
     const safe_details = await this._fetchTresholdData(safeDataAccountAddress)
     const transaction_details = await this.fetchMultiSigStreamData(cancelTransactionAccountAddress)
@@ -1288,9 +1270,6 @@ export class ZebecNativeTreasury extends ZebecMultisig {
     const receiverAddress = new PublicKey(receiver)
     const safeDataAccountAddress = new PublicKey(safe_data_account)
     const instantTransferTransactionAccountAddress = new PublicKey(transaction_account)
-    // how to automate this transaction, trigger this transaction
-    // what happens to withdrawData (Since ownerA might start transaction) and has withdrawData accoridingly
-    // what if ownerB exec this function
     const [withdrawDataAccountAddress] = await this._findSolWithdrawEscrowAccount(safeAddress)
     const safe_details = await this._fetchTresholdData(safeDataAccountAddress)
     const transaction_details = await this.fetchMultiSigStreamData(instantTransferTransactionAccountAddress)
@@ -1437,9 +1416,6 @@ export class ZebecNativeTreasury extends ZebecMultisig {
     const receiverAddress = new PublicKey(receiver)
     const safeDataAccountAddress = new PublicKey(safe_data_account)
     const TransferFromSafeAccountAddress = new PublicKey(transaction_account)
-    // how to automate this transaction, trigger this transaction
-    // what happens to withdrawData (Since ownerA might start transaction) and has withdrawData accoridingly
-    // what if ownerB exec this function
     const safe_details = await this._fetchTresholdData(safeDataAccountAddress)
     const transaction_details = await this.fetchMultiSigStreamData(TransferFromSafeAccountAddress)
 
@@ -1645,9 +1621,6 @@ export class ZebecTokenTreasury extends ZebecMultisig {
     const [zebecVaultAddress] = await this._findZebecVaultAccount(safeAddress)
     const safeDataAccountAddress = new PublicKey(safe_data_account)
     const depositAccountAddress = new PublicKey(transaction_account)
-    // how to automate this transaction, trigger this transaction
-    // what happens to withdrawData (Since ownerA might start transaction) and has withdrawData accoridingly
-    // what if ownerB exec this function
     const pdaTokenData = await this._getAccociatedTokenAddress(zebecVaultAddress, tokenMintAddress)
     const zebecVaultAssociatedTokenAddress = await this._getAccociatedTokenAddress(safeAddress, tokenMintAddress)
     const safe_details = await this._fetchTresholdData(safeDataAccountAddress)
@@ -1816,9 +1789,6 @@ export class ZebecTokenTreasury extends ZebecMultisig {
     const safeAddress = new PublicKey(safe_address)
     const safeDataAccountAddress = new PublicKey(safe_data_account)
     const initTransactionAccountAddress = new PublicKey(transaction_account)
-    // how to automate this transaction, trigger this transaction
-    // what happens to withdrawData (Since ownerA might start transaction) and has withdrawData accoridingly
-    // what if ownerB exec this function
     const [withdrawDataAccountAddress] = await this._findTokenWithdrawEscrowAccount(safeAddress, tokenMintAddress)
     const safe_details = await this._fetchTresholdData(safeDataAccountAddress)
     const transaction_details = await this.fetchMultiSigStreamData(initTransactionAccountAddress)
@@ -1980,9 +1950,6 @@ export class ZebecTokenTreasury extends ZebecMultisig {
     const safeAddress = new PublicKey(safe_address)
     const safeDataAccountAddress = new PublicKey(safe_data_account)
     const initTransactionAccountAddress = new PublicKey(transaction_account)
-    // how to automate this transaction, trigger this transaction
-    // what happens to withdrawData (Since ownerA might start transaction) and has withdrawData accoridingly
-    // what if ownerB exec this function
     const [withdrawDataAccountAddress] = await this._findTokenWithdrawEscrowAccount(safeAddress, tokenMintAddress)
     const safe_details = await this._fetchTresholdData(safeDataAccountAddress)
     const transaction_details = await this.fetchMultiSigStreamData(initTransactionAccountAddress)
@@ -2139,9 +2106,6 @@ export class ZebecTokenTreasury extends ZebecMultisig {
     const [withdrawDataAccountAddress] = await this._findTokenWithdrawEscrowAccount(safeAddress, tokenMintAddress)
     const safeDataAccountAddress = new PublicKey(safe_data_account)
     const pauseTransactionAccountAddress = new PublicKey(transaction_account)
-    // how to automate this transaction, trigger this transaction
-    // what happens to withdrawData (Since ownerA might start transaction) and has withdrawData accoridingly
-    // what if ownerB exec this function
     const safe_details = await this._fetchTresholdData(safeDataAccountAddress)
     const transaction_details = await this.fetchMultiSigStreamData(pauseTransactionAccountAddress)
 
@@ -2290,9 +2254,6 @@ export class ZebecTokenTreasury extends ZebecMultisig {
     const [withdrawDataAccountAddress] = await this._findTokenWithdrawEscrowAccount(safeAddress, tokenMintAddress)
     const safeDataAccountAddress = new PublicKey(safe_data_account)
     const resumeTransactionAccountAddress = new PublicKey(transaction_account)
-    // how to automate this transaction, trigger this transaction
-    // what happens to withdrawData (Since ownerA might start transaction) and has withdrawData accoridingly
-    // what if ownerB exec this function
     const safe_details = await this._fetchTresholdData(safeDataAccountAddress)
     const transaction_details = await this.fetchMultiSigStreamData(resumeTransactionAccountAddress)
 
@@ -2454,9 +2415,6 @@ export class ZebecTokenTreasury extends ZebecMultisig {
     const [feeVaultDataAddress] = await this._findFeeVaultDataAccount(this.feeReceiverAddress)
     const safeDataAccountAddress = new PublicKey(safe_data_account)
     const cancelTransactionAccountAddress = new PublicKey(transaction_account)
-    // how to automate this transaction, trigger this transaction
-    // what happens to withdrawData (Since ownerA might start transaction) and has withdrawData accoridingly
-    // what if ownerB exec this function
     const [withdrawDataAccountAddress] = await this._findTokenWithdrawEscrowAccount(safeAddress, tokenMintAddress)
     const safe_details = await this._fetchTresholdData(safeDataAccountAddress)
     const transaction_details = await this.fetchMultiSigStreamData(cancelTransactionAccountAddress)
@@ -2630,9 +2588,6 @@ export class ZebecTokenTreasury extends ZebecMultisig {
     const tokenMintAddress = new PublicKey(token_mint_address)
     const safeDataAccountAddress = new PublicKey(safe_data_account)
     const instantTransferTransactionAccountAddress = new PublicKey(transaction_account)
-    // how to automate this transaction, trigger this transaction
-    // what happens to withdrawData (Since ownerA might start transaction) and has withdrawData accoridingly
-    // what if ownerB exec this function
     const [withdrawDataAccountAddress] = await this._findTokenWithdrawEscrowAccount(safeAddress, tokenMintAddress)
     const safe_details = await this._fetchTresholdData(safeDataAccountAddress)
     const transaction_details = await this.fetchMultiSigStreamData(instantTransferTransactionAccountAddress)
@@ -2797,9 +2752,6 @@ export class ZebecTokenTreasury extends ZebecMultisig {
     const sourceTokenAddress = await this._getAccociatedTokenAddress(safeAddress, tokenMintAddress)
     const safeDataAccountAddress = new PublicKey(safe_data_account)
     const TransferFromSafeAccountAddress = new PublicKey(transaction_account)
-    // how to automate this transaction, trigger this transaction
-    // what happens to withdrawData (Since ownerA might start transaction) and has withdrawData accoridingly
-    // what if ownerB exec this function
     const safe_details = await this._fetchTresholdData(safeDataAccountAddress)
     const transaction_details = await this.fetchMultiSigStreamData(TransferFromSafeAccountAddress)
 

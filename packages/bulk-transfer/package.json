@@ -1,6 +1,6 @@
 {
   "name": "@zebec-protocol/bulk-transfer",
-  "version": "0.0.0-development",
+  "version": "1.0.0-dev.2",
   "main": "./dist/esm/index.js",
   "types": "./dist/types/index.d.ts",
   "author": "Ashish Sapkota | Raghib Islam | Zebec Protocol",
@@ -15,7 +15,7 @@
     "clean": "rimraf ./dist",
     "start": "npm run format && ts-node src",
     "format": "prettier --write .",
-    "test:single": "export SDK_ENV=test; mocha --bail --timeout=300000 --check-leaks -r ts-node/register"
+    "test:single": "export SDK_ENV=test; mocha --bail --timeout=30000 --check-leaks -r ts-node/register"
   },
   "devDependencies": {
     "@types/bn.js": "^5.1.1",
@@ -33,6 +33,13 @@
     "access": "public"
   },
   "release": {
+    "plugins": [
+      "@semantic-release/commit-analyzer",
+      "@semantic-release/changelog",
+      "@semantic-release/npm",
+      "@semantic-release/git",
+      "@semantic-release/github"
+    ],
     "branches": [
       "master",
       {

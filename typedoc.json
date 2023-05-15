@@ -1,0 +1,7 @@
+{
+	"$schema": "https://typedoc.org/schema.json",
+	"entryPoints": ["packages/*"],
+	"name": "Zebec Protocol",
+	"entryPointStrategy": "packages",
+	"includeVersion": true
+}

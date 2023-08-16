@@ -258,6 +258,113 @@ export type BatchTransfer = {
 		]
 	  },
 	  {
+		"name": "cronBatchSolTransfer",
+		"accounts": [
+		  {
+			"name": "batchVault",
+			"isMut": true,
+			"isSigner": false
+		  },
+		  {
+			"name": "fromAuthority",
+			"isMut": true,
+			"isSigner": false
+		  },
+		  {
+			"name": "systemProgram",
+			"isMut": false,
+			"isSigner": false
+		  },
+		  {
+			"name": "rent",
+			"isMut": false,
+			"isSigner": false
+		  },
+		  {
+			"name": "thread",
+			"isMut": false,
+			"isSigner": true
+		  },
+		  {
+			"name": "payer",
+			"isMut": false,
+			"isSigner": true
+		  }
+		],
+		"args": [
+		  {
+			"name": "amount",
+			"type": {
+			  "vec": "u64"
+			}
+		  }
+		],
+		"returns": {
+		  "defined": "ThreadResponse"
+		}
+	  },
+	  {
+		"name": "cronBatchTokenTransfer",
+		"accounts": [
+		  {
+			"name": "batchVault",
+			"isMut": true,
+			"isSigner": false
+		  },
+		  {
+			"name": "fromAuthority",
+			"isMut": true,
+			"isSigner": false
+		  },
+		  {
+			"name": "batchVaultTokenAccount",
+			"isMut": false,
+			"isSigner": false
+		  },
+		  {
+			"name": "mint",
+			"isMut": false,
+			"isSigner": false
+		  },
+		  {
+			"name": "tokenProgram",
+			"isMut": false,
+			"isSigner": false
+		  },
+		  {
+			"name": "rent",
+			"isMut": false,
+			"isSigner": false
+		  },
+		  {
+			"name": "systemProgram",
+			"isMut": false,
+			"isSigner": false
+		  },
+		  {
+			"name": "thread",
+			"isMut": false,
+			"isSigner": true
+		  },
+		  {
+			"name": "payer",
+			"isMut": false,
+			"isSigner": true
+		  }
+		],
+		"args": [
+		  {
+			"name": "amount",
+			"type": {
+			  "vec": "u64"
+			}
+		  }
+		],
+		"returns": {
+		  "defined": "ThreadResponse"
+		}
+	  },
+	  {
 		"name": "multisigBatchSolTransfer",
 		"accounts": [
 		  {
@@ -581,6 +688,113 @@ export type BatchTransfer = {
 			}
 		  }
 		]
+	  },
+	  {
+		"name": "cronBatchSolTransfer",
+		"accounts": [
+		  {
+			"name": "batchVault",
+			"isMut": true,
+			"isSigner": false
+		  },
+		  {
+			"name": "fromAuthority",
+			"isMut": true,
+			"isSigner": false
+		  },
+		  {
+			"name": "systemProgram",
+			"isMut": false,
+			"isSigner": false
+		  },
+		  {
+			"name": "rent",
+			"isMut": false,
+			"isSigner": false
+		  },
+		  {
+			"name": "thread",
+			"isMut": false,
+			"isSigner": true
+		  },
+		  {
+			"name": "payer",
+			"isMut": false,
+			"isSigner": true
+		  }
+		],
+		"args": [
+		  {
+			"name": "amount",
+			"type": {
+			  "vec": "u64"
+			}
+		  }
+		],
+		"returns": {
+		  "defined": "ThreadResponse"
+		}
+	  },
+	  {
+		"name": "cronBatchTokenTransfer",
+		"accounts": [
+		  {
+			"name": "batchVault",
+			"isMut": true,
+			"isSigner": false
+		  },
+		  {
+			"name": "fromAuthority",
+			"isMut": true,
+			"isSigner": false
+		  },
+		  {
+			"name": "batchVaultTokenAccount",
+			"isMut": false,
+			"isSigner": false
+		  },
+		  {
+			"name": "mint",
+			"isMut": false,
+			"isSigner": false
+		  },
+		  {
+			"name": "tokenProgram",
+			"isMut": false,
+			"isSigner": false
+		  },
+		  {
+			"name": "rent",
+			"isMut": false,
+			"isSigner": false
+		  },
+		  {
+			"name": "systemProgram",
+			"isMut": false,
+			"isSigner": false
+		  },
+		  {
+			"name": "thread",
+			"isMut": false,
+			"isSigner": true
+		  },
+		  {
+			"name": "payer",
+			"isMut": false,
+			"isSigner": true
+		  }
+		],
+		"args": [
+		  {
+			"name": "amount",
+			"type": {
+			  "vec": "u64"
+			}
+		  }
+		],
+		"returns": {
+		  "defined": "ThreadResponse"
+		}
 	  },
 	  {
 		"name": "multisigBatchSolTransfer",

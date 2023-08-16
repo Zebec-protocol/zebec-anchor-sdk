@@ -1,9 +1,19 @@
+import {
+	ClockworkProvider,
+	TriggerInput,
+} from "@clockwork-xyz/sdk";
 import * as anchor from "@project-serum/anchor";
 import { createAssociatedTokenAccountInstruction } from "@solana/spl-token";
 
 import { IBatchTransferInstruction } from "./instructions";
-import { chunkArray, getDecimals } from "./utils";
-import { parseToLamports, parseToUnits } from "./utils/parseUnits";
+import {
+	chunkArray,
+	getDecimals,
+} from "./utils";
+import {
+	parseToLamports,
+	parseToUnits,
+} from "./utils/parseUnits";
 
 export interface ITransactionPayload {
 	readonly transactions: anchor.web3.Transaction[];
@@ -62,10 +72,11 @@ export type BatchSolTransferData = { account: string; amount: number | string };
 export type BatchTokenTransferData = { account: string; amount: number | string; decimals: number };
 
 export class BatchTransferService {
-	constructor(
-		private readonly provider: anchor.AnchorProvider,
-		readonly batchTransferIxns: IBatchTransferInstruction,
-	) {}
+	readonly clockworkProvider: ClockworkProvider;
+
+	constructor(readonly provider: anchor.AnchorProvider, readonly batchTransferIxns: IBatchTransferInstruction) {
+		this.clockworkProvider = ClockworkProvider.fromAnchorProvider(provider);
+	}
 
 	async checkTokenAccount({
 		accounts,
@@ -258,5 +269,121 @@ export class BatchTransferService {
 		transaction.feePayer = new anchor.web3.PublicKey(authority);
 
 		return new TransactionPayload(this.provider, [transaction]);
+	}
+
+	async createTransferSolInBatchThread({
+		threadId,
+		authority,
+		amountForThread,
+		triggerInput,
+		batchData,
+	}: {
+		threadId: string;
+		authority: string;
+		amountForThread: string | number;
+		triggerInput: TriggerInput;
+		batchData: BatchSolTransferData[][];
+	}) {
+		const transactions: anchor.web3.Transaction[] = [];
+
+		for (let i = 0; i < batchData.length; i++) {
+			const chunk = batchData[i];
+			if (chunk.length > 20) {
+				throw new Error("Accounts more than 22 per batch will exceed max transaction size limit!");
+			}
+			const parsedAmounts = chunk.map<anchor.BN>(({ amount }) => parseToLamports(amount));
+			const accounts = chunk.map<anchor.web3.PublicKey>(({ account }) => new anchor.web3.PublicKey(account));
+			const fromAuthority = new anchor.web3.PublicKey(authority);
+			const [threadAddress] = this.clockworkProvider.getThreadPDA(fromAuthority, threadId);
+
+			const targetIx = await this.batchTransferIxns.getCronBatchSolTransferInstruction(
+				fromAuthority,
+				threadAddress,
+				parsedAmounts,
+				accounts,
+			);
+			const parsedAmountForThread = parseToLamports(amountForThread);
+			
+			const ix = await this.clockworkProvider.threadCreate(
+				fromAuthority,
+				threadId,
+				[targetIx],
+				triggerInput,
+				parsedAmountForThread.toNumber(),
+			);
+			const transaction = new anchor.web3.Transaction().add(ix);
+			transaction.feePayer = new anchor.web3.PublicKey(authority);
+			transactions.push(transaction);
+		}
+
+		return new TransactionPayload(this.provider, transactions);
+	}
+
+	async createTransferTokenInBatchThread({
+		threadId,
+		authority,
+		mint,
+		amountForThread,
+		triggerInput,
+		batchData,
+	}: {
+		threadId: string;
+		authority: string;
+		mint: string;
+		amountForThread: string | number;
+		triggerInput: TriggerInput;
+		batchData: BatchTokenTransferData[][];
+	}) {
+		const transactions: anchor.web3.Transaction[] = [];
+		for (let i = 0; i < batchData.length; i++) {
+			const chunk = batchData[i];
+			if (chunk.length > 13) {
+				throw new Error("Accounts more than 15 per batch will exceed max transaction size limit!");
+			}
+			const parsedAmounts = chunk.map<anchor.BN>(({ amount, decimals }) => parseToUnits(amount, decimals));
+			const mintAddress = new anchor.web3.PublicKey(mint);
+			const accounts = await Promise.all(
+				chunk.map(({ account }) =>
+					anchor.utils.token.associatedAddress({
+						owner: new anchor.web3.PublicKey(account),
+						mint: mintAddress,
+					}),
+				),
+			);
+			const fromAuthority = new anchor.web3.PublicKey(authority);
+			const [threadAddress] = this.clockworkProvider.getThreadPDA(fromAuthority, threadId);
+
+			const targetIx = await this.batchTransferIxns.getCronBatchTokenTransferInstruction(
+				fromAuthority,
+				mintAddress,
+				threadAddress,
+				parsedAmounts,
+				accounts,
+			);
+			const parsedAmountForThread = parseToLamports(amountForThread);
+			
+			const ix = await this.clockworkProvider.threadCreate(
+				fromAuthority,
+				threadId,
+				[targetIx],
+				triggerInput,
+				parsedAmountForThread.toNumber(),
+			);
+			const transaction = new anchor.web3.Transaction().add(ix);
+			transaction.feePayer = new anchor.web3.PublicKey(authority);
+			transactions.push(transaction);
+		}
+		return new TransactionPayload(this.provider, transactions);
+	}
+
+	async deleteThread({authority, threadId}: { authority: string; threadId: string; }) {
+		const _authority = new anchor.web3.PublicKey(authority);
+		const [threadPubkey] = this.clockworkProvider.getThreadPDA(_authority, threadId);
+		const ix = await this.clockworkProvider.threadDelete(_authority, threadPubkey, _authority);
+
+		const transaction = new anchor.web3.Transaction().add(ix);
+		transaction.feePayer = new anchor.web3.PublicKey(authority);
+		
+		return new TransactionPayload(this.provider, [transaction]);	
 	}
 }

@@ -386,4 +386,16 @@ export class BatchTransferService {
 		
 		return new TransactionPayload(this.provider, [transaction]);	
 	}
+
+	async withdrawFromThread({authority, threadId, amount}: { authority: string; threadId: string; amount: string | number }) {
+		const _authority = new anchor.web3.PublicKey(authority);
+		const [threadPubkey] = this.clockworkProvider.getThreadPDA(_authority, threadId);
+		const parsedAmount = parseToLamports(amount);
+		const ix = await this.clockworkProvider.threadWithdraw(_authority, threadPubkey, parsedAmount.toNumber());
+
+		const transaction = new anchor.web3.Transaction().add(ix);
+		transaction.feePayer = new anchor.web3.PublicKey(authority);
+		
+		return new TransactionPayload(this.provider, [transaction]);	
+	}
 }

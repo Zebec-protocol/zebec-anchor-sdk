@@ -23,7 +23,7 @@ describe("BatchSolTransfer", () => {
 			let dataPerBatch: BatchSolTransferData[] = [];
 			for (let j = 0; j < receiversAddresses[i].length; j++) {
 				let receiverPubkey = new anchor.web3.PublicKey(receiversAddresses[i][j]);
-				let amount = 0.001;
+				let amount = 0.00001;
 				dataPerBatch.push({
 					account: receiverPubkey.toString(),
 					amount: amount,
@@ -36,10 +36,11 @@ describe("BatchSolTransfer", () => {
 		const threadAuthority = provider.wallet.publicKey.toString();
 		const trigger = {
 			cron: {
-				schedule: "*/30 * * * * * *",
+				schedule: "*/1 * * * *",
 				skippable: true,
 			},
 		};
+		console.log("threadId: ", threadId);
 
 		const batchTransferIxn = await batchTransactionService.createTransferSolInBatchThread({
 			authority: threadAuthority,

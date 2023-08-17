@@ -36,7 +36,7 @@ describe("BatchSolTransfer", () => {
 		const threadAuthority = provider.wallet.publicKey.toString();
 		const trigger = {
 			cron: {
-				schedule: "*/1 * * * *",
+				schedule: "0 */1 * * * *",
 				skippable: true,
 			},
 		};
@@ -49,6 +49,7 @@ describe("BatchSolTransfer", () => {
 			batchData: batchSolTransferData,
 			amountForThread: 0.001,
 		});
+
 		try {
 			const result = await batchTransferIxn.execute();
 			console.log("result", result);

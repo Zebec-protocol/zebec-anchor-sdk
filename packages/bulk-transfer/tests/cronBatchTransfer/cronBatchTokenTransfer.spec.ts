@@ -17,13 +17,13 @@ describe("BatchSolTransfer", () => {
 
 	it("transfers token to multiple recipient using thread", async () => {
 		const mint = new anchor.web3.PublicKey("72hgmvS5zFxaFJfMizq6Gp4gjBqXjTPyX9GDP38krorQ"); //hima token
-		let batchData: BatchTokenTransferData[] = [];
+		let batchData: BatchTokenTransferData[][] = [];
 		for (let i = 0; i < receivers.length; i++) {
-			const data: BatchTokenTransferData = {
-				account: receivers[i],
+			const data = receivers[i].map<BatchTokenTransferData>((account) => ({
+				account,
 				amount: 0.0001,
 				decimals: 9,
-			};
+			}));
 			batchData.push(data);
 		}
 
@@ -31,7 +31,7 @@ describe("BatchSolTransfer", () => {
 		const threadAuthority = provider.wallet.publicKey.toString();
 		const trigger = {
 			cron: {
-				schedule: "*/1 * * * *",
+				schedule: "0 */2 * * * *",
 				skippable: true,
 			},
 		};
@@ -42,7 +42,7 @@ describe("BatchSolTransfer", () => {
 			threadId: threadId,
 			triggerInput: trigger,
 			mint: mint.toString(),
-			batchData: [batchData],
+			batchData: batchData,
 			amountForThread: 0.001,
 		});
 

@@ -1,19 +1,10 @@
-import {
-	ClockworkProvider,
-	TriggerInput,
-} from "@clockwork-xyz/sdk";
+import { ClockworkProvider, TriggerInput } from "@clockwork-xyz/sdk";
 import * as anchor from "@project-serum/anchor";
 import { createAssociatedTokenAccountInstruction } from "@solana/spl-token";
 
 import { IBatchTransferInstruction } from "./instructions";
-import {
-	chunkArray,
-	getDecimals,
-} from "./utils";
-import {
-	parseToLamports,
-	parseToUnits,
-} from "./utils/parseUnits";
+import { chunkArray, getDecimals } from "./utils";
+import { parseToLamports, parseToUnits } from "./utils/parseUnits";
 
 export interface ITransactionPayload {
 	readonly transactions: anchor.web3.Transaction[];
@@ -303,7 +294,7 @@ export class BatchTransferService {
 				accounts,
 			);
 			const parsedAmountForThread = parseToLamports(amountForThread);
-			
+
 			const ix = await this.clockworkProvider.threadCreate(
 				fromAuthority,
 				threadId,
@@ -352,6 +343,7 @@ export class BatchTransferService {
 			);
 			const fromAuthority = new anchor.web3.PublicKey(authority);
 			const [threadAddress] = this.clockworkProvider.getThreadPDA(fromAuthority, threadId);
+			console.log("thread address", threadAddress.toBase58());
 
 			const targetIx = await this.batchTransferIxns.getCronBatchTokenTransferInstruction(
 				fromAuthority,
@@ -361,7 +353,7 @@ export class BatchTransferService {
 				accounts,
 			);
 			const parsedAmountForThread = parseToLamports(amountForThread);
-			
+
 			const ix = await this.clockworkProvider.threadCreate(
 				fromAuthority,
 				threadId,
@@ -376,18 +368,26 @@ export class BatchTransferService {
 		return new TransactionPayload(this.provider, transactions);
 	}
 
-	async deleteThread({authority, threadId}: { authority: string; threadId: string; }) {
+	async deleteThread({ authority, threadId }: { authority: string; threadId: string }) {
 		const _authority = new anchor.web3.PublicKey(authority);
 		const [threadPubkey] = this.clockworkProvider.getThreadPDA(_authority, threadId);
 		const ix = await this.clockworkProvider.threadDelete(_authority, threadPubkey, _authority);
 
 		const transaction = new anchor.web3.Transaction().add(ix);
 		transaction.feePayer = new anchor.web3.PublicKey(authority);
-		
-		return new TransactionPayload(this.provider, [transaction]);	
+
+		return new TransactionPayload(this.provider, [transaction]);
 	}
 
-	async withdrawFromThread({authority, threadId, amount}: { authority: string; threadId: string; amount: string | number }) {
+	async withdrawFromThread({
+		authority,
+		threadId,
+		amount,
+	}: {
+		authority: string;
+		threadId: string;
+		amount: string | number;
+	}) {
 		const _authority = new anchor.web3.PublicKey(authority);
 		const [threadPubkey] = this.clockworkProvider.getThreadPDA(_authority, threadId);
 		const parsedAmount = parseToLamports(amount);
@@ -395,7 +395,35 @@ export class BatchTransferService {
 
 		const transaction = new anchor.web3.Transaction().add(ix);
 		transaction.feePayer = new anchor.web3.PublicKey(authority);
-		
-		return new TransactionPayload(this.provider, [transaction]);	
+
+		return new TransactionPayload(this.provider, [transaction]);
+	}
+
+	async isThreadPaused({ threadId }: { threadId: string }): Promise<boolean> {
+		const [threadPubkey] = this.clockworkProvider.getThreadPDA(this.provider.wallet.publicKey, threadId);
+		const accountInfo = await this.provider.connection.getAccountInfo(threadPubkey);
+		const isExist = accountInfo !== null;
+		if (!isExist) {
+			throw new Error("Thread does not exist!");
+		}
+		const threadAccount = await this.clockworkProvider.getThreadAccount(threadPubkey);
+		return threadAccount.paused;
+	}
+
+	async isThreadCancelled({ threadId }: { threadId: string }): Promise<boolean> {
+		const [threadPubkey] = this.clockworkProvider.getThreadPDA(this.provider.wallet.publicKey, threadId);
+		const accountInfo = await this.provider.connection.getAccountInfo(threadPubkey);
+		const isExist = accountInfo !== null;
+		let threadCancelled: boolean = false;
+		if (!isExist) {
+			threadCancelled = true;
+		}
+		return threadCancelled;
+	}
+
+	async getThreadSignatures({ threadId }: { threadId: string }): Promise<anchor.web3.ConfirmedSignatureInfo[]> {
+		const [threadPubkey] = this.clockworkProvider.getThreadPDA(this.provider.wallet.publicKey, threadId);
+		const sigs = await this.provider.connection.getSignaturesForAddress(threadPubkey, { limit: 1000 }, "confirmed");
+		return sigs;
 	}
 }

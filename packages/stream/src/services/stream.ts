@@ -1,12 +1,12 @@
 import { Buffer } from 'buffer';
-import { Keypair, PublicKey, Transaction } from "@solana/web3.js";
+import { ComputeBudgetProgram, Keypair, PublicKey, Transaction } from "@solana/web3.js";
 import { AnchorProvider, Idl, Program, BN } from "@project-serum/anchor";
 import { TOKEN_PROGRAM_ID } from "@project-serum/anchor/dist/cjs/utils/token";
 import { ZEBEC_PROGRAM_IDL } from "../idl";
 import { ConsoleLog, getAmountInLamports, getTokenAmountInLamports, parseErrorMessage, sendTx } from './utils';
 import { IBaseStream, IZebecStream } from "../interface";
 import { ZebecTransactionBuilder } from '../instruction';
-import { OPERATE, OPERATE_DATA, PREFIX, PREFIX_TOKEN, SPL_ASSOCIATED_TOKEN_ACCOUNT_PROGRAM_ID, ZEBEC_PROGRAM_ID } from "../config/constants";
+import { COMPUTE_BUDGET, OPERATE, OPERATE_DATA, PREFIX, PREFIX_TOKEN, SPL_ASSOCIATED_TOKEN_ACCOUNT_PROGRAM_ID, ZEBEC_PROGRAM_ID } from "../config/constants";
 import { MDepositWithdrawFromZebecVault, MInitStream, MPauseResumeWithdrawCancel, MZebecResponse, MUpdateStream, MCreateFeeVault, MCollectTokenFees, MInstantTransfer, MFetchStreamingAmount } from "../models";
 
 // window.Buffer = window.Buffer || require("buffer").Buffer; 
@@ -121,9 +121,13 @@ class ZebecStream implements IBaseStream {
         const latestBlockhash = await this.anchorProvider.connection.getLatestBlockhash(
             this.anchorProvider.connection.commitment
         );
+        const addPriorityFee = ComputeBudgetProgram.setComputeUnitPrice({
+            microLamports: COMPUTE_BUDGET
+        })
         tx.feePayer = this.anchorProvider.wallet.publicKey;
         tx.recentBlockhash = latestBlockhash.blockhash;
         tx.lastValidBlockHeight = latestBlockhash.lastValidBlockHeight;
+        tx.add(addPriorityFee);
         if (escrow) { tx.partialSign(escrow) };
 
         return tx

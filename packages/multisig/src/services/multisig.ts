@@ -1,8 +1,8 @@
 import { AnchorProvider, Idl, Program } from '@project-serum/anchor'
 import { TOKEN_PROGRAM_ID } from '@project-serum/anchor/dist/cjs/utils/token'
 import { getAssociatedTokenAddress, ASSOCIATED_TOKEN_PROGRAM_ID } from '@solana/spl-token'
-import { Keypair, PublicKey, Transaction } from '@solana/web3.js'
-import { SC_CONSTANT, ZEBEC_PROGRAM_ID } from '../config'
+import { ComputeBudgetProgram, Keypair, PublicKey, Transaction } from '@solana/web3.js'
+import { COMPUTE_BUDGET, SC_CONSTANT, ZEBEC_PROGRAM_ID } from '../config'
 import { ZEBEC_MULTISIG_PROGRAM_IDL, ZEBEC_STREAM_PROGRAM_IDL } from '../idl'
 import { ZebecTransactionBuilder } from '../instruction'
 import { MCreateFeeVault, MCreateSafe, Mdeposit, MdepositSolToSafe, MExecDeposit, MExecInit, MExecInstantTransfer, MExecPauseResumeWithdrawCancel, MExecTransferFromSafe, MExecUpdateStream, MInitStream, MInstantTransfer, MPauseResumeWithdrawCancel, MTransferFromSafe, MUpdateStream, MWithdraw } from '../model'
@@ -121,9 +121,13 @@ export class ZebecMultisig {
     const latestBlockhash = await this.anchorProvider.connection.getLatestBlockhash(
       this.anchorProvider.connection.commitment
     )
+    const addPriorityFee = ComputeBudgetProgram.setComputeUnitPrice({
+      microLamports: COMPUTE_BUDGET
+    })
     tx.feePayer = this.anchorProvider.wallet.publicKey
     tx.recentBlockhash = latestBlockhash.blockhash
     tx.lastValidBlockHeight = latestBlockhash.lastValidBlockHeight
+    tx.add(addPriorityFee);
     if (escrow) {
       tx.partialSign(...escrow)
     }

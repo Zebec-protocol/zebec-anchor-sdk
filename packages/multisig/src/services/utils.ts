@@ -1,5 +1,5 @@
-import { Connection, ParsedAccountData, SYSVAR_CLOCK_PUBKEY, TransactionSignature, ConfirmOptions, LAMPORTS_PER_SOL, PublicKey, Transaction, AccountMeta } from "@solana/web3.js";
-import { AnchorProvider, Program, Wallet, BN } from "@project-serum/anchor";
+import { Connection, ParsedAccountData, SYSVAR_CLOCK_PUBKEY, TransactionSignature, ConfirmOptions, LAMPORTS_PER_SOL, PublicKey, Transaction, AccountMeta, TransactionError, SendTransactionError } from "@solana/web3.js";
+import { AnchorProvider, Program, Wallet, BN, utils, translateError } from "@project-serum/anchor";
 import { ZEBEC_MULTISIG_PROGRAM_IDL } from "../idl";
 
 
@@ -58,59 +58,159 @@ export const sendTx = async(tx: Transaction, provider: AnchorProvider): Promise<
 
     let options = {
         skipPreflight: false,
-        commitment: provider.connection.commitment
+        commitment: provider.connection.commitment,
+        confirmRetries: 5
     };
 
     const startTime = now();
     let done = false;
     const retryTimeout = 3000; //ms
 
-    const txid = await connection.sendRawTransaction(rawTxn, options);
+    // const txid = await connection.sendRawTransaction(rawTxn, options);
 
-    (async () => {
-        while(!done && now() - startTime < retryTimeout) {
-            connection.sendRawTransaction(rawTxn, options);
-            await sleep(2000);
-        }
-    })();
-
-    let status: any;
+    let txid = utils.bytes.bs58.encode(tx.signatures[0].signature);
 
     try {
-        const signatureResult = await connection.confirmTransaction(
-            {
-                signature: txid,
-                blockhash: tx.recentBlockhash,
-                lastValidBlockHeight: tx.lastValidBlockHeight
-            } as any,
-            provider.connection.commitment
-        );
-        status = signatureResult.value;
-    } catch (error) {
-        status = {
-            err: error
-        };
-    } finally {
-        done = true;
-    }
+    const { lastValidBlockHeight, blockhash } = await connection.getLatestBlockhash({
+        commitment: options?.commitment,
+    });
+    
 
-    if (status?.err) {
-        let errors: string[] = [];
-        if (
-            (status.err as Error).message &&
-            ((status.err as Error).message.includes("block height exceeded") ||
-            (status.err as Error).message.includes("timeout exceeded"))
-        ) {
-            errors = [(status.err as Error).message];
-        } else {
-            errors = await getErrorForTransaction(connection, txid);
+    let confirmed = false;
+
+    const sendTxMultiple = async () => {
+        let blockheight = await connection.getBlockHeight();
+        while (!confirmed && blockheight < lastValidBlockHeight - 150) {
+            try {
+                if (confirmed) return;
+                await connection.sendRawTransaction(
+                    rawTxn,
+                    options,
+                );
+                console.debug('Signature',txid);
+            } catch (err: any) {
+                if (
+                    err.message &&
+                    (err.message.includes("This transaction has already been processed") || err.message.includes("Blockhash not found"))
+                ) {
+                    console.debug("Expected error: ", err.message);
+                    continue;
+                }
+                throw err;
+            }
+            await new Promise((r) => setTimeout(r, 1000));
+            blockheight = await connection.getBlockHeight();
         }
 
-        // throw new Error(
-        //     `Raw transaction ${txid} faied (${JSON.stringify(status)})`
-        // );
-    }
+        if(!confirmed){
+            throw new Error("Blockheght exceeded.");
+        }
+
+    };
+
+    const confirmTransaction = async () => {
+        let err: TransactionError | null = null;
+        let retry = 0;
+        const DEFAULT_MAX_CONFIRMATION_RETRIES = 5;
+        const maxRetry = options?.confirmRetries
+            ? options.confirmRetries
+            : DEFAULT_MAX_CONFIRMATION_RETRIES;
+        let blockheight = await connection.getBlockHeight();
+        while (blockheight < lastValidBlockHeight - 150 && retry < maxRetry) {
+            console.debug("Try:", retry + 1);
+            const response = await connection.confirmTransaction(
+                {
+                    signature: txid,
+                    blockhash: blockhash,
+                    lastValidBlockHeight: lastValidBlockHeight,
+                },
+                options?.commitment,
+            );
+
+            if (!response.value.err) {
+                // const endTime = Date.now();
+                // console.info("Confirmed at: %d", endTime);
+                // console.info("Time elapsed: %d", endTime - startTime);
+                confirmed = true;
+    
+                break;
+              }
+    
+              err = response.value.err;
+              retry += 1;
+              blockheight = await connection.getBlockHeight();
+        }
+
+        if (err) {
+            if (typeof err === "string") {
+                console.debug("confirm transaction err: " + err);
+                throw new Error("Failed to confirm transaction: " + err);
+            } else {
+                console.debug("confirm transaction err: " + JSON.stringify(err));
+                throw new Error("Failed to confirm transaction");
+            }
+        }
+    };
+
+    await Promise.race([sendTxMultiple(), confirmTransaction()]);
+
     return txid;
+} catch (err: any) {
+    console.debug("error:", err);
+    const errorMap: Map<number, string> = new Map();
+    ZEBEC_MULTISIG_PROGRAM_IDL.errors.forEach((error) =>
+      errorMap.set(error.code, error.msg),
+    );
+    const translatedError = translateError(err, errorMap);
+    console.debug("translated error:", translateError);
+    throw translatedError;
+
+}
+
+    // (async () => {
+    //     while(!done && now() - startTime < retryTimeout) {
+    //         connection.sendRawTransaction(rawTxn, options);
+    //         await sleep(2000);
+    //     }
+    // })();
+
+    // let status: any;
+
+    // try {
+    //     const signatureResult = await connection.confirmTransaction(
+    //         {
+    //             signature: txid,
+    //             blockhash: tx.recentBlockhash,
+    //             lastValidBlockHeight: tx.lastValidBlockHeight
+    //         } as any,
+    //         provider.connection.commitment
+    //     );
+    //     status = signatureResult.value;
+    // } catch (error) {
+    //     status = {
+    //         err: error
+    //     };
+    // } finally {
+    //     done = true;
+    // }
+
+    // if (status?.err) {
+    //     let errors: string[] = [];
+    //     if (
+    //         (status.err as Error).message &&
+    //         ((status.err as Error).message.includes("block height exceeded") ||
+    //         (status.err as Error).message.includes("timeout exceeded"))
+    //     ) {
+    //         errors = [(status.err as Error).message];
+    //     } else {
+    //         errors = await getErrorForTransaction(connection, txid);
+    //     }
+
+    //     // throw new Error(
+    //     //     `Raw transaction ${txid} faied (${JSON.stringify(status)})`
+    //     // );
+    // }
+    // return txid;
 }
 
 export const getAmountInLamports = (amount: number): number => {

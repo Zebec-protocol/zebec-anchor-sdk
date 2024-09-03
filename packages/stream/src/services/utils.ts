@@ -77,10 +77,11 @@ export const sendTx = async(tx: Transaction, provider: AnchorProvider): Promise<
     
 
     let confirmed = false;
+    let abort = false;
 
     const sendTxMultiple = async () => {
-        let blockheight = await connection.getBlockHeight();
-        while (!confirmed && blockheight < lastValidBlockHeight - 150) {
+        let blockheight = await connection.getBlockHeight({commitment: options?.commitment});
+        while (!confirmed && !abort && blockheight < lastValidBlockHeight) {
             try {
                 if (confirmed) return;
                 await connection.sendRawTransaction(
@@ -88,21 +89,29 @@ export const sendTx = async(tx: Transaction, provider: AnchorProvider): Promise<
                     options,
                 );
                 console.debug('Signature',txid);
+                await new Promise((r) => setTimeout(r, 1000));
+                blockheight = await connection.getBlockHeight();
             } catch (err: any) {
-                if (
-                    err.message &&
-                    (err.message.includes("This transaction has already been processed") || err.message.includes("Blockhash not found"))
-                ) {
-                    console.debug("Expected error: ", err.message);
-                    continue;
+                
+                if (err.message)
+                {
+                    if (err.message.includes("This transaction has already been processed")) {
+                    return;
+                } else if (err.message.includes("Blockhash not found")) {
+                  console.debug("Expected error: ", err.message);
+                  await new Promise((r) => setTimeout(r, 1000));
+                  blockheight = await connection.getBlockHeight(options);
+                  continue;
+                } else {
+                  throw err;
                 }
-                throw err;
             }
-            await new Promise((r) => setTimeout(r, 1000));
-            blockheight = await connection.getBlockHeight();
+            throw err;
+            }
+         
         }
 
-        if(!confirmed){
+        if(!confirmed && blockheight >= lastValidBlockHeight){
             throw new Error("Blockheght exceeded.");
         }
 
@@ -115,46 +124,64 @@ export const sendTx = async(tx: Transaction, provider: AnchorProvider): Promise<
         const maxRetry = options?.confirmRetries
             ? options.confirmRetries
             : DEFAULT_MAX_CONFIRMATION_RETRIES;
-        let blockheight = await connection.getBlockHeight();
-        while (blockheight < lastValidBlockHeight - 150 && retry < maxRetry) {
+        let blockheight = await connection.getBlockHeight({commitment: options?.commitment});
+        while (blockheight < lastValidBlockHeight && retry < maxRetry) {
             console.debug("Try:", retry + 1);
-            const response = await connection.confirmTransaction(
+            try {
+              const response = await connection.confirmTransaction(
                 {
-                    signature: txid,
-                    blockhash: blockhash,
-                    lastValidBlockHeight: lastValidBlockHeight,
+                  signature: txid,
+                  blockhash: blockhash,
+                  lastValidBlockHeight: lastValidBlockHeight,
                 },
                 options?.commitment,
-            );
-
-            if (!response.value.err) {
-                // const endTime = Date.now();
-                // console.info("Confirmed at: %d", endTime);
-                // console.info("Time elapsed: %d", endTime - startTime);
-                confirmed = true;
-    
-                break;
-              }
-    
+              );
+  
               err = response.value.err;
+  
+              if (!err) {
+                const endTime = Date.now();
+                console.debug("Confirmed at: %d", endTime);
+                console.debug("Time elapsed: %d", endTime - startTime);
+                confirmed = true;
+  
+                return;
+              }
+  
+              if (err) {
+                if (typeof err === "string") {
+                  console.debug("confirm transaction err: " + err);
+                  throw new Error("Failed to confirm transaction: " + err);
+                } else {
+                  console.debug("confirm transaction err: " + JSON.stringify(err));
+                  throw new Error("Failed to confirm transaction");
+                }
+              }
+            } catch (err: any) {
+              if (err.message && err.message.includes("block height exceeded")) {
+                abort = true;
+                throw err;
+              }
               retry += 1;
-              blockheight = await connection.getBlockHeight();
-        }
-
-        if (err) {
-            if (typeof err === "string") {
-                console.debug("confirm transaction err: " + err);
-                throw new Error("Failed to confirm transaction: " + err);
-            } else {
-                console.debug("confirm transaction err: " + JSON.stringify(err));
-                throw new Error("Failed to confirm transaction");
+              blockheight = await connection.getBlockHeight(options);
+              continue;
             }
-        }
+          }
+  
+          if (err) {
+            if (typeof err === "string") {
+              console.debug("confirm transaction err: " + err);
+              throw new Error("Failed to confirm transaction: " + err);
+            } else {
+              console.debug("confirm transaction err: " + JSON.stringify(err));
+              throw new Error("Failed to confirm transaction");
+            }
+          }
     };
 
-    await Promise.race([sendTxMultiple(), confirmTransaction()]);
-
+    await Promise.all([sendTxMultiple(), confirmTransaction()]);
     return txid;
+
 } catch (err: any) {
     console.debug("error:", err);
     const errorMap: Map<number, string> = new Map();

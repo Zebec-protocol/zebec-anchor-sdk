@@ -42,3 +42,5 @@ export enum TRANSACTION_ACCOUNT_SIZE {
 
 export const STREAM_SIZE = 8 + 8 + 8 + 8 + 8 + 8 + 32 + 32 + 8 + 8 + 32 + 8+ 8 + 1 + 1;
 export const STREAM_TOKEN_SIZE = 8 + 8 + 8 + 8 + 8 + 8 + 32 + 32 + 32 + 8 + 8 + 32 +8+ 8 + 1 + 1;
+
+export const COMPUTE_BUDGET = 200000

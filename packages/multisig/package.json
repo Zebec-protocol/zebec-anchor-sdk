@@ -30,7 +30,7 @@
     "multisig",
     "zbc"
   ],
-  "author": "Zebec Protocol | Ashish",
+  "author": "Zebec Protocol",
   "license": "ISC",
   "bugs": {
     "url": "https://github.com/Zebec-protocol/zebec-anchor-sdk/issues"
